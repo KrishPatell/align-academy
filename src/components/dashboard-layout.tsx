@@ -305,7 +305,7 @@ function ScrollToTop({
       variant="outline"
       size="icon"
       onClick={scrollToTop}
-      className={`fixed bottom-6 right-6 h-11 w-11 rounded-full shadow-lg border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:border-purple-300 dark:hover:border-purple-700 transition-all duration-300 z-50 ${
+      className={`fixed bottom-6 right-6 h-12 w-12 rounded-full shadow-lg border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:border-purple-300 dark:hover:border-purple-700 transition-all duration-300 z-50 touch-manipulation ${
         isVisible 
           ? "opacity-100 translate-y-0" 
           : "opacity-0 translate-y-4 pointer-events-none"
@@ -314,6 +314,52 @@ function ScrollToTop({
     >
       <ChevronUp className="h-5 w-5 text-slate-600 dark:text-slate-300" />
     </Button>
+  );
+}
+
+// ======== IMPROVEMENT 6: Mobile Swipe Gestures Hint ========
+function SwipeHint() {
+  const [dismissed, setDismissed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    // Check if device supports touch
+    const checkTouch = () => {
+      setIsMobile('ontouchstart' in window || navigator.maxTouchPoints > 0);
+    };
+    checkTouch();
+    
+    // Auto-dismiss after 5 seconds
+    const timer = setTimeout(() => setDismissed(true), 5000);
+    return () => clearTimeout(timer);
+  }, []);
+  
+  if (dismissed || !isMobile) return null;
+  
+  return (
+    <div 
+      className="fixed bottom-24 right-6 z-40 animate-fade-in-up md:hidden"
+      role="complementary"
+      aria-label="Swipe navigation hint"
+    >
+      <div className="bg-slate-900 dark:bg-slate-700 text-white text-sm px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3">
+        <div className="flex gap-1">
+          <span className="w-2 h-2 bg-white/60 rounded-full animate-pulse" />
+          <span className="w-2 h-2 bg-white/60 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />
+          <span className="w-2 h-2 bg-white/60 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }} />
+        </div>
+        <span className="text-xs">Swipe to navigate</span>
+        <button 
+          onClick={() => setDismissed(true)}
+          className="ml-2 text-white/60 hover:text-white transition-colors"
+          aria-label="Dismiss hint"
+        >
+          <X className="h-4 w-4" />
+        </button>
+      </div>
+      {/* Arrow indicator */}
+      <div className="absolute -bottom-2 right-8 w-4 h-4 bg-slate-900 dark:bg-slate-700 rotate-45" />
+    </div>
   );
 }
 
@@ -841,6 +887,9 @@ export default function DashboardLayout({ children }: SidebarProps) {
         
         {/* Scroll to Top Button */}
         <ScrollToTop threshold={300} />
+        
+        {/* Mobile Swipe Hint */}
+        <SwipeHint />
       </main>
     </div>
   );
