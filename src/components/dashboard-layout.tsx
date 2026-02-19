@@ -723,7 +723,13 @@ export default function DashboardLayout({ children }: SidebarProps) {
       </aside>
 
       {/* Main Content */}
-      <main className={`flex-1 transition-all duration-300 ease-out ${effectiveCollapsed ? 'ml-16' : 'ml-64'}`}>
+      <main 
+        id="main-content"
+        tabIndex={-1}
+        className={`flex-1 transition-all duration-300 ease-out ${effectiveCollapsed ? 'ml-16' : 'ml-64'}`}
+        role="main"
+        aria-label="Main content area"
+      >
         {/* Header */}
         <header className="h-16 bg-white dark:bg-[#1a1a1a] border-b border-slate-200 dark:border-slate-800 px-6 sticky top-0 z-20 flex items-center justify-between">
           {/* Left - Breadcrumb & Title */}

@@ -122,6 +122,111 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* ====== ACCESSIBILITY: Focus States ====== */
+  /* Visible focus styles for keyboard navigation */
+  :focus-visible {
+    @apply outline-none ring-2 ring-purple-500 ring-offset-2;
+  }
+
+  /* Remove focus outline for mouse users, keep for keyboard */
+  :focus:not(:focus-visible) {
+    @apply outline-none ring-0;
+  }
+
+  /* Enhanced focus ring for interactive elements */
+  .focus-visible-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2;
+  }
+
+  /* Focus styles for buttons */
+  button:focus-visible,
+  [role="button"]:focus-visible {
+    @apply outline-none ring-2 ring-purple-500 ring-offset-2 ring-offset-white dark:ring-offset-slate-900;
+  }
+
+  /* Focus styles for links */
+  a:focus-visible {
+    @apply outline-none ring-2 ring-purple-500 ring-offset-2 ring-offset-white dark:ring-offset-slate-900;
+  }
+
+  /* Focus styles for inputs */
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  [contenteditable="true"]:focus-visible {
+    @apply outline-none ring-2 ring-purple-500 ring-offset-2 ring-offset-white dark:ring-offset-slate-900;
+  }
+
+  /* High contrast focus for dropdown/trigger elements */
+  [role="combobox"][aria-expanded="true"]:focus-visible,
+  [role="listbox"]:focus-visible,
+  [role="menu"]:focus-visible {
+    @apply ring-2 ring-purple-500;
+  }
+
+  /* Skip link styles */
+  .skip-link {
+    @apply absolute -top-full left-4 z-[100] px-4 py-2 bg-purple-600 text-white font-medium rounded-lg;
+    @apply transition-all duration-200;
+  }
+
+  .skip-link:focus {
+    @apply top-4;
+  }
+
+  /* Screen reader only content */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Make sr-only content visible on focus (for skip links etc) */
+  .sr-only-focusable:focus,
+  .sr-only-focusable:focus-within {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: inherit;
+    margin: inherit;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    :root {
+      --foreground: oklch(0 0 0);
+      --background: oklch(1 0 0);
+      --border: oklch(0 0 0);
+    }
+
+    .dark {
+      --foreground: oklch(1 0 0);
+      --background: oklch(0 0 0);
+      --border: oklch(1 0 0);
+    }
+  }
 }
 
 /* Shimmer animation for skeletons */
