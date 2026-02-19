@@ -95,6 +95,27 @@ export default function ClientsPage() {
           </Card>
         </div>
 
+        {/* Demo Toast Buttons */}
+        <Card className="bg-white dark:bg-[#1a1a1a]">
+          <CardContent className="pt-6">
+            <p className="text-sm font-medium mb-3">Toast Notifications Demo</p>
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" size="sm" onClick={() => toast({ title: "Success!", description: "Client added successfully", variant: "success" })}>
+                Success Toast
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => toast({ title: "Error", description: "Failed to delete client", variant: "destructive" })}>
+                Error Toast
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => toast({ title: "Warning", description: "Client subscription expires soon", variant: "warning" })}>
+                Warning Toast
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => toast({ title: "Info", description: "New client onboarding started", variant: "info" })}>
+                Info Toast
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Search */}
         <div className="flex items-center gap-4">
           <div className="relative flex-1 max-w-md">

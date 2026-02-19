@@ -147,6 +147,8 @@ export default function SLAPage() {
   const [sortField, setSortField] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [priorityFilter, setPriorityFilter] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const [expandedPriority, setExpandedPriority] = useState<string[]>(["High", "Medium", "Low"]);
   const [selectedTicket, setSelectedTicket] = useState<typeof slaTickets[0] | null>(null);
 
