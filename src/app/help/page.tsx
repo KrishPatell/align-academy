@@ -2,351 +2,255 @@
 
 import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/dashboard-layout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Search,
-  Filter,
-  MoreHorizontal,
-  ChevronDown,
-  ChevronUp,
-  ChevronRight,
-  BookOpen,
-  MessageCircle,
-  Phone,
-  Mail,
-  FileText,
-  Video,
-  ExternalLink,
-  Clock,
-  User,
-  CheckCircle,
-  Circle,
-  Send,
-  Star,
-  ThumbsUp,
-  ThumbsDown,
-  HelpCircle,
-  MessageSquare,
-  PhoneCall,
-  MailQuestion,
-  BookMarked,
-  Lightbulb,
-  AlertTriangle,
-  RefreshCw,
-  Download,
-  Upload,
-} from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter 
+} from "@/components/ui/dialog";
+import { Search, HelpCircle, MessageSquare, Mail, Phone, ChevronRight, ChevronDown, ChevronUp, FileText, BookOpen, Zap, CreditCard, Users, Settings, X, ThumbsUp, ThumbsDown } from "lucide-react";
 
-// Help categories
-const helpCategories = [
-  { icon: BookOpen, label: "Knowledge Base", count: 156, color: "bg-blue-100 text-blue-600" },
-  { icon: MessageSquare, label: "Live Chat", count: 24, color: "bg-purple-100 text-purple-600" },
-  { icon: PhoneCall, label: "Phone Support", count: 8, color: "bg-green-100 text-green-600" },
-  { icon: MailQuestion, label: "Email Support", count: 12, color: "bg-amber-100 text-amber-600" },
+const helpTopics = [
+  { id: 1, title: "Getting Started", icon: Zap, color: "from-blue-500 to-cyan-500", articles: 12, description: "Learn the basics of Kravio" },
+  { id: 2, title: "Account & Billing", icon: CreditCard, color: "from-green-500 to-emerald-500", articles: 8, description: "Manage your subscription" },
+  { id: 3, title: "Integrations", icon: Settings, color: "from-purple-500 to-pink-500", articles: 15, description: "Connect with your tools" },
+  { id: 4, title: "Team Management", icon: Users, color: "from-orange-500 to-red-500", articles: 10, description: "Add and manage team members" },
+  { id: 5, title: "Security", icon: HelpCircle, color: "from-indigo-500 to-purple-500", articles: 6, description: "Keep your account secure" },
+  { id: 6, title: "API Reference", icon: FileText, color: "from-teal-500 to-blue-500", articles: 20, description: "Developer documentation" },
 ];
 
-// Popular articles
+const faqs = [
+  { id: 1, question: "How do I reset my password?", answer: "Go to Settings > Security > Reset Password. You'll receive an email with a reset link." },
+  { id: 2, question: "Can I change my plan later?", answer: "Yes! Go to Settings > Billing and click 'Change Plan'. You can upgrade or downgrade anytime." },
+  { id: 3, question: "How do I add team members?", answer: "Navigate to Team > Add Members. Enter their email and select a role." },
+  { id: 4, question: "What integrations are available?", answer: "We support Slack, Zapier, GitHub, Jira, and 50+ more integrations. Check the Integrations page." },
+  { id: 5, question: "How does billing work?", answer: "We bill monthly or annually. You can change your billing cycle in Settings > Billing." },
+];
+
 const popularArticles = [
-  { title: "How to reset your password", views: 2453, category: "Account" },
-  { title: "Setting up two-factor authentication", views: 1892, category: "Security" },
-  { title: "Understanding your billing cycle", views: 1654, category: "Billing" },
-  { title: "How to integrate with Slack", views: 1423, category: "Integrations" },
-  { title: "Managing team permissions", views: 1287, category: "Teams" },
+  { id: 1, title: "Quick Start Guide", views: 1250 },
+  { id: 2, title: "Setting up integrations", views: 980 },
+  { id: 3, title: "Managing team permissions", views: 856 },
+  { id: 4, title: "Billing FAQ", views: 743 },
 ];
-
-// KB Articles
-const kbArticles = [
-  { id: "KB-001", title: "Getting Started with Kravio", category: "Getting Started", views: 2453, lastUpdated: "2026-02-15", status: "published" },
-  { id: "KB-002", title: "How to create and send invoices", category: "Invoices", views: 1892, lastUpdated: "2026-02-14", status: "published" },
-  { id: "KB-003", title: "Understanding subscription tiers", category: "Billing", views: 1654, lastUpdated: "2026-02-12", status: "published" },
-  { id: "KB-004", title: "API authentication guide", category: "Developers", views: 1423, lastUpdated: "2026-02-10", status: "published" },
-  { id: "KB-005", title: "Setting up team roles and permissions", category: "Teams", views: 1287, lastUpdated: "2026-02-08", status: "draft" },
-  { id: "KB-006", title: "Troubleshooting payment issues", category: "Billing", views: 1156, lastUpdated: "2026-02-05", status: "published" },
-];
-
-// Support tickets
-const supportTickets = [
-  { id: "SUP-001", subject: "Cannot access my dashboard", status: "open", priority: "high", created: "2026-02-19", responseTime: "< 1h" },
-  { id: "SUP-002", subject: "Billing discrepancy on invoice", status: "pending", priority: "medium", created: "2026-02-18", responseTime: "2h" },
-  { id: "SUP-003", subject: "Feature request: Dark mode", status: "resolved", priority: "low", created: "2026-02-17", responseTime: "24h" },
-];
-
-const statusColors: Record<string, string> = {
-  open: "bg-green-100 text-green-700",
-  pending: "bg-amber-100 text-amber-700",
-  resolved: "bg-slate-100 text-slate-700",
-};
-
-const priorityColors: Record<string, string> = {
-  high: "bg-red-100 text-red-700",
-  medium: "bg-amber-100 text-amber-700",
-  low: "bg-slate-100 text-slate-700",
-};
 
 export default function HelpPage() {
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("all");
-  const [activeTab, setActiveTab] = useState("kb");
+  const [selectedTopic, setSelectedTopic] = useState<typeof helpTopics[0] | null>(null);
+  const [isTopicOpen, setIsTopicOpen] = useState(false);
+  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+  const [helpfulFeedback, setHelpfulFeedback] = useState<Record<number, boolean>>({});
 
   useEffect(() => { setMounted(true); }, []);
   if (!mounted) return null;
 
-  const filteredArticles = kbArticles.filter(article => {
-    const matchesSearch = article.title.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = categoryFilter === "all" || article.category === categoryFilter;
-    return matchesSearch && matchesCategory;
-  });
+  const openTopic = (topic: typeof helpTopics[0]) => {
+    setSelectedTopic(topic);
+    setIsTopicOpen(true);
+  };
+
+  const toggleFaq = (id: number) => {
+    setExpandedFaq(expandedFaq === id ? null : id);
+  };
+
+  const submitFeedback = (faqId: number, isHelpful: boolean) => {
+    setHelpfulFeedback(prev => ({ ...prev, [faqId]: isHelpful }));
+  };
 
   return (
     <DashboardLayout>
       <div className="p-6 space-y-6">
-        {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
-            <div className="text-sm text-slate-500 mb-1">Support / Help & Support</div>
+            <div className="text-sm text-slate-500 mb-1">Support / Help Center</div>
             <h1 className="text-2xl font-bold">Help & Support</h1>
-            <p className="text-slate-500 text-sm">Find answers, get help, or contact our support team</p>
+            <p className="text-slate-500 text-sm">Find answers and get help</p>
           </div>
         </div>
 
         {/* Search */}
-        <Card className="bg-gradient-to-r from-purple-600 to-blue-600 text-white">
-          <CardContent className="pt-8 pb-8">
-            <h2 className="text-2xl font-bold mb-4 text-center">How can we help you?</h2>
-            <div className="max-w-2xl mx-auto relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-              <Input 
-                placeholder="Search for articles, guides, or topics..." 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 h-12 text-lg bg-white text-slate-900 border-0"
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Quick Links */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {helpCategories.map((category, i) => (
-            <Card key={i} className="bg-white dark:bg-[#1a1a1a] cursor-pointer hover:shadow-md transition-shadow">
-              <CardContent className="pt-6">
-                <div className="flex items-center gap-4">
-                  <div className={`p-3 rounded-xl ${category.color}`}>
-                    <category.icon className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <p className="font-medium">{category.label}</p>
-                    <p className="text-sm text-slate-500">{category.count} articles</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+        <div className="relative max-w-2xl mx-auto">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+          <Input 
+            placeholder="Search for help..." 
+            className="pl-12 h-14 text-lg bg-white dark:bg-[#1a1a1a] shadow-lg"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
         </div>
 
-        {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="bg-white dark:bg-[#1a1a1a]">
-            <TabsTrigger value="kb">Knowledge Base</TabsTrigger>
-            <TabsTrigger value="support">My Tickets</TabsTrigger>
-            <TabsTrigger value="feedback">Submit Feedback</TabsTrigger>
-          </TabsList>
+        {/* Quick Actions */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card className="bg-gradient-to-br from-purple-600 to-blue-600 text-white cursor-pointer hover:shadow-xl transition-all hover:-translate-y-1">
+            <CardContent className="pt-6 flex items-center gap-4">
+              <div className="p-3 bg-white/20 rounded-xl">
+                <MessageSquare className="h-6 w-6" />
+              </div>
+              <div>
+                <h3 className="font-semibold">Live Chat</h3>
+                <p className="text-purple-100 text-sm">Chat with support</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-gradient-to-br from-green-600 to-teal-600 text-white cursor-pointer hover:shadow-xl transition-all hover:-translate-y-1">
+            <CardContent className="pt-6 flex items-center gap-4">
+              <div className="p-3 bg-white/20 rounded-xl">
+                <Mail className="h-6 w-6" />
+              </div>
+              <div>
+                <h3 className="font-semibold">Email Support</h3>
+                <p className="text-green-100 text-sm">support@kravio.com</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-gradient-to-br from-orange-600 to-red-600 text-white cursor-pointer hover:shadow-xl transition-all hover:-translate-y-1">
+            <CardContent className="pt-6 flex items-center gap-4">
+              <div className="p-3 bg-white/20 rounded-xl">
+                <Phone className="h-6 w-6" />
+              </div>
+              <div>
+                <h3 className="font-semibold">Phone Support</h3>
+                <p className="text-orange-100 text-sm">Mon-Fri 9am-6pm</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
-          {/* Knowledge Base Tab */}
-          <TabsContent value="kb" className="space-y-4 mt-4">
-            {/* Popular Articles */}
-            <Card className="bg-white dark:bg-[#1a1a1a]">
-              <CardHeader>
-                <CardTitle className="text-lg">Popular Articles</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {popularArticles.map((article, i) => (
-                    <div key={i} className="p-4 rounded-lg border hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors">
-                      <div className="flex items-start justify-between">
-                        <BookMarked className="h-5 w-5 text-purple-500" />
-                        <Badge variant="outline" className="text-xs">{article.category}</Badge>
-                      </div>
-                      <h3 className="font-medium mt-3 mb-2">{article.title}</h3>
-                      <p className="text-xs text-slate-500">{article.views.toLocaleString()} views</p>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* All Articles */}
-            <Card className="bg-white dark:bg-[#1a1a1a]">
-              <CardHeader>
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <CardTitle className="text-lg">All Articles</CardTitle>
-                  <div className="flex items-center gap-2">
-                    <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                      <SelectTrigger className="w-40">
-                        <SelectValue placeholder="Category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Categories</SelectItem>
-                        <SelectItem value="Getting Started">Getting Started</SelectItem>
-                        <SelectItem value="Invoices">Invoices</SelectItem>
-                        <SelectItem value="Billing">Billing</SelectItem>
-                        <SelectItem value="Security">Security</SelectItem>
-                        <SelectItem value="Teams">Teams</SelectItem>
-                        <SelectItem value="Developers">Developers</SelectItem>
-                      </SelectContent>
-                    </Select>
+        {/* Help Topics */}
+        <div>
+          <h2 className="text-lg font-semibold mb-4">Browse by Topic</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {helpTopics.map((topic) => (
+              <Card 
+                key={topic.id} 
+                className="bg-white dark:bg-[#1a1a1a] hover:shadow-xl transition-all cursor-pointer hover:-translate-y-1 group"
+                onClick={() => openTopic(topic)}
+              >
+                <CardContent className="pt-6 text-center">
+                  <div className={`w-14 h-14 mx-auto mb-3 rounded-xl bg-gradient-to-br ${topic.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
+                    <topic.icon className="h-7 w-7 text-white" />
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {filteredArticles.map((article) => (
-                    <div key={article.id} className="flex items-center justify-between p-4 rounded-lg border hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors">
-                      <div className="flex items-center gap-4">
-                        <BookOpen className="h-5 w-5 text-slate-400" />
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h3 className="font-medium">{article.title}</h3>
-                            {article.status === "draft" && <Badge variant="outline" className="text-xs">Draft</Badge>}
+                  <h3 className="font-medium text-sm group-hover:text-purple-600 transition-colors">{topic.title}</h3>
+                  <p className="text-xs text-slate-500 mt-1">{topic.articles} articles</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        {/* Popular Articles */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card className="bg-white dark:bg-[#1a1a1a]">
+            <CardContent className="pt-6">
+              <h3 className="font-semibold mb-4 flex items-center gap-2">
+                <FileText className="h-5 w-5 text-purple-600" />
+                Popular Articles
+              </h3>
+              <div className="space-y-3">
+                {popularArticles.map((article) => (
+                  <div key={article.id} className="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors">
+                    <span className="font-medium">{article.title}</span>
+                    <div className="flex items-center gap-2 text-sm text-slate-500">
+                      <span>{article.views} views</span>
+                      <ChevronRight className="h-4 w-4" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* FAQ Section */}
+          <Card className="bg-white dark:bg-[#1a1a1a]">
+            <CardContent className="pt-6">
+              <h3 className="font-semibold mb-4 flex items-center gap-2">
+                <HelpCircle className="h-5 w-5 text-purple-600" />
+                Frequently Asked Questions
+              </h3>
+              <div className="space-y-2">
+                {faqs.map((faq) => (
+                  <div key={faq.id} className="border rounded-lg overflow-hidden">
+                    <button
+                      onClick={() => toggleFaq(faq.id)}
+                      className="w-full flex items-center justify-between p-4 text-left hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                    >
+                      <span className="font-medium">{faq.question}</span>
+                      {expandedFaq === faq.id ? (
+                        <ChevronUp className="h-5 w-5 text-slate-400 flex-shrink-0" />
+                      ) : (
+                        <ChevronDown className="h-5 w-5 text-slate-400 flex-shrink-0" />
+                      )}
+                    </button>
+                    {expandedFaq === faq.id && (
+                      <div className="px-4 pb-4 animate-fade-in">
+                        <p className="text-slate-600 dark:text-slate-300">{faq.answer}</p>
+                        <div className="mt-4 pt-4 border-t flex items-center justify-between">
+                          <span className="text-sm text-slate-500">Was this helpful?</span>
+                          <div className="flex gap-2">
+                            <Button 
+                              variant={helpfulFeedback[faq.id] === true ? "default" : "outline"} 
+                              size="sm"
+                              onClick={() => submitFeedback(faq.id, true)}
+                              className={helpfulFeedback[faq.id] === true ? "bg-green-600" : ""}
+                            >
+                              <ThumbsUp className="h-4 w-4" />
+                            </Button>
+                            <Button 
+                              variant={helpfulFeedback[faq.id] === false ? "default" : "outline"} 
+                              size="sm"
+                              onClick={() => submitFeedback(faq.id, false)}
+                            >
+                              <ThumbsDown className="h-4 w-4" />
+                            </Button>
                           </div>
-                          <p className="text-sm text-slate-500">{article.category} • {article.views.toLocaleString()} views</p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-4">
-                        <span className="text-xs text-slate-400">Updated {article.lastUpdated}</span>
-                        <ChevronRight className="h-5 w-5 text-slate-400" />
-                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Topic Detail Dialog */}
+        <Dialog open={isTopicOpen} onOpenChange={setIsTopicOpen}>
+          <DialogContent className="max-w-2xl">
+            {selectedTopic && (
+              <>
+                <DialogHeader>
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${selectedTopic.color} flex items-center justify-center`}>
+                      <selectedTopic.icon className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                      <DialogTitle>{selectedTopic.title}</DialogTitle>
+                      <p className="text-sm text-slate-500">{selectedTopic.description}</p>
+                    </div>
+                  </div>
+                </DialogHeader>
+                
+                <div className="py-4 space-y-2 max-h-96 overflow-y-auto">
+                  {Array.from({ length: selectedTopic.articles }).map((_, i) => (
+                    <div key={i} className="p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors flex items-center justify-between">
+                      <span className="font-medium">Article {i + 1}</span>
+                      <ChevronRight className="h-4 w-4 text-slate-400" />
                     </div>
                   ))}
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
 
-          {/* Support Tickets Tab */}
-          <TabsContent value="support" className="space-y-4 mt-4">
-            <Card className="bg-white dark:bg-[#1a1a1a]">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg">Your Support Tickets</CardTitle>
-                  <Button>
-                    <MessageSquare className="h-4 w-4 mr-2" /> New Ticket
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setIsTopicOpen(false)}>Close</Button>
+                  <Button className="bg-purple-600 hover:bg-purple-700 gap-2">
+                    <MessageSquare className="h-4 w-4" /> Contact Support
                   </Button>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {supportTickets.map((ticket) => (
-                    <div key={ticket.id} className="flex items-center justify-between p-4 rounded-lg border hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors">
-                      <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
-                          <HelpCircle className="h-5 w-5 text-purple-600" />
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium">{ticket.id}</span>
-                            <span className={`px-2 py-0.5 rounded-full text-xs ${statusColors[ticket.status]}`}>{ticket.status}</span>
-                            <span className={`px-2 py-0.5 rounded-full text-xs ${priorityColors[ticket.priority]}`}>{ticket.priority}</span>
-                          </div>
-                          <p className="text-sm text-slate-500">{ticket.subject}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <div className="text-right">
-                          <p className="text-sm text-slate-500">Created</p>
-                          <p className="text-sm">{ticket.created}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-sm text-slate-500">Response</p>
-                          <p className="text-sm">{ticket.responseTime}</p>
-                        </div>
-                        <ChevronRight className="h-5 w-5 text-slate-400" />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Submit Feedback Tab */}
-          <TabsContent value="feedback" className="space-y-4 mt-4">
-            <Card className="bg-white dark:bg-[#1a1a1a]">
-              <CardHeader>
-                <CardTitle className="text-lg">Submit Feedback</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Your Name</label>
-                    <Input placeholder="Enter your name" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Email</label>
-                    <Input type="email" placeholder="your@email.com" />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Category</label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="bug">Bug Report</SelectItem>
-                      <SelectItem value="feature">Feature Request</SelectItem>
-                      <SelectItem value="improvement">Improvement</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Subject</label>
-                  <Input placeholder="Brief description of your feedback" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Description</label>
-                  <Textarea placeholder="Please provide as much detail as possible..." rows={5} />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">How would you rate your experience?</label>
-                  <div className="flex gap-2">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <button key={star} className="p-2 hover:scale-110 transition-transform">
-                        <Star className="h-8 w-8 text-amber-400 fill-amber-400" />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div className="flex justify-end gap-2">
-                  <Button variant="outline">Cancel</Button>
-                  <Button>
-                    <Send className="h-4 w-4 mr-2" /> Submit Feedback
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+                </DialogFooter>
+              </>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </DashboardLayout>
   );
