@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Plus, MoreHorizontal, Check, Zap, Slack, Mail, MessageSquare, CreditCard, Globe, Twitter, Instagram, Github, Figma, Spotify, Youtube, MoreVertical } from "lucide-react";
+import { Search, Plus, MoreHorizontal, Check, Zap, Slack, Mail, MessageSquare, CreditCard, Globe, Twitter, Github, Youtube, MoreVertical, Headphones, Palette, Megaphone, Code, Video } from "lucide-react";
 
 const integrations = [
   { 
@@ -25,7 +25,7 @@ const integrations = [
     id: 2, 
     name: "Premium Support", 
     description: "Priority customer support integration",
-    icon: Spotify, 
+    icon: Headphones, 
     connected: true, 
     category: "Support",
     participants: 3,
@@ -36,7 +36,7 @@ const integrations = [
     id: 3, 
     name: "Design Tools", 
     description: "Figma integration for design handoff",
-    icon: Figma, 
+    icon: Palette, 
     connected: false, 
     category: "Design",
     participants: 4,
