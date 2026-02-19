@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import CommandPalette from "@/components/command-palette";
 import {
   Home,
   Ticket,
@@ -74,6 +75,19 @@ export default function DashboardLayout({ children }: SidebarProps) {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const [openMenus, setOpenMenus] = useState<string[]>(["Invoices"]);
+  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
+
+  // Keyboard shortcut for Command Palette
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setCommandPaletteOpen(true);
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   useEffect(() => { setMounted(true); }, []);
   if (!mounted) return null;
@@ -100,13 +114,22 @@ export default function DashboardLayout({ children }: SidebarProps) {
 
         {/* Search */}
         <div className="p-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-            <Input placeholder="Search anything" className="pl-10 bg-slate-100 dark:bg-slate-800 border-0 text-sm" />
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs text-slate-400 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded">
-              <Command className="h-3 w-3" />K
+          <button
+            onClick={() => setCommandPaletteOpen(true)}
+            className="w-full relative"
+          >
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <Input 
+                placeholder="Search anything" 
+                className="pl-10 bg-slate-100 dark:bg-slate-800 border-0 text-sm cursor-pointer" 
+                readOnly
+              />
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs text-slate-400 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded pointer-events-none">
+                <Command className="h-3 w-3" />K
+              </div>
             </div>
-          </div>
+          </button>
         </div>
 
         {/* Navigation */}
@@ -251,6 +274,9 @@ export default function DashboardLayout({ children }: SidebarProps) {
         </header>
 
         {children}
+
+        {/* Global Command Palette */}
+        <CommandPalette open={commandPaletteOpen} onOpenChange={setCommandPaletteOpen} />
       </main>
     </div>
   );
