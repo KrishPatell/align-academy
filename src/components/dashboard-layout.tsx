@@ -62,8 +62,8 @@ const analyticsNav = [
 ];
 
 const supportNav = [
-  { icon: MessageSquare, label: "Feedback", href: "#" },
-  { icon: HelpCircle, label: "Help & Support", href: "#" },
+  { icon: MessageSquare, label: "Feedback", href: "/feedback" },
+  { icon: HelpCircle, label: "Help & Support", href: "/help" },
   { icon: Settings, label: "Settings", href: "/settings" },
 ];
 
