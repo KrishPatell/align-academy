@@ -545,6 +545,155 @@ export default function InvoicesPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Invoice Detail Modal */}
+      <Dialog open={isDetailModalOpen} onOpenChange={(open) => { if (!open) { setIsDetailModalOpen(false); setViewingInvoice(null); } }}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <DialogTitle className="text-xl">Invoice Details</DialogTitle>
+                <DialogDescription>{viewingInvoice?.invoiceNumber}</DialogDescription>
+              </div>
+              {viewingInvoice && (
+                <Badge variant="outline" className="gap-1 text-sm" style={{ backgroundColor: statusConfig[viewingInvoice.status].bg, color: statusConfig[viewingInvoice.status].text, borderColor: "transparent" }}>
+                  {statusConfig[viewingInvoice.status].icon && <statusConfig[viewingInvoice.status].icon className="h-4 w-4" />}
+                  {statusConfig[viewingInvoice.status].label}
+                </Badge>
+              )}
+            </div>
+          </DialogHeader>
+          {viewingInvoice && (
+            <div className="space-y-6">
+              {/* Customer Info Card */}
+              <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 space-y-3">
+                <div className="flex items-center gap-2 text-slate-500 mb-2">
+                  <User className="h-4 w-4" />
+                  <span className="text-sm font-medium">Customer Information</span>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-xs text-slate-400 uppercase tracking-wide">Name</p>
+                    <p className="font-semibold">{viewingInvoice.customer.name}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-slate-400 uppercase tracking-wide">Email</p>
+                    <p className="text-sm">{viewingInvoice.customer.email}</p>
+                  </div>
+                  <div className="col-span-2">
+                    <p className="text-xs text-slate-400 uppercase tracking-wide">Address</p>
+                    <p className="text-sm">{viewingInvoice.customer.address}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Dates */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+                  <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                    <Calendar className="h-4 w-4 text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-slate-400 uppercase tracking-wide">Invoice Date</p>
+                    <p className="font-medium">{formatDate(viewingInvoice.date)}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+                  <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded-lg">
+                    <Clock className="h-4 w-4 text-amber-600" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-slate-400 uppercase tracking-wide">Due Date</p>
+                    <p className="font-medium">{formatDate(viewingInvoice.dueDate)}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Line Items */}
+              <div className="space-y-3">
+                <h3 className="font-semibold">Line Items</h3>
+                <div className="border rounded-lg overflow-hidden">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Description</TableHead>
+                        <TableHead className="text-center w-20">Qty</TableHead>
+                        <TableHead className="text-right w-28">Rate</TableHead>
+                        <TableHead className="text-right w-28">Amount</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {viewingInvoice.items.map((item) => (
+                        <TableRow key={item.id}>
+                          <TableCell className="font-medium">{item.description || "—"}</TableCell>
+                          <TableCell className="text-center">{item.quantity}</TableCell>
+                          <TableCell className="text-right">{formatCurrency(item.rate)}</TableCell>
+                          <TableCell className="text-right font-semibold">{formatCurrency(item.amount)}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+
+              {/* Totals */}
+              <div className="flex justify-end">
+                <div className="w-64 space-y-2 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-slate-500">Subtotal</span>
+                    <span>{formatCurrency(viewingInvoice.subtotal)}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-slate-500">Tax (0%)</span>
+                    <span>{formatCurrency(viewingInvoice.tax)}</span>
+                  </div>
+                  <div className="flex justify-between text-xl font-bold border-t pt-2 border-slate-200 dark:border-slate-700">
+                    <span>Total</span>
+                    <span className="text-purple-600">{formatCurrency(viewingInvoice.total)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Notes */}
+              {viewingInvoice.notes && (
+                <div className="space-y-2">
+                  <h3 className="font-semibold">Notes</h3>
+                  <p className="text-sm text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg">
+                    {viewingInvoice.notes}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+          <DialogFooter className="gap-2">
+            <Select 
+              value={viewingInvoice?.status} 
+              onValueChange={(v: InvoiceStatus) => {
+                if (viewingInvoice) {
+                  handleStatusChange(viewingInvoice.id, v);
+                  setViewingInvoice({ ...viewingInvoice, status: v });
+                }
+              }}
+            >
+              <SelectTrigger className="w-40">
+                <SelectValue placeholder="Change Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="draft">Draft</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="paid">Paid</SelectItem>
+                <SelectItem value="overdue">Overdue</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button variant="outline" onClick={() => { 
+              if (viewingInvoice) handleEditInvoice(viewingInvoice); 
+              setIsDetailModalOpen(false);
+            }}>
+              <Edit className="h-4 w-4 mr-1" />Edit Invoice
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
 }

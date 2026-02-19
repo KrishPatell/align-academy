@@ -226,60 +226,90 @@ export default function SLAPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
-          <Card className="bg-white dark:bg-[#1a1a1a]">
+          <Card className="bg-white dark:bg-[#1a1a1a] border-2 border-transparent hover:border-purple-200 dark:hover:border-purple-800 transition-all">
             <CardContent className="pt-6">
-              <p className="text-sm text-slate-500">Overall SLA</p>
-              <p className="text-2xl font-bold mt-1">{slaMetrics.overall}%</p>
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-slate-500">Overall SLA</p>
+                <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
+                  <TrendingUp className="h-5 w-5 text-purple-600" />
+                </div>
+              </div>
+              <p className="text-2xl font-bold mt-2 bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">{slaMetrics.overall}%</p>
               <div className="flex items-center gap-1 mt-2">
                 <TrendingUp className="h-4 w-4 text-green-500" />
                 <span className="text-xs text-green-500">+2.1%</span>
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-white dark:bg-[#1a1a1a]">
+          <Card className="bg-white dark:bg-[#1a1a1a] border-2 border-transparent hover:border-blue-200 dark:hover:border-blue-800 transition-all">
             <CardContent className="pt-6">
-              <p className="text-sm text-slate-500">First Response</p>
-              <p className="text-2xl font-bold mt-1">{slaMetrics.firstResponse}%</p>
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-slate-500">First Response</p>
+                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                  <Clock className="h-5 w-5 text-blue-600" />
+                </div>
+              </div>
+              <p className="text-2xl font-bold mt-2 text-blue-600">{slaMetrics.firstResponse}%</p>
               <div className="flex items-center gap-1 mt-2">
                 <TrendingUp className="h-4 w-4 text-green-500" />
                 <span className="text-xs text-green-500">+1.5%</span>
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-white dark:bg-[#1a1a1a]">
+          <Card className="bg-white dark:bg-[#1a1a1a] border-2 border-transparent hover:border-indigo-200 dark:hover:border-indigo-800 transition-all">
             <CardContent className="pt-6">
-              <p className="text-sm text-slate-500">Resolution</p>
-              <p className="text-2xl font-bold mt-1">{slaMetrics.resolution}%</p>
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-slate-500">Resolution</p>
+                <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                  <CheckCircle className="h-5 w-5 text-indigo-600" />
+                </div>
+              </div>
+              <p className="text-2xl font-bold mt-2 text-indigo-600">{slaMetrics.resolution}%</p>
               <div className="flex items-center gap-1 mt-2">
                 <TrendingDown className="h-4 w-4 text-red-500" />
                 <span className="text-xs text-red-500">-0.8%</span>
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-white dark:bg-[#1a1a1a]">
+          <Card className="bg-white dark:bg-[#1a1a1a] border-2 border-transparent hover:border-red-200 dark:hover:border-red-800 transition-all">
             <CardContent className="pt-6">
-              <p className="text-sm text-slate-500">Breached</p>
-              <p className="text-2xl font-bold mt-1 text-red-600">{slaMetrics.breached}</p>
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-slate-500">Breached</p>
+                <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
+                  <XCircle className="h-5 w-5 text-red-600" />
+                </div>
+              </div>
+              <p className="text-2xl font-bold mt-2 text-red-600">{slaMetrics.breached}</p>
               <div className="flex items-center gap-1 mt-2">
                 <XCircle className="h-4 w-4 text-red-500" />
                 <span className="text-xs text-slate-500">tickets</span>
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-white dark:bg-[#1a1a1a]">
+          <Card className="bg-white dark:bg-[#1a1a1a] border-2 border-transparent hover:border-amber-200 dark:hover:border-amber-800 transition-all">
             <CardContent className="pt-6">
-              <p className="text-sm text-slate-500">At Risk</p>
-              <p className="text-2xl font-bold mt-1 text-amber-600">{slaMetrics.atRisk}</p>
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-slate-500">At Risk</p>
+                <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
+                  <AlertTriangle className="h-5 w-5 text-amber-600" />
+                </div>
+              </div>
+              <p className="text-2xl font-bold mt-2 text-amber-600">{slaMetrics.atRisk}</p>
               <div className="flex items-center gap-1 mt-2">
                 <AlertTriangle className="h-4 w-4 text-amber-500" />
                 <span className="text-xs text-slate-500">tickets</span>
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-white dark:bg-[#1a1a1a]">
+          <Card className="bg-white dark:bg-[#1a1a1a] border-2 border-transparent hover:border-green-200 dark:hover:border-green-800 transition-all">
             <CardContent className="pt-6">
-              <p className="text-sm text-slate-500">On Track</p>
-              <p className="text-2xl font-bold mt-1 text-green-600">{slaMetrics.onTrack}</p>
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-slate-500">On Track</p>
+                <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                  <CheckCircle className="h-5 w-5 text-green-600" />
+                </div>
+              </div>
+              <p className="text-2xl font-bold mt-2 text-green-600">{slaMetrics.onTrack}</p>
               <div className="flex items-center gap-1 mt-2">
                 <CheckCircle className="h-4 w-4 text-green-500" />
                 <span className="text-xs text-slate-500">tickets</span>
