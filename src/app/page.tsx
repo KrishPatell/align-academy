@@ -501,6 +501,87 @@ export default function HomePage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Ticket Detail Modal */}
+        {selectedTicket && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div 
+              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+              onClick={() => setSelectedTicket(null)}
+            />
+            <div className="relative bg-white dark:bg-[#1a1a1a] rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-in zoom-in-95 fade-in duration-200">
+              {/* Header */}
+              <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-6 text-white">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 rounded-xl bg-white/20 backdrop-blur">
+                      <FileText className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-bold">{selectedTicket.id}</h2>
+                      <p className="text-white/70 text-sm">{selectedTicket.subject}</p>
+                    </div>
+                  </div>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="text-white hover:bg-white/20"
+                    onClick={() => setSelectedTicket(null)}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-6 space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800">
+                    <p className="text-sm text-slate-500 mb-1">Priority</p>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${priorityColors[selectedTicket.priority]}`}>
+                      {selectedTicket.priority.charAt(0).toUpperCase() + selectedTicket.priority.slice(1)}
+                    </span>
+                  </div>
+                  <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800">
+                    <p className="text-sm text-slate-500 mb-1">Status</p>
+                    <Badge variant="outline" className="bg-slate-50">
+                      {selectedTicket.status}
+                    </Badge>
+                  </div>
+                  <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800">
+                    <p className="text-sm text-slate-500 mb-1">Assigned To</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white text-xs">
+                        {selectedTicket.agentInitials}
+                      </div>
+                      <span className="font-medium">{selectedTicket.agent}</span>
+                    </div>
+                  </div>
+                  <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800">
+                    <p className="text-sm text-slate-500 mb-1">SLA Due</p>
+                    <p className={`font-medium ${slaStatusColors[selectedTicket.slaStatus]}`}>
+                      {selectedTicket.slaDue}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex gap-2 pt-4 border-t">
+                  <Button 
+                    variant="outline" 
+                    className="flex-1"
+                    onClick={() => setSelectedTicket(null)}
+                  >
+                    Close
+                  </Button>
+                  <Button className="flex-1 bg-purple-600 hover:bg-purple-700">
+                    View Full Ticket
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </DashboardLayout>
   );
