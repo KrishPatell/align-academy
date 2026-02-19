@@ -1,7 +1,7 @@
 "use client";
 
 // Kravio Dashboard - Premium Support Platform
-// Version 3.3 - Hustle mode
+// Version 3.4 - All gas no brakes
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
