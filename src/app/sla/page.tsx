@@ -207,7 +207,7 @@ export default function SLAPage() {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
             <div className="text-sm text-slate-500 mb-1">Analytics / SLA Compliance</div>
-            <h1 className="text-2xl font-bold">SLA Compliance</h1>
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">SLA Compliance</h1>
             <p className="text-slate-500 text-sm">Monitor and manage your Service Level Agreements</p>
           </div>
           <div className="flex items-center gap-2">
@@ -474,7 +474,7 @@ export default function SLAPage() {
                         return (
                           <tr 
                             key={ticket.id} 
-                            className="border-b hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer transition-colors"
+                            className="border-b hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 dark:hover:from-purple-900/20 dark:hover:to-indigo-900/20 cursor-pointer transition-all duration-200 group"
                             onClick={() => setSelectedTicket(ticket)}
                           >
                             <td className="py-3 px-4 font-medium text-purple-600">{ticket.id}</td>

@@ -342,9 +342,31 @@ export default function InvoicesPage() {
               <Input placeholder="Search invoices..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10 w-full" />
             </div>
             <Button variant="outline" size="sm" onClick={exportCSV}><Download className="h-4 w-4 mr-1" />Export</Button>
+            <Button variant="outline" size="sm" onClick={() => toast({ title: "Notifications enabled", description: "You'll receive invoice alerts", variant: "info" })}><Bell className="h-4 w-4" /></Button>
             <Button size="sm" onClick={handleCreateInvoice}><Plus className="h-4 w-4 mr-1" />Create Invoice</Button>
           </div>
         </div>
+
+        {/* Demo Toast Buttons */}
+        <Card className="bg-white dark:bg-[#1a1a1a]">
+          <CardContent className="pt-6">
+            <p className="text-sm font-medium mb-3">Toast Notifications Demo</p>
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" size="sm" onClick={() => toast({ title: "Success!", description: "Invoice created successfully", variant: "success" })}>
+                Success Toast
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => toast({ title: "Error", description: "Failed to delete invoice", variant: "destructive" })}>
+                Error Toast
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => toast({ title: "Warning", description: "Invoice is overdue", variant: "warning" })}>
+                Warning Toast
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => toast({ title: "Info", description: "Invoice marked as pending", variant: "info" })}>
+                Info Toast
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Invoice Table */}
         <Card className="bg-white dark:bg-[#1a1a1a]">
@@ -366,13 +388,20 @@ export default function InvoicesPage() {
                   const status = statusConfig[invoice.status];
                   const StatusIcon = status.icon;
                   return (
-                    <TableRow key={invoice.id}>
+                    <TableRow 
+                      key={invoice.id} 
+                      className="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-200 group"
+                      onClick={() => handleViewInvoice(invoice)}
+                    >
                       <TableCell>
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                          <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
                             <FileText className="h-5 w-5 text-purple-600" />
                           </div>
-                          <span className="font-semibold">{invoice.invoiceNumber}</span>
+                          <div>
+                            <span className="font-semibold">{invoice.invoiceNumber}</span>
+                            <ChevronRight className="h-4 w-4 text-slate-300 ml-2 inline-block opacity-0 group-hover:opacity-100 transition-opacity" />
+                          </div>
                         </div>
                       </TableCell>
                       <TableCell>
@@ -383,21 +412,23 @@ export default function InvoicesPage() {
                       <TableCell>{formatDate(invoice.dueDate)}</TableCell>
                       <TableCell className="text-right font-semibold">{formatCurrency(invoice.total)}</TableCell>
                       <TableCell className="text-center">
-                        <Badge variant="outline" className="gap-1" style={{ backgroundColor: status.bg, color: status.text, borderColor: "transparent" }}>
+                        <Badge variant="outline" className="gap-1 cursor-pointer hover:scale-105 transition-transform" style={{ backgroundColor: status.bg, color: status.text, borderColor: "transparent" }} onClick={(e) => e.stopPropagation()}>
                           <StatusIcon className="h-3 w-3" />
                           {status.label}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="sm" className="h-8 w-8 p-0"><MoreHorizontal className="h-4 w-4" /></Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => handleViewInvoice(invoice)}><Eye className="h-4 w-4 mr-2" />View Details</DropdownMenuItem>
                             <DropdownMenuItem onClick={() => handleEditInvoice(invoice)}><Edit className="h-4 w-4 mr-2" />Edit</DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, "paid")}><CheckCircle className="h-4 w-4 mr-2" />Mark Paid</DropdownMenuItem>
                             <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, "pending")}><Clock className="h-4 w-4 mr-2" />Mark Pending</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, "overdue")}><AlertCircle className="h-4 w-4 mr-2" />Mark Overdue</DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem onClick={() => handleDeleteInvoice(invoice.id)} className="text-red-600"><Trash2 className="h-4 w-4 mr-2" />Delete</DropdownMenuItem>
                           </DropdownMenuContent>
