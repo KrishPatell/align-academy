@@ -19,6 +19,7 @@ import {
   BarChart3,
   BarChart4,
   FileBarChart,
+  MapPin,
   MessageSquare,
   HelpCircle,
   Settings,

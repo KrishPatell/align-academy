@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Eye, EyeOff, Chrome, Linkedin, Mail } from "lucide-react";
+import { Eye, EyeOff, Chrome } from "lucide-react";
 
 export default function LoginPage() {
   const [mounted, setMounted] = useState(false);
@@ -25,7 +25,6 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0f0f0f] p-4">
       <div className="w-full max-w-md">
-        {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-500 rounded-2xl mb-4">
             <span className="text-2xl font-bold text-white">K</span>
@@ -37,7 +36,6 @@ export default function LoginPage() {
         <Card className="bg-[#1a1a1a] border-slate-800">
           <CardContent className="pt-8 pb-8">
             <div className="space-y-4">
-              {/* Email */}
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-slate-300">Email</Label>
                 <Input 
@@ -48,7 +46,6 @@ export default function LoginPage() {
                 />
               </div>
 
-              {/* Password */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="password" className="text-slate-300">Password</Label>
@@ -63,23 +60,23 @@ export default function LoginPage() {
                     placeholder="Enter your password"
                     className="bg-[#0f0f0f] border-slate-700 text-white placeholder:text-slate-500 focus:border-purple-500 focus:ring-purple-500 pr-10"
                   />
-                  <button
+                  <Button
                     type="button"
+                    variant="ghost"
+                    size="sm"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                    className="absolute right-0 top-0 h-full px-3 text-slate-400 hover:text-white"
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
+                  </Button>
                 </div>
               </div>
 
-              {/* Remember me */}
               <div className="flex items-center gap-2">
                 <Checkbox id="remember" className="border-slate-600 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600" />
                 <Label htmlFor="remember" className="text-sm text-slate-400">Keep me signed in</Label>
               </div>
 
-              {/* Sign In Button */}
               <Button 
                 onClick={handleLogin}
                 className="w-full bg-purple-600 hover:bg-purple-700 text-white py-6"
@@ -87,7 +84,6 @@ export default function LoginPage() {
                 Sign In
               </Button>
 
-              {/* Divider */}
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-slate-700"></div>
@@ -97,27 +93,27 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              {/* Social Login */}
               <div className="grid grid-cols-3 gap-3">
                 <Button variant="outline" className="bg-[#0f0f0f] border-slate-700 text-white hover:bg-slate-800 py-6">
                   <Chrome className="h-5 w-5" />
                 </Button>
                 <Button variant="outline" className="bg-[#0f0f0f] border-slate-700 text-white hover:bg-slate-800 py-6">
                   <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20.447 20.452h-3.554v-5.569c0-1.756-.027-3.02-1.906-3.02-1.875 0-2.175 1.44-2.175 2.929v5.66H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 2.827-1.432.721-3.571.592-4.392.452.119-.865.463-1.415.846-1.741-1.162-.132-2.386-.581-2.387-2.647 0-1.488 1.011-2.787 2.635-3.868-.264-.615-.626-1.353-.627-2.396 0-1.093.393-1.988 1.038-2.688l.04-.025c.665-.39 1.372-.593 2.109-.593 1.055 0 2.007.34 2.792.879.775-.298 1.707-.536 2.645-.536 1.98 0 3.346.768 3.926 1.883.593.977.926 2.256.926 3.684 0 1.037-.352 2.686-.652 3.299.568.195 1.092.605 1.092 1.75v2.923c0 .321.196.696.794.577 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                   </svg>
                 </Button>
                 <Button variant="outline" className="bg-[#0f0f0f] border-slate-700 text-white hover:bg-slate-800 py-6">
-                  <Linkedin className="h-5 w-5" />
+                  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.756-.027-3.02-1.906-3.02-1.875 0-2.175 1.44-2.175 2.929v5.66H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                  </svg>
                 </Button>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Sign Up Link */}
         <p className="text-center text-slate-400 mt-6">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link href="/signup" className="text-purple-400 hover:text-purple-300 font-medium">
             Sign up
           </Link>
