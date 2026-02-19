@@ -187,34 +187,49 @@ export default function ReportsPage() {
                   {reportTemplates.map((template) => (
                     <div 
                       key={template.id} 
-                      className="p-5 rounded-xl border hover:border-purple-500 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300 cursor-pointer group bg-white dark:bg-[#1a1a1a]"
+                      className="p-5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-purple-500 hover:shadow-xl hover:shadow-purple-500/15 hover:-translate-y-1 transition-all duration-300 cursor-pointer group bg-white dark:bg-[#1a1a1a] relative overflow-hidden"
                       onClick={() => handleQuickGenerate(template)}
                     >
-                      <div className="flex items-start justify-between mb-3">
-                        <div className={`p-2.5 rounded-xl ${typeColors[template.type]} transition-transform group-hover:scale-110`}>
-                          {React.createElement(typeIcons[template.type], { className: "h-5 w-5" })}
+                      {/* Animated gradient overlay on hover */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/10 dark:to-indigo-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      
+                      <div className="relative z-10">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className={`p-2.5 rounded-xl ${typeColors[template.type]} transition-all duration-300 group-hover:scale-110 group-hover:rotate-3`}>
+                            {React.createElement(typeIcons[template.type], { className: "h-5 w-5" })}
+                          </div>
+                          <Badge variant="secondary" className="text-xs group-hover:bg-purple-100 group-hover:text-purple-700 dark:group-hover:bg-purple-900/30 transition-colors">
+                            {template.type}
+                          </Badge>
                         </div>
-                        <Badge variant="secondary" className="text-xs">
-                          {template.type}
-                        </Badge>
-                      </div>
-                      <h3 className="font-semibold mb-1 group-hover:text-purple-600 transition-colors">{template.name}</h3>
-                      <p className="text-sm text-slate-500 mb-4 line-clamp-2">{template.description}</p>
-                      <div className="flex items-center justify-between pt-3 border-t">
-                        <span className="text-xs text-slate-500">Last run: {template.lastRun}</span>
-                        <div className="flex gap-1">
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="h-8 px-2 text-purple-600 hover:bg-purple-50 hover:text-purple-700"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleQuickGenerate(template);
-                            }}
-                          >
-                            <Zap className="h-4 w-4 mr-1" />
-                            Quick Generate
-                          </Button>
+                        <h3 className="font-semibold mb-1 group-hover:text-purple-600 transition-all duration-300 group-hover:translate-x-1">{template.name}</h3>
+                        <p className="text-sm text-slate-500 mb-4 line-clamp-2 group-hover:text-slate-600 transition-colors">{template.description}</p>
+                        
+                        {/* Metrics preview on hover */}
+                        <div className="flex flex-wrap gap-1 mb-4 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                          {template.metrics.map((metric, idx) => (
+                            <span key={idx} className="text-xs px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-600 dark:text-slate-400">
+                              {metric}
+                            </span>
+                          ))}
+                        </div>
+                        
+                        <div className="flex items-center justify-between pt-3 border-t border-slate-200 dark:border-slate-700">
+                          <span className="text-xs text-slate-500 group-hover:text-slate-700 transition-colors">Last run: {template.lastRun}</span>
+                          <div className="flex gap-1">
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="h-8 px-2 text-purple-600 hover:bg-purple-50 hover:text-purple-700 dark:hover:bg-purple-900/20 transition-all duration-200 group-hover:scale-105"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleQuickGenerate(template);
+                              }}
+                            >
+                              <Zap className="h-4 w-4 mr-1" />
+                              Quick Generate
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     </div>

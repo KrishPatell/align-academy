@@ -36,6 +36,7 @@ import {
   Flag,
   XCircle,
   RefreshCw,
+  X,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -44,6 +45,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { 
+  Activity, Users, Ticket, Clock, CheckCircle, AlertTriangle,
+  Zap, Server, MessageCircle, ThumbsUp, TrendingDown
+} from "lucide-react";
 
 // Data for different time periods
 const periodData: Record<string, { 
