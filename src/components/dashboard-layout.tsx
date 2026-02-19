@@ -354,7 +354,7 @@ export default function DashboardLayout({ children }: SidebarProps) {
           )}
         </nav>
 
-        {/* User Profile Card */}
+        {/* User Profile Card - Premium styled */}
         <div className="p-4 border-t border-slate-200 dark:border-slate-800">
           <div className={`flex items-center gap-3 p-3 bg-slate-100 dark:bg-slate-800 rounded-xl ${isSidebarCollapsed ? 'justify-center' : ''}`}>
             {isSidebarCollapsed ? (

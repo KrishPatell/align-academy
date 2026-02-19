@@ -37,6 +37,12 @@ import {
   XCircle,
   RefreshCw,
   X,
+  Zap,
+  Ticket,
+  Server,
+  MessageCircle,
+  ThumbsUp,
+  TrendingDown,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -45,10 +51,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { 
-  Activity, Users, Ticket, Clock, CheckCircle, AlertTriangle,
-  Zap, Server, MessageCircle, ThumbsUp, TrendingDown
-} from "lucide-react";
 
 // Data for different time periods
 const periodData: Record<string, { 
@@ -245,6 +247,67 @@ export default function HomePage() {
             </Select>
           </div>
         </div>
+
+        {/* Quick Stats Section - Real-time metrics */}
+        <Card className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white overflow-hidden relative">
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRoLTJWMGgydjM0em0tNCAwSDIwVjBoMTJ2MzR6bS00IDBoLTJWMGgydjM0em0tNCAwSDEyVjBoMTJ2MzR6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-30"></div>
+          <CardContent className="pt-6 relative z-10">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Zap className="h-5 w-5 text-yellow-300 animate-pulse" />
+                <h3 className="font-semibold text-lg">Quick Stats</h3>
+                <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full animate-pulse">Live</span>
+              </div>
+              <div className="text-xs text-white/60">
+                Updates every 5 seconds
+              </div>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer group">
+                <div className="flex items-center gap-2 mb-1">
+                  <Users className="h-4 w-4 text-blue-300" />
+                  <span className="text-xs text-white/70">Active Agents</span>
+                </div>
+                <p className="text-2xl font-bold">{quickStats.activeAgents}</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer group">
+                <div className="flex items-center gap-2 mb-1">
+                  <Ticket className="h-4 w-4 text-amber-300" />
+                  <span className="text-xs text-white/70">Open Tickets</span>
+                </div>
+                <p className="text-2xl font-bold group-hover:scale-110 transition-transform">{quickStats.openTickets}</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer group">
+                <div className="flex items-center gap-2 mb-1">
+                  <Clock className="h-4 w-4 text-green-300" />
+                  <span className="text-xs text-white/70">Avg Response</span>
+                </div>
+                <p className="text-2xl font-bold">{quickStats.avgResponseTime}</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer group">
+                <div className="flex items-center gap-2 mb-1">
+                  <ThumbsUp className="h-4 w-4 text-pink-300" />
+                  <span className="text-xs text-white/70">CSAT Score</span>
+                </div>
+                <p className="text-2xl font-bold">{quickStats.csatScore}%</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer group">
+                <div className="flex items-center gap-2 mb-1">
+                  <CheckCircle className="h-4 w-4 text-emerald-300" />
+                  <span className="text-xs text-white/70">Resolved Today</span>
+                </div>
+                <p className="text-2xl font-bold group-hover:scale-110 transition-transform">{quickStats.resolvedToday}</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer group">
+                <div className="flex items-center gap-2 mb-1">
+                  <AlertTriangle className="h-4 w-4 text-red-300" />
+                  <span className="text-xs text-white/70">Pending SLA</span>
+                </div>
+                <p className={`text-2xl font-bold group-hover:scale-110 transition-transform ${quickStats.pendingSLA > 5 ? 'text-red-300' : 'text-white'}`}>{quickStats.pendingSLA}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
