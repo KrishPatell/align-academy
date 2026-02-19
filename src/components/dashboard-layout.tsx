@@ -90,16 +90,16 @@ const breadcrumbs: Record<string, { label: string; href: string; parent?: string
 
 const mainNav = [
   { icon: Home, label: "Overview", href: "/" },
-  { icon: BarChart3, label: "Analytics", href: "/analytics" },
-  { icon: Ticket, label: "Invoices", href: "/invoices", hasDropdown: true, items: ["All Invoices", "Pending", "Paid", "Overdue"] },
-  { icon: UsersRound, label: "Clients", href: "/clients" },
+  { icon: BarChart3, label: "Analytics", href: "/analytics", badge: 1 },
+  { icon: Ticket, label: "Invoices", href: "/invoices", hasDropdown: true, items: ["All Invoices", "Pending", "Paid", "Overdue"], badge: 1 },
+  { icon: UsersRound, label: "Clients", href: "/clients", badge: 1 },
   { icon: Users, label: "Agents & Teams", href: "/agents" },
   { icon: BookOpen, label: "Knowledge Base", href: "/knowledge" },
   { icon: Zap, label: "Integrations", href: "/integrations" },
 ];
 
 const analyticsNav = [
-  { icon: TrendingUp, label: "SLA Compliance", href: "/sla" },
+  { icon: TrendingUp, label: "SLA Compliance", href: "/sla", badge: 1 },
   { icon: Smile, label: "CSAT & NPS", href: "/csat" },
   { icon: BarChart4, label: "Workload Analytics", href: "/workload" },
   { icon: FileBarChart, label: "Reports", href: "/reports" },
@@ -368,6 +368,11 @@ function SidebarItemWithTooltip({
           {!isCollapsed && (
             <>
               <span className="flex-1 text-left">{item.label}</span>
+              {item.badge && (
+                <span className="px-1.5 py-0.5 text-[10px] font-medium bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full">
+                  {item.badge}
+                </span>
+              )}
               {hasChildren && (
                 isOpen ? <ChevronDown className="h-4 w-4 transition-transform duration-200" /> : <ChevronRight className="h-4 w-4 transition-transform duration-200" />
               )}
