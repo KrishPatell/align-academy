@@ -29,6 +29,7 @@ import {
   AlertTriangle,
   CheckCircle,
   MessageSquare,
+  Plus,
   FileText,
   Users,
   ArrowUpDown,
@@ -54,6 +55,9 @@ import {
   ArrowUp01,
   Calendar,
   AlertOctagon,
+  Plus,
+  ChevronsUp,
+  ChevronsDown,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -311,6 +315,8 @@ export default function HomePage() {
     resolvedToday: 156,
     pendingSLA: 8,
   });
+  const [tableCollapsed, setTableCollapsed] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // DnD sensors
   const sensors = useSensors(
@@ -390,6 +396,22 @@ export default function HomePage() {
     setSelectedRows(prev => 
       prev.includes(id) ? prev.filter(r => r !== id) : [...prev, id]
     );
+  };
+
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    // Simulate refresh - in real app, this would fetch new data
+    setTimeout(() => {
+      setIsRefreshing(false);
+    }, 1500);
+  };
+
+  const handleCollapseAll = () => {
+    setTableCollapsed(true);
+  };
+
+  const handleExpandAll = () => {
+    setTableCollapsed(false);
   };
 
   return (
@@ -649,6 +671,34 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <CardTitle className="text-lg">SLA Monitoring</CardTitle>
               <div className="flex items-center gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="gap-2"
+                  onClick={handleRefresh}
+                  disabled={isRefreshing}
+                >
+                  <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                  {isRefreshing ? 'Refreshing...' : 'Refresh'}
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="gap-2"
+                  onClick={handleCollapseAll}
+                >
+                  <ChevronsDown className="h-4 w-4" />
+                  Collapse All
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="gap-2"
+                  onClick={handleExpandAll}
+                >
+                  <ChevronsUp className="h-4 w-4" />
+                  Expand All
+                </Button>
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                   <Input placeholder="Search tickets..." className="pl-10 w-64" />
