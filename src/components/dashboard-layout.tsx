@@ -266,7 +266,7 @@ export default function DashboardLayout({ children }: SidebarProps) {
           isSidebarCollapsed ? "w-16" : "w-64"
         }`}
       >
-        {/* Logo */}
+        {/* Logo - Premium styled */}
         <div className="p-4 border-b border-slate-200 dark:border-slate-800">
           <Link href="/" className="flex items-center gap-2">
             <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-blue-500 rounded-lg flex items-center justify-center shrink-0">
