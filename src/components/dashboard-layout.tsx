@@ -16,6 +16,7 @@ import {
   Zap,
   TrendingUp,
   Smile,
+  BarChart3,
   BarChart4,
   FileBarChart,
   MessageSquare,
