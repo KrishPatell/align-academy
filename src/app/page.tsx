@@ -43,6 +43,14 @@ import {
   Server,
   MessageCircle,
   ThumbsUp,
+  Cpu,
+  HardDrive,
+  Activity,
+  Database,
+  Zap,
+  Ticket,
+  Server,
+  MessageCircle,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -51,6 +59,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Progress } from "@/components/ui/progress";
+
+// System Status Data
+const systemStatus = {
+  api: { status: "operational", uptime: "99.98%", latency: "45ms" },
+  database: { status: "operational", uptime: "99.99%", latency: "12ms" },
+  cache: { status: "operational", uptime: "99.95%", latency: "3ms" },
+  cdn: { status: "degraded", uptime: "98.50%", latency: "120ms" },
+};
 
 // Data for different time periods
 const periodData: Record<string, { 
