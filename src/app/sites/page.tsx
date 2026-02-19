@@ -50,7 +50,7 @@ export default function SitesPage() {
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
   const [selectedServer, setSelectedServer] = useState<typeof sitesData.servers[0] | null>(null);
   const [serverStatuses, setServerStatuses] = useState<Record<string, ServerStatus>>(
-    Object.fromEntries(sitesData.servers.map(s => [s.id, s.status]))
+    Object.fromEntries(sitesData.servers.map(s => [s.id, s.status as ServerStatus]))
   );
 
   useEffect(() => { setMounted(true); }, []);
