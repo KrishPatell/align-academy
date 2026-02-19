@@ -189,8 +189,15 @@ export default function WorkloadPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {workloadData.byAgent.map((agent, idx) => (
-                    <div key={idx} className="p-4 rounded-xl border bg-slate-50 dark:bg-slate-800/50">
+                  {workloadData.byAgent.map((agent, idx) => {
+                    const isExpanded = expandedAgent === agent.name;
+                    const warning = getCapacityWarning(agent.capacity);
+                    return (
+                    <div 
+                      key={idx} 
+                      className="p-4 rounded-xl border bg-slate-50 dark:bg-slate-800/50 cursor-pointer transition-all hover:shadow-md"
+                      onClick={() => toggleAgentExpand(agent.name)}
+                    >
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-3">
                           <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-semibold">
@@ -201,33 +208,75 @@ export default function WorkloadPage() {
                             <p className="text-sm text-slate-500">{agent.open + agent.inProgress} active tickets</p>
                           </div>
                         </div>
-                        <Badge className={agent.status === "overloaded" ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}>
-                          {agent.status === "overloaded" ? "Overloaded" : "Optimal"}
-                        </Badge>
+                        <div className="flex items-center gap-3">
+                          <div className={`px-3 py-1 rounded-full text-sm font-medium ${getCapacityColor(agent.capacity)}`}>
+                            {agent.capacity}%
+                          </div>
+                          <Badge className={agent.status === "overloaded" ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}>
+                            {agent.status === "overloaded" ? "Overloaded" : "Optimal"}
+                          </Badge>
+                          {isExpanded ? <ChevronUp className="h-4 w-4 text-slate-400" /> : <ChevronDown className="h-4 w-4 text-slate-400" />}
+                        </div>
                       </div>
+                      
+                      {/* Capacity Warning */}
+                      {warning && (
+                        <div className={`flex items-center gap-2 p-2 rounded-lg mb-3 ${warning.color} bg-opacity-10`}>
+                          <warning.icon className="h-4 w-4" />
+                          <span className="text-sm">{warning.message}</span>
+                        </div>
+                      )}
+                      
                       <div className="space-y-2">
                         <div className="flex items-center justify-between text-sm">
                           <span className="text-slate-500">Capacity</span>
                           <span className="font-medium">{agent.capacity}%</span>
                         </div>
-                        <Progress value={agent.capacity} className="h-2" />
-                        <div className="grid grid-cols-3 gap-4 mt-3 text-center">
-                          <div className="p-2 rounded-lg bg-white dark:bg-slate-900">
-                            <p className="text-lg font-bold">{agent.open}</p>
-                            <p className="text-xs text-slate-500">Open</p>
+                        <Progress 
+                          value={agent.capacity} 
+                          className={`h-2 ${agent.capacity >= 90 ? '[&>div]:bg-red-500' : agent.capacity >= 75 ? '[&>div]:bg-amber-500' : '[&>div]:bg-green-500'}`} 
+                        />
+                      </div>
+                      
+                      {/* Expandable Details */}
+                      {isExpanded && (
+                        <div className="mt-4 pt-4 border-t" onClick={(e) => e.stopPropagation()}>
+                          <div className="grid grid-cols-3 gap-4 text-center mb-4">
+                            <div className="p-3 rounded-lg bg-white dark:bg-slate-900">
+                              <p className="text-xl font-bold">{agent.open}</p>
+                              <p className="text-xs text-slate-500">Open</p>
+                            </div>
+                            <div className="p-3 rounded-lg bg-white dark:bg-slate-900">
+                              <p className="text-xl font-bold">{agent.inProgress}</p>
+                              <p className="text-xs text-slate-500">In Progress</p>
+                            </div>
+                            <div className="p-3 rounded-lg bg-white dark:bg-slate-900">
+                              <p className="text-xl font-bold">{agent.resolved}</p>
+                              <p className="text-xs text-slate-500">Resolved</p>
+                            </div>
                           </div>
-                          <div className="p-2 rounded-lg bg-white dark:bg-slate-900">
-                            <p className="text-lg font-bold">{agent.inProgress}</p>
-                            <p className="text-xs text-slate-500">In Progress</p>
+                          
+                          {/* Additional Stats */}
+                          <div className="grid grid-cols-2 gap-3 mb-4">
+                            <div className="p-3 rounded-lg bg-white dark:bg-slate-900 text-center">
+                              <p className="text-lg font-bold">{Math.round(agent.resolved / 7)}</p>
+                              <p className="text-xs text-slate-500">Avg Daily Resolutions</p>
+                            </div>
+                            <div className="p-3 rounded-lg bg-white dark:bg-slate-900 text-center">
+                              <p className="text-lg font-bold">{agent.capacity >= 90 ? '🔴' : agent.capacity >= 75 ? '🟡' : '🟢'}</p>
+                              <p className="text-xs text-slate-500">Workload Status</p>
+                            </div>
                           </div>
-                          <div className="p-2 rounded-lg bg-white dark:bg-slate-900">
-                            <p className="text-lg font-bold">{agent.resolved}</p>
-                            <p className="text-xs text-slate-500">Resolved</p>
+                          
+                          <div className="flex gap-2">
+                            <Button size="sm" className="flex-1 bg-purple-600 hover:bg-purple-700" onClick={(e) => { e.stopPropagation(); setSelectedAgent(agent); }}>
+                              View Details
+                            </Button>
                           </div>
                         </div>
-                      </div>
+                      )}
                     </div>
-                  ))}
+                  )})}
                 </div>
               </CardContent>
             </Card>
