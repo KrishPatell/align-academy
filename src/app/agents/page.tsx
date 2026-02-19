@@ -1,19 +1,41 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/dashboard-layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Search, Plus, MoreHorizontal, Mail, Phone, Eye, Edit, Ticket, Trash2, ChevronDown } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Search, Plus, MoreHorizontal, Mail, Phone, Eye, Edit, Trash2, ArrowLeft, Star, Ticket, Clock, X } from "lucide-react";
 
-const agents = [
-  { id: 1, name: "Sarah Mitchell", role: "Senior Support Lead", email: "sarah@company.com", status: "online", tickets: 45, rating: 4.8 },
-  { id: 2, name: "John Davidson", role: "Support Agent", email: "john@company.com", status: "online", tickets: 38, rating: 4.5 },
-  { id: 3, name: "Emily Roberts", role: "Support Agent", email: "emily@company.com", status: "away", tickets: 32, rating: 4.3 },
-  { id: 4, name: "Mike Thompson", role: "Junior Agent", email: "mike@company.com", status: "offline", tickets: 28, rating: 3.9 },
-  { id: 5, name: "Lisa Anderson", role: "Support Agent", email: "lisa@company.com", status: "online", tickets: 35, rating: 4.6 },
+const initialAgents = [
+  { id: 1, name: "Sarah Mitchell", role: "Senior Support Lead", email: "sarah@company.com", phone: "+1 555-1001", status: "online", tickets: 45, rating: 4.8, joined: "2024-06-15", resolved: 312 },
+  { id: 2, name: "John Davidson", role: "Support Agent", email: "john@company.com", phone: "+1 555-1002", status: "online", tickets: 38, rating: 4.5, joined: "2024-09-01", resolved: 245 },
+  { id: 3, name: "Emily Roberts", role: "Support Agent", email: "emily@company.com", phone: "+1 555-1003", status: "away", tickets: 32, rating: 4.3, joined: "2025-01-10", resolved: 189 },
+  { id: 4, name: "Mike Thompson", role: "Junior Agent", email: "mike@company.com", phone: "+1 555-1004", status: "offline", tickets: 28, rating: 3.9, joined: "2025-06-20", resolved: 102 },
+  { id: 5, name: "Lisa Anderson", role: "Support Agent", email: "lisa@company.com", phone: "+1 555-1005", status: "online", tickets: 35, rating: 4.6, joined: "2024-11-12", resolved: 267 },
 ];
 
 const teams = [
@@ -22,272 +44,313 @@ const teams = [
   { id: 3, name: "Billing Team", members: 2, lead: "Emily Roberts", active: true },
 ];
 
-function DropdownMenu({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="relative inline-block">
-      {children}
-    </div>
-  );
-}
+type Agent = typeof initialAgents[0];
 
-function DropdownMenuTrigger({ onClick, children }: { onClick: () => void; children: React.ReactNode }) {
-  return (
-    <Button 
-      variant="ghost" 
-      size="sm" 
-      className="h-8 w-8 p-0 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all duration-200"
-      onClick={onClick}
-    >
-      {children}
-    </Button>
-  );
-}
-
-function DropdownMenuContent({ align = "end", children, onClose }: { align?: "start" | "end" | "center"; children: React.ReactNode; onClose: () => void }) {
-  const ref = useRef<HTMLDivElement>(null);
-  
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (ref.current && !ref.current.contains(event.target as Node)) {
-        onClose();
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [onClose]);
-
-  return (
-    <div
-      ref={ref}
-      className={`absolute z-50 min-w-[180px] overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1e1e1e] shadow-xl animate-in fade-in zoom-in-95 duration-200 ${
-        align === "end" ? "right-0" : align === "start" ? "left-0" : "left-1/2 -translate-x-1/2"
-      } top-full mt-2`}
-    >
-      <div className="p-1">{children}</div>
-    </div>
-  );
-}
-
-function DropdownMenuItem({ icon: Icon, label, danger, onClick }: { icon: React.ElementType; label: string; danger?: boolean; onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-all duration-150 ${
-        danger 
-          ? "text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20" 
-          : "text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
-      }`}
-    >
-      <Icon className={`h-4 w-4 ${danger ? "text-red-500" : "text-slate-400"}`} />
-      <span className="font-medium">{label}</span>
-    </button>
-  );
-}
-
-function DropdownMenuSeparator() {
-  return <div className="h-px bg-slate-200 dark:bg-slate-700 my-1" />;
-}
-
-interface AgentRowProps {
-  agent: typeof agents[0];
-  onViewProfile: (agent: typeof agents[0]) => void;
-  onEdit: (agent: typeof agents[0]) => void;
-  onAssignTickets: (agent: typeof agents[0]) => void;
-  onRemove: (agent: typeof agents[0]) => void;
-}
-
-function AgentRow({ agent, onViewProfile, onEdit, onAssignTickets, onRemove }: AgentRowProps) {
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  const handleRowClick = () => {
-    onViewProfile(agent);
-  };
-
-  const handleMenuClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setMenuOpen(!menuOpen);
-  };
-
-  return (
-    <tr 
-      onClick={handleRowClick}
-      className="border-b border-slate-100 dark:border-slate-800 cursor-pointer group hover:bg-gradient-to-r hover:from-purple-50/50 hover:to-blue-50/50 dark:hover:from-purple-900/20 dark:hover:to-blue-900/20 transition-all duration-300"
-    >
-      <td className="py-4 px-4">
-        <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-semibold shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all duration-300">
-            {agent.name.charAt(0)}
-          </div>
-          <div>
-            <p className="font-semibold text-slate-900 dark:text-slate-100 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-200">{agent.name}</p>
-            <p className="text-sm text-slate-500">{agent.email}</p>
-          </div>
-        </div>
-      </td>
-      <td className="py-4 px-4 text-slate-600 dark:text-slate-300">{agent.role}</td>
-      <td className="py-4 px-4">
-        <Badge 
-          variant={agent.status === "online" ? "default" : "secondary"} 
-          className={`${
-            agent.status === "online" 
-              ? "bg-green-500 hover:bg-green-600 shadow-sm" 
-              : agent.status === "away"
-                ? "bg-amber-500 hover:bg-amber-600 shadow-sm"
-                : "bg-slate-400 hover:bg-slate-500 shadow-sm"
-          } text-white transition-all duration-200`}
-        >
-          <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${agent.status === "online" ? "bg-white" : "bg-white/70"}`} />
-          {agent.status}
-        </Badge>
-      </td>
-      <td className="py-4 px-4 font-medium text-slate-700 dark:text-slate-200">{agent.tickets}</td>
-      <td className="py-4 px-4">
-        <div className="flex items-center gap-1.5">
-          <span className="text-amber-500">★</span>
-          <span className="font-medium text-slate-700 dark:text-slate-200">{agent.rating}</span>
-        </div>
-      </td>
-      <td className="py-4 px-4" onClick={(e) => e.stopPropagation()}>
-        <DropdownMenu>
-          <DropdownMenuTrigger onClick={handleMenuClick}>
-            <MoreHorizontal className="h-4 w-4" />
-          </DropdownMenuTrigger>
-          {menuOpen && (
-            <DropdownMenuContent align="end" onClose={() => setMenuOpen(false)}>
-              <DropdownMenuItem 
-                icon={Eye} 
-                label="View Profile" 
-                onClick={() => { onViewProfile(agent); setMenuOpen(false); }} 
-              />
-              <DropdownMenuItem 
-                icon={Edit} 
-                label="Edit Agent" 
-                onClick={() => { onEdit(agent); setMenuOpen(false); }} 
-              />
-              <DropdownMenuItem 
-                icon={Ticket} 
-                label="Assign Tickets" 
-                onClick={() => { onAssignTickets(agent); setMenuOpen(false); }} 
-              />
-              <DropdownMenuSeparator />
-              <DropdownMenuItem 
-                icon={Trash2} 
-                label="Remove" 
-                danger 
-                onClick={() => { onRemove(agent); setMenuOpen(false); }} 
-              />
-            </DropdownMenuContent>
-          )}
-        </DropdownMenu>
-      </td>
-    </tr>
-  );
-}
+const statusColorMap: Record<string, string> = {
+  online: "bg-green-500",
+  away: "bg-amber-500",
+  offline: "bg-slate-400",
+};
 
 export default function AgentsPage() {
   const [mounted, setMounted] = useState(false);
+  const [agents, setAgents] = useState(initialAgents);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
+  const [editAgent, setEditAgent] = useState<Agent | null>(null);
+  const [editForm, setEditForm] = useState({ name: "", role: "", email: "", phone: "", status: "" });
 
   useEffect(() => { setMounted(true); }, []);
-
-  const handleViewProfile = (agent: typeof agents[0]) => {
-    console.log("View profile:", agent);
-  };
-
-  const handleEdit = (agent: typeof agents[0]) => {
-    console.log("Edit agent:", agent);
-  };
-
-  const handleAssignTickets = (agent: typeof agents[0]) => {
-    console.log("Assign tickets:", agent);
-  };
-
-  const handleRemove = (agent: typeof agents[0]) => {
-    console.log("Remove agent:", agent);
-  };
-
   if (!mounted) return null;
+
+  const filteredAgents = agents.filter(a =>
+    a.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    a.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    a.role.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const openEdit = (agent: Agent) => {
+    setEditAgent(agent);
+    setEditForm({ name: agent.name, role: agent.role, email: agent.email, phone: agent.phone, status: agent.status });
+  };
+
+  const saveEdit = () => {
+    if (!editAgent) return;
+    setAgents(prev => prev.map(a => a.id === editAgent.id ? { ...a, ...editForm } : a));
+    if (selectedAgent?.id === editAgent.id) setSelectedAgent({ ...editAgent, ...editForm });
+    setEditAgent(null);
+  };
+
+  const deleteAgent = (id: number) => {
+    if (confirm("Are you sure you want to remove this agent?")) {
+      setAgents(prev => prev.filter(a => a.id !== id));
+      if (selectedAgent?.id === id) setSelectedAgent(null);
+    }
+  };
+
+  // Agent detail view
+  if (selectedAgent) {
+    return (
+      <DashboardLayout>
+        <div className="p-6 space-y-6">
+          <Button variant="ghost" onClick={() => setSelectedAgent(null)} className="gap-2 mb-2">
+            <ArrowLeft className="h-4 w-4" /> Back to Agents
+          </Button>
+          <div className="flex flex-col lg:flex-row gap-6">
+            <Card className="bg-white dark:bg-[#1a1a1a] lg:w-96">
+              <CardContent className="pt-6">
+                <div className="text-center mb-6">
+                  <div className="relative inline-block">
+                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white text-2xl font-bold">
+                      {selectedAgent.name.charAt(0)}
+                    </div>
+                    <div className={`absolute bottom-1 right-1 w-4 h-4 rounded-full border-2 border-white ${statusColorMap[selectedAgent.status]}`} />
+                  </div>
+                  <h2 className="text-xl font-bold mt-4">{selectedAgent.name}</h2>
+                  <p className="text-sm text-slate-500">{selectedAgent.role}</p>
+                  <Badge variant={selectedAgent.status === "online" ? "default" : "secondary"} className={`mt-2 ${selectedAgent.status === "online" ? "bg-green-500" : ""}`}>
+                    {selectedAgent.status}
+                  </Badge>
+                </div>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 text-sm"><Mail className="h-4 w-4 text-slate-400" />{selectedAgent.email}</div>
+                  <div className="flex items-center gap-3 text-sm"><Phone className="h-4 w-4 text-slate-400" />{selectedAgent.phone}</div>
+                  <div className="flex items-center gap-3 text-sm"><Clock className="h-4 w-4 text-slate-400" />Joined {selectedAgent.joined}</div>
+                </div>
+                <Button className="w-full mt-6 bg-purple-600 hover:bg-purple-700" onClick={() => openEdit(selectedAgent)}>
+                  <Edit className="h-4 w-4 mr-2" /> Edit Agent
+                </Button>
+              </CardContent>
+            </Card>
+            <div className="flex-1 space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <Card className="bg-white dark:bg-[#1a1a1a]">
+                  <CardContent className="pt-6">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2.5 rounded-xl bg-blue-50"><Ticket className="h-5 w-5 text-blue-600" /></div>
+                      <div>
+                        <p className="text-sm text-slate-500">Open Tickets</p>
+                        <p className="text-xl font-bold">{selectedAgent.tickets}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className="bg-white dark:bg-[#1a1a1a]">
+                  <CardContent className="pt-6">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2.5 rounded-xl bg-green-50"><Star className="h-5 w-5 text-green-600" /></div>
+                      <div>
+                        <p className="text-sm text-slate-500">Rating</p>
+                        <p className="text-xl font-bold">{selectedAgent.rating} / 5</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className="bg-white dark:bg-[#1a1a1a]">
+                  <CardContent className="pt-6">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2.5 rounded-xl bg-purple-50"><Ticket className="h-5 w-5 text-purple-600" /></div>
+                      <div>
+                        <p className="text-sm text-slate-500">Resolved</p>
+                        <p className="text-xl font-bold">{selectedAgent.resolved}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+              <Card className="bg-white dark:bg-[#1a1a1a]">
+                <CardHeader><CardTitle className="text-lg">Performance</CardTitle></CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex justify-between text-sm mb-1"><span>Resolution Rate</span><span className="font-medium">92%</span></div>
+                      <div className="h-2 bg-slate-100 rounded-full"><div className="h-2 bg-green-500 rounded-full" style={{ width: "92%" }} /></div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between text-sm mb-1"><span>First Response Time</span><span className="font-medium">~15 min</span></div>
+                      <div className="h-2 bg-slate-100 rounded-full"><div className="h-2 bg-blue-500 rounded-full" style={{ width: "85%" }} /></div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between text-sm mb-1"><span>Customer Satisfaction</span><span className="font-medium">{selectedAgent.rating}/5</span></div>
+                      <div className="h-2 bg-slate-100 rounded-full"><div className="h-2 bg-purple-500 rounded-full" style={{ width: `${(selectedAgent.rating / 5) * 100}%` }} /></div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
-      <div className="p-6 space-y-6 animate-in fade-in duration-500">
+      <div className="p-6 space-y-6">
+        {/* Edit Agent Dialog */}
+        <Dialog open={!!editAgent} onOpenChange={(open) => !open && setEditAgent(null)}>
+          <DialogContent className="sm:max-w-lg">
+            <DialogHeader>
+              <DialogTitle>Edit Agent — {editAgent?.name}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Name</Label>
+                  <Input value={editForm.name} onChange={e => setEditForm(f => ({ ...f, name: e.target.value }))} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Role</Label>
+                  <Input value={editForm.role} onChange={e => setEditForm(f => ({ ...f, role: e.target.value }))} />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Email</Label>
+                  <Input value={editForm.email} onChange={e => setEditForm(f => ({ ...f, email: e.target.value }))} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Phone</Label>
+                  <Input value={editForm.phone} onChange={e => setEditForm(f => ({ ...f, phone: e.target.value }))} />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label>Status</Label>
+                <Select value={editForm.status} onValueChange={v => setEditForm(f => ({ ...f, status: v }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="online">Online</SelectItem>
+                    <SelectItem value="away">Away</SelectItem>
+                    <SelectItem value="offline">Offline</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setEditAgent(null)}>Cancel</Button>
+              <Button className="bg-purple-600 hover:bg-purple-700" onClick={saveEdit}>Save Changes</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
             <div className="text-sm text-slate-500 mb-1">Team / Agents & Teams</div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Agents & Teams</h1>
+            <h1 className="text-2xl font-bold">Agents & Teams</h1>
             <p className="text-slate-500 text-sm">Manage your support team members</p>
           </div>
-          <Button className="bg-purple-600 hover:bg-purple-700 shadow-lg shadow-purple-600/25 hover:shadow-purple-700/30 transition-all duration-200">
+          <Button className="bg-purple-600 hover:bg-purple-700">
             <Plus className="h-4 w-4 mr-2" /> Add Agent
           </Button>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="bg-white dark:bg-[#1a1a1a] border-slate-200 dark:border-slate-800 hover:shadow-lg hover:border-purple-200 dark:hover:border-purple-800 transition-all duration-300">
+          <Card className="bg-white dark:bg-[#1a1a1a]">
             <CardContent className="pt-6">
               <p className="text-sm text-slate-500">Total Agents</p>
-              <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">12</p>
+              <p className="text-2xl font-bold">{agents.length}</p>
             </CardContent>
           </Card>
-          <Card className="bg-white dark:bg-[#1a1a1a] border-slate-200 dark:border-slate-800 hover:shadow-lg hover:border-green-200 dark:hover:border-green-800 transition-all duration-300">
+          <Card className="bg-white dark:bg-[#1a1a1a]">
             <CardContent className="pt-6">
               <p className="text-sm text-slate-500">Online Now</p>
-              <p className="text-2xl font-bold text-green-600">8</p>
+              <p className="text-2xl font-bold text-green-600">{agents.filter(a => a.status === "online").length}</p>
             </CardContent>
           </Card>
-          <Card className="bg-white dark:bg-[#1a1a1a] border-slate-200 dark:border-slate-800 hover:shadow-lg hover:border-blue-200 dark:hover:border-blue-800 transition-all duration-300">
+          <Card className="bg-white dark:bg-[#1a1a1a]">
             <CardContent className="pt-6">
               <p className="text-sm text-slate-500">Teams</p>
-              <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">4</p>
+              <p className="text-2xl font-bold">{teams.length}</p>
             </CardContent>
           </Card>
-          <Card className="bg-white dark:bg-[#1a1a1a] border-slate-200 dark:border-slate-800 hover:shadow-lg hover:border-amber-200 dark:hover:border-amber-800 transition-all duration-300">
+          <Card className="bg-white dark:bg-[#1a1a1a]">
             <CardContent className="pt-6">
               <p className="text-sm text-slate-500">Avg. Rating</p>
-              <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">4.5</p>
+              <p className="text-2xl font-bold">{(agents.reduce((s, a) => s + a.rating, 0) / agents.length).toFixed(1)}</p>
             </CardContent>
           </Card>
         </div>
 
         {/* Agents Table */}
-        <Card className="bg-white dark:bg-[#1a1a1a] border-slate-200 dark:border-slate-800 overflow-hidden">
-          <CardHeader className="border-b border-slate-100 dark:border-slate-800">
-            <CardTitle className="text-lg text-slate-900 dark:text-slate-100">Team Members</CardTitle>
+        <Card className="bg-white dark:bg-[#1a1a1a]">
+          <CardHeader>
+            <CardTitle className="text-lg">Team Members</CardTitle>
           </CardHeader>
-          <CardContent className="p-0">
-            <div className="p-4">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="relative flex-1 max-w-sm">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                  <Input 
-                    placeholder="Search agents..." 
-                    className="pl-10 bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200" 
-                  />
-                </div>
+          <CardContent>
+            <div className="flex items-center gap-4 mb-4">
+              <div className="relative flex-1 max-w-sm">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <Input placeholder="Search agents..." className="pl-10" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
               </div>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-slate-100 dark:border-slate-800">
-                    <th className="text-left py-3 px-4 font-semibold text-slate-500 text-sm">Agent</th>
-                    <th className="text-left py-3 px-4 font-semibold text-slate-500 text-sm">Role</th>
-                    <th className="text-left py-3 px-4 font-semibold text-slate-500 text-sm">Status</th>
-                    <th className="text-left py-3 px-4 font-semibold text-slate-500 text-sm">Tickets</th>
-                    <th className="text-left py-3 px-4 font-semibold text-slate-500 text-sm">Rating</th>
-                    <th className="text-left py-3 px-4 font-semibold text-slate-500 text-sm">Actions</th>
+                  <tr className="border-b">
+                    <th className="text-left py-3 px-4 font-medium text-slate-500">Agent</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-500">Role</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-500">Status</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-500">Tickets</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-500">Rating</th>
+                    <th className="text-left py-3 px-4 font-medium text-slate-500">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {agents.map((agent) => (
-                    <AgentRow 
-                      key={agent.id} 
-                      agent={agent}
-                      onViewProfile={handleViewProfile}
-                      onEdit={handleEdit}
-                      onAssignTickets={handleAssignTickets}
-                      onRemove={handleRemove}
-                    />
+                  {filteredAgents.map((agent) => (
+                    <tr key={agent.id} className="border-b hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer" onClick={() => setSelectedAgent(agent)}>
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-3">
+                          <div className="relative">
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-medium">
+                              {agent.name.charAt(0)}
+                            </div>
+                            <div className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white ${statusColorMap[agent.status]}`} />
+                          </div>
+                          <div>
+                            <p className="font-medium">{agent.name}</p>
+                            <p className="text-sm text-slate-500">{agent.email}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4 text-slate-600">{agent.role}</td>
+                      <td className="py-3 px-4">
+                        <Badge variant={agent.status === "online" ? "default" : "secondary"} className={agent.status === "online" ? "bg-green-500" : ""}>
+                          {agent.status}
+                        </Badge>
+                      </td>
+                      <td className="py-3 px-4">{agent.tickets}</td>
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-1">
+                          <Star className="h-3.5 w-3.5 text-amber-400 fill-amber-400" />
+                          {agent.rating}
+                        </div>
+                      </td>
+                      <td className="py-3 px-4" onClick={e => e.stopPropagation()}>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => setSelectedAgent(agent)}>
+                              <Eye className="h-4 w-4 mr-2" /> View Profile
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => openEdit(agent)}>
+                              <Edit className="h-4 w-4 mr-2" /> Edit Agent
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => window.location.href = `mailto:${agent.email}`}>
+                              <Mail className="h-4 w-4 mr-2" /> Send Email
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem className="text-red-600" onClick={() => deleteAgent(agent.id)}>
+                              <Trash2 className="h-4 w-4 mr-2" /> Remove Agent
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </td>
+                    </tr>
                   ))}
                 </tbody>
               </table>
