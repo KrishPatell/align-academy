@@ -221,7 +221,7 @@
 
 /* Tooltip styles */
 .tooltip-content {
-  @apply animate-fade-in;
+  animation: fadeIn 0.3s ease-out forwards;
 }
 
 /* Button loading spinner */
@@ -308,7 +308,7 @@
 
 /* Stagger animation delays for skeleton items */
 .skeleton-stagger > * {
-  @apply animate-pulse;
+  animation: pulse-skeleton 2s ease-in-out infinite;
 }
 
 .skeleton-stagger > *:nth-child(1) { animation-delay: 0ms; }
