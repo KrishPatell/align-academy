@@ -45,11 +45,29 @@ const workloadData = {
 
 export default function WorkloadPage() {
   const [mounted, setMounted] = useState(false);
+  const [expandedAgent, setExpandedAgent] = useState<string | null>(null);
+  const [selectedAgent, setSelectedAgent] = useState<typeof workloadData.byAgent[0] | null>(null);
 
   useEffect(() => { setMounted(true); }, []);
   if (!mounted) return null;
 
   const maxCapacity = Math.max(...workloadData.byAgent.map(a => a.capacity));
+
+  const toggleAgentExpand = (name: string) => {
+    setExpandedAgent(expandedAgent === name ? null : name);
+  };
+
+  const getCapacityColor = (capacity: number) => {
+    if (capacity >= 90) return "text-red-600 bg-red-50 dark:bg-red-900/20";
+    if (capacity >= 75) return "text-amber-600 bg-amber-50 dark:bg-amber-900/20";
+    return "text-green-600 bg-green-50 dark:bg-green-900/20";
+  };
+
+  const getCapacityWarning = (capacity: number) => {
+    if (capacity >= 90) return { icon: AlertTriangle, message: "Critical capacity - immediate attention needed", color: "text-red-600" };
+    if (capacity >= 75) return { icon: AlertTriangle, message: "High capacity - consider redistributing tickets", color: "text-amber-600" };
+    return null;
+  };
 
   return (
     <DashboardLayout>
