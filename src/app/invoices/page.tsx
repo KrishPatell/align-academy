@@ -557,7 +557,10 @@ export default function InvoicesPage() {
               </div>
               {viewingInvoice && (
                 <Badge variant="outline" className="gap-1 text-sm" style={{ backgroundColor: statusConfig[viewingInvoice.status].bg, color: statusConfig[viewingInvoice.status].text, borderColor: "transparent" }}>
-                  {statusConfig[viewingInvoice.status].icon && <statusConfig[viewingInvoice.status].icon className="h-4 w-4" />}
+                  {(() => {
+                    const StatusIcon = statusConfig[viewingInvoice.status].icon;
+                    return StatusIcon && <StatusIcon className="h-4 w-4" />;
+                  })()}
                   {statusConfig[viewingInvoice.status].label}
                 </Badge>
               )}

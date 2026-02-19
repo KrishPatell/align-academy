@@ -263,7 +263,7 @@ export default function WorkloadPage() {
                               <p className="text-xs text-slate-500">Avg Daily Resolutions</p>
                             </div>
                             <div className="p-3 rounded-lg bg-white dark:bg-slate-900 text-center">
-                              <p className="text-lg font-bold">{agent.capacity >= 90 ? '🔴' : agent.capacity >= 75 ? '🟡' : '🟢'}</p>
+                              <p className="text-lg font-bold">{agent.capacity >= 90 ? <span>🔴</span> : agent.capacity >= 75 ? <span>🟡</span> : <span>🟢</span>}</p>
                               <p className="text-xs text-slate-500">Workload Status</p>
                             </div>
                           </div>
@@ -351,6 +351,111 @@ export default function WorkloadPage() {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Agent Detail Modal */}
+        {selectedAgent && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <div className="absolute inset-0 bg-black/50" onClick={() => setSelectedAgent(null)} />
+            <div className="relative bg-white dark:bg-[#1a1a1a] rounded-xl shadow-xl w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
+              <div className="flex items-center justify-between p-4 border-b sticky top-0 bg-white dark:bg-[#1a1a1a]">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-semibold text-lg">
+                    {selectedAgent.avatar}
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg">{selectedAgent.name}</h3>
+                    <p className="text-sm text-slate-500">
+                      {selectedAgent.open + selectedAgent.inProgress} active tickets • {selectedAgent.capacity}% capacity
+                    </p>
+                  </div>
+                </div>
+                <Button variant="ghost" size="sm" onClick={() => setSelectedAgent(null)}>
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="p-4 space-y-6">
+                {/* Status & Capacity */}
+                <div>
+                  <h4 className="font-medium mb-3 flex items-center gap-2">
+                    <Users className="h-4 w-4 text-purple-500" />
+                    Workload Status
+                  </h4>
+                  <div className="flex items-center justify-center mb-4">
+                    <div className={`px-4 py-2 rounded-full text-2xl font-bold ${getCapacityColor(selectedAgent.capacity)}`}>
+                      {selectedAgent.capacity}%
+                    </div>
+                  </div>
+                  {getCapacityWarning(selectedAgent.capacity) && (
+                    <div className={`flex items-center gap-2 p-3 rounded-lg ${getCapacityWarning(selectedAgent.capacity)?.color} bg-opacity-10`}>
+                      {getCapacityWarning(selectedAgent.capacity) && <getCapacityWarning(selectedAgent.capacity)!.icon className="h-4 w-4" />}
+                      <span className="text-sm">{getCapacityWarning(selectedAgent.capacity)?.message}</span>
+                    </div>
+                  )}
+                  <div className="mt-4">
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="text-slate-500">Capacity Used</span>
+                      <span className="font-medium">{selectedAgent.capacity}%</span>
+                    </div>
+                    <Progress 
+                      value={selectedAgent.capacity} 
+                      className={`h-3 ${selectedAgent.capacity >= 90 ? '[&>div]:bg-red-500' : selectedAgent.capacity >= 75 ? '[&>div]:bg-amber-500' : '[&>div]:bg-green-500'}`} 
+                    />
+                  </div>
+                </div>
+
+                {/* Ticket Breakdown */}
+                <div>
+                  <h4 className="font-medium mb-3 flex items-center gap-2">
+                    <AlertCircle className="h-4 w-4 text-amber-500" />
+                    Ticket Breakdown
+                  </h4>
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="p-4 rounded-lg bg-red-50 dark:bg-red-900/20 text-center">
+                      <p className="text-2xl font-bold text-red-600">{selectedAgent.open}</p>
+                      <p className="text-xs text-slate-500">Open</p>
+                    </div>
+                    <div className="p-4 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-center">
+                      <p className="text-2xl font-bold text-amber-600">{selectedAgent.inProgress}</p>
+                      <p className="text-xs text-slate-500">In Progress</p>
+                    </div>
+                    <div className="p-4 rounded-lg bg-green-50 dark:bg-green-900/20 text-center">
+                      <p className="text-2xl font-bold text-green-600">{selectedAgent.resolved}</p>
+                      <p className="text-xs text-slate-500">Resolved</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Performance Metrics */}
+                <div>
+                  <h4 className="font-medium mb-3 flex items-center gap-2">
+                    <TrendingUp className="h-4 w-4 text-green-500" />
+                    Performance Metrics
+                  </h4>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800">
+                      <p className="text-xl font-bold">{Math.round(selectedAgent.resolved / 7)}</p>
+                      <p className="text-xs text-slate-500">Avg Daily Resolutions</p>
+                    </div>
+                    <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800">
+                      <p className="text-xl font-bold">{selectedAgent.status === "overloaded" ? <span>🔴</span> : <span>🟢</span>}</p>
+                      <p className="text-xs text-slate-500">Current Status</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-2 pt-2">
+                  <Button className="flex-1 bg-purple-600 hover:bg-purple-700">
+                    <MessageCircle className="h-4 w-4 mr-2" />
+                    Contact Agent
+                  </Button>
+                  <Button variant="outline">
+                    <Mail className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </DashboardLayout>
   );
