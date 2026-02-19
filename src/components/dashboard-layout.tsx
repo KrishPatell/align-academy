@@ -45,6 +45,7 @@ interface SidebarProps {
 
 const mainNav = [
   { icon: Home, label: "Overview", href: "/" },
+  { icon: BarChart3, label: "Analytics", href: "/analytics" },
   { icon: Ticket, label: "Invoices", href: "/invoices", hasDropdown: true, items: ["All Invoices", "Pending", "Paid", "Overdue"] },
   { icon: UsersRound, label: "Clients", href: "#" },
   { icon: Users, label: "Agents & Teams", href: "#", hasDropdown: true },
