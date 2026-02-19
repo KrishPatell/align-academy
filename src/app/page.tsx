@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import DashboardLayout from "@/components/dashboard-layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,6 +20,7 @@ import {
   MoreHorizontal,
   Filter,
   ChevronDown,
+  ChevronUp,
   TrendingUp,
   TrendingDown,
   Clock,
@@ -30,13 +30,18 @@ import {
   MessageSquare,
   FileText,
   Users,
-  ArrowUp,
-  ArrowRight,
+  ArrowUpDown,
+  Eye,
+  UserPlus,
+  Flag,
+  XCircle,
+  RefreshCw,
 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -66,12 +71,12 @@ const updates = [
   { type: "feedback", message: "New customer feedback received", time: "3 hours ago", icon: "message" },
 ];
 
-const slaTickets = [
-  { id: "#2319", subject: "Payment failed on invoice", priority: "high", agent: "Sarah M.", status: "In Review", slaDue: "2h left", slaStatus: "warning" },
-  { id: "#2320", subject: "Cannot access dashboard", priority: "medium", agent: "John D.", status: "Delivered", slaDue: "1d left", slaStatus: "ok" },
-  { id: "#2321", subject: "Feature request: Dark mode", priority: "low", agent: "Emily R.", status: "In Progress", slaDue: "3d left", slaStatus: "ok" },
-  { id: "#2322", subject: "API integration issue", priority: "high", agent: "Mike T.", status: "In Review", slaDue: "4h left", slaStatus: "warning" },
-  { id: "#2323", subject: "Billing question", priority: "medium", agent: "Sarah M.", status: "In Progress", slaDue: "6h left", slaStatus: "ok" },
+const initialTickets = [
+  { id: "#2319", subject: "Payment failed on invoice", priority: "high", agent: "Sarah M.", agentInitials: "SM", status: "In Review", slaDue: "2h left", slaStatus: "warning" },
+  { id: "#2320", subject: "Cannot access dashboard", priority: "medium", agent: "John D.", agentInitials: "JD", status: "Delivered", slaDue: "1d left", slaStatus: "ok" },
+  { id: "#2321", subject: "Feature request: Dark mode", priority: "low", agent: "Emily R.", agentInitials: "ER", status: "In Progress", slaDue: "3d left", slaStatus: "ok" },
+  { id: "#2322", subject: "API integration issue", priority: "high", agent: "Mike T.", agentInitials: "MT", status: "In Review", slaDue: "4h left", slaStatus: "warning" },
+  { id: "#2323", subject: "Billing question", priority: "medium", agent: "Sarah M.", agentInitials: "SM", status: "In Progress", slaDue: "6h left", slaStatus: "ok" },
 ];
 
 const priorityColors: Record<string, string> = {
@@ -89,12 +94,52 @@ const slaStatusColors: Record<string, string> = {
 export default function HomePage() {
   const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState("today");
+  const [tickets, setTickets] = useState(initialTickets);
+  const [sortField, setSortField] = useState<string | null>(null);
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [selectedRows, setSelectedRows] = useState<string[]>([]);
+  const [filterPriority, setFilterPriority] = useState("all");
 
   useEffect(() => { setMounted(true); }, []);
   if (!mounted) return null;
 
   const totalVolume = ticketVolumeData.reduce((sum, d) => sum + d.volume, 0);
+  const maxVolume = Math.max(...ticketVolumeData.map(d => d.volume));
   const volumeChange = 8;
+
+  const handleSort = (field: string) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortDirection("asc");
+    }
+  };
+
+  const filteredTickets = tickets
+    .filter(t => filterPriority === "all" || t.priority === filterPriority)
+    .sort((a, b) => {
+      if (!sortField) return 0;
+      const aVal = a[sortField as keyof typeof a];
+      const bVal = b[sortField as keyof typeof b];
+      if (aVal < bVal) return sortDirection === "asc" ? -1 : 1;
+      if (aVal > bVal) return sortDirection === "asc" ? 1 : -1;
+      return 0;
+    });
+
+  const toggleSelectAll = () => {
+    if (selectedRows.length === filteredTickets.length) {
+      setSelectedRows([]);
+    } else {
+      setSelectedRows(filteredTickets.map(t => t.id));
+    }
+  };
+
+  const toggleRow = (id: string) => {
+    setSelectedRows(prev => 
+      prev.includes(id) ? prev.filter(r => r !== id) : [...prev, id]
+    );
+  };
 
   return (
     <DashboardLayout>
@@ -102,6 +147,7 @@ export default function HomePage() {
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
+            <div className="text-sm text-slate-500 mb-1">Overview / Dashboard</div>
             <h1 className="text-2xl font-bold">Hello, Krish Walker 👋</h1>
             <p className="text-slate-500 text-sm">Here's what's happening with your support today.</p>
           </div>
@@ -126,7 +172,7 @@ export default function HomePage() {
             <Card key={i} className="bg-white dark:bg-[#1a1a1a]">
               <CardContent className="pt-6">
                 <div className="flex items-start justify-between">
-                  <div>
+                  <div className="flex-1">
                     <p className="text-sm text-slate-500">{kpi.label}</p>
                     <p className="text-3xl font-bold mt-1">{kpi.value}</p>
                     <div className="flex items-center gap-1 mt-2">
@@ -142,11 +188,11 @@ export default function HomePage() {
                     </div>
                   </div>
                   {/* Sparkline */}
-                  <div className="flex items-end gap-1 h-12">
+                  <div className="flex items-end gap-1 h-14 w-24">
                     {kpi.sparkline.map((v, j) => (
                       <div
                         key={j}
-                        className="w-2 bg-purple-500 rounded-t"
+                        className="flex-1 bg-purple-500 rounded-t transition-all hover:bg-purple-600"
                         style={{ height: `${(v / 70) * 100}%` }}
                       />
                     ))}
@@ -185,13 +231,19 @@ export default function HomePage() {
               </div>
             </CardHeader>
             <CardContent>
-              {/* Bar Chart visualization */}
-              <div className="flex items-end justify-between h-48 gap-2">
+              {/* Smooth Bar Chart */}
+              <div className="flex items-end justify-between h-52 gap-3">
                 {ticketVolumeData.map((d, i) => (
-                  <div key={i} className="flex-1 flex flex-col items-center gap-2">
-                    <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-t-lg relative group cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors" style={{ height: `${(d.volume / 650) * 100}%` }}>
-                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                        {d.volume}
+                  <div key={i} className="flex-1 flex flex-col items-center gap-2 group">
+                    <div className="w-full h-full flex items-end">
+                      <div 
+                        className="w-full bg-gradient-to-t from-purple-600 to-purple-400 rounded-t-lg transition-all duration-300 group-hover:from-purple-700 group-hover:to-purple-500 cursor-pointer relative"
+                        style={{ height: `${(d.volume / maxVolume) * 100}%` }}
+                      >
+                        {/* Tooltip */}
+                        <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                          {d.volume} tickets
+                        </div>
                       </div>
                     </div>
                     <span className="text-xs text-slate-500">{d.day}</span>
@@ -213,19 +265,19 @@ export default function HomePage() {
                       variant={activeTab === tab ? "default" : "ghost"}
                       size="sm"
                       onClick={() => setActiveTab(tab)}
-                      className={`text-xs px-2 ${activeTab === tab ? "bg-purple-600" : ""}`}
+                      className={`text-xs px-2 h-7 ${activeTab === tab ? "bg-purple-600 hover:bg-purple-700" : "text-slate-500"}`}
                     >
-                      {tab === "this week" ? "This week" : tab.charAt(0).toUpperCase() + tab.slice(1)}
+                      {tab === "this week" ? "Week" : tab === "today" ? "Today" : "Yest."}
                     </Button>
                   ))}
                 </div>
               </div>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {updates.map((update, i) => (
-                  <div key={i} className="flex items-start gap-3">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                  <div key={i} className="flex items-start gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                       update.type === "ticket" ? "bg-blue-100" :
                       update.type === "client" ? "bg-green-100" :
                       update.type === "sla" ? "bg-red-100" :
@@ -260,9 +312,20 @@ export default function HomePage() {
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                   <Input placeholder="Search tickets..." className="pl-10 w-64" />
                 </div>
-                <Button variant="outline" size="sm" className="gap-2">
-                  <Filter className="h-4 w-4" /> Filter
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="gap-2">
+                      <Filter className="h-4 w-4" /> 
+                      {filterPriority === "all" ? "Filter" : filterPriority}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem onClick={() => setFilterPriority("all")}>All</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setFilterPriority("high")}>High</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setFilterPriority("medium")}>Medium</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setFilterPriority("low")}>Low</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
           </CardHeader>
@@ -271,18 +334,54 @@ export default function HomePage() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b">
-                    <th className="text-left py-3 px-4 text-xs font-medium text-slate-500 uppercase">Ticket</th>
+                    <th className="text-left py-3 px-4">
+                      <input 
+                        type="checkbox" 
+                        checked={selectedRows.length === filteredTickets.length && filteredTickets.length > 0}
+                        onChange={toggleSelectAll}
+                        className="rounded"
+                      />
+                    </th>
+                    <th className="text-left py-3 px-4 text-xs font-medium text-slate-500 uppercase cursor-pointer hover:text-slate-700" onClick={() => handleSort("id")}>
+                      <div className="flex items-center gap-1">
+                        Ticket
+                        {sortField === "id" && (sortDirection === "asc" ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />)}
+                      </div>
+                    </th>
                     <th className="text-left py-3 px-4 text-xs font-medium text-slate-500 uppercase">Subject</th>
-                    <th className="text-left py-3 px-4 text-xs font-medium text-slate-500 uppercase">Priority</th>
-                    <th className="text-left py-3 px-4 text-xs font-medium text-slate-500 uppercase">Assigned Agent</th>
+                    <th className="text-left py-3 px-4 text-xs font-medium text-slate-500 uppercase cursor-pointer hover:text-slate-700" onClick={() => handleSort("priority")}>
+                      <div className="flex items-center gap-1">
+                        Priority
+                        {sortField === "priority" && (sortDirection === "asc" ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />)}
+                      </div>
+                    </th>
+                    <th className="text-left py-3 px-4 text-xs font-medium text-slate-500 uppercase cursor-pointer hover:text-slate-700" onClick={() => handleSort("agent")}>
+                      <div className="flex items-center gap-1">
+                        Assigned
+                        {sortField === "agent" && (sortDirection === "asc" ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />)}
+                      </div>
+                    </th>
                     <th className="text-left py-3 px-4 text-xs font-medium text-slate-500 uppercase">Status</th>
-                    <th className="text-left py-3 px-4 text-xs font-medium text-slate-500 uppercase">SLA Due</th>
+                    <th className="text-left py-3 px-4 text-xs font-medium text-slate-500 uppercase cursor-pointer hover:text-slate-700" onClick={() => handleSort("slaDue")}>
+                      <div className="flex items-center gap-1">
+                        SLA Due
+                        {sortField === "slaDue" && (sortDirection === "asc" ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />)}
+                      </div>
+                    </th>
                     <th className="text-right py-3 px-4 text-xs font-medium text-slate-500 uppercase">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {slaTickets.map((ticket) => (
+                  {filteredTickets.map((ticket) => (
                     <tr key={ticket.id} className="border-b hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                      <td className="py-3 px-4">
+                        <input 
+                          type="checkbox" 
+                          checked={selectedRows.includes(ticket.id)}
+                          onChange={() => toggleRow(ticket.id)}
+                          className="rounded"
+                        />
+                      </td>
                       <td className="py-3 px-4 font-medium text-purple-600">{ticket.id}</td>
                       <td className="py-3 px-4">{ticket.subject}</td>
                       <td className="py-3 px-4">
@@ -293,7 +392,7 @@ export default function HomePage() {
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2">
                           <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white text-xs">
-                            {ticket.agent.charAt(0)}
+                            {ticket.agentInitials}
                           </div>
                           <span>{ticket.agent}</span>
                         </div>
@@ -312,15 +411,27 @@ export default function HomePage() {
                       <td className="py-3 px-4 text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-slate-100">
                               <MoreHorizontal className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem>View details</DropdownMenuItem>
-                            <DropdownMenuItem>Assign to...</DropdownMenuItem>
-                            <DropdownMenuItem>Change priority</DropdownMenuItem>
-                            <DropdownMenuItem className="text-red-600">Close ticket</DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <Eye className="h-4 w-4 mr-2" /> View details
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <UserPlus className="h-4 w-4 mr-2" /> Assign to...
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <Flag className="h-4 w-4 mr-2" /> Change priority
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <RefreshCw className="h-4 w-4 mr-2" /> Mark as pending
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem className="text-red-600">
+                              <XCircle className="h-4 w-4 mr-2" /> Close ticket
+                            </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </td>
