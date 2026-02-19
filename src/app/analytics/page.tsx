@@ -104,7 +104,7 @@ const stats = {
   arpu: 49.20,
 };
 
-type DatePreset = "7d" | "14d" | "30d" | "90d" | "mtd" | "lmt";
+type DatePreset = "7d" | "14d" | "30d" | "90d" | "mtd" | "lmt" | "custom";
 
 const datePresets: { label: string; value: DatePreset; getDates: () => { from: Date; to: Date } }[] = [
   { label: "Last 7 days", value: "7d", getDates: () => ({ from: subDays(new Date(), 6), to: new Date() }) },

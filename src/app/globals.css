@@ -224,3 +224,151 @@
 .tooltip-content {
   @apply animate-fade-in;
 }
+
+/* Button loading spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Button loading state */
+.btn-loading {
+  @apply relative text-transparent pointer-events-none;
+}
+
+.btn-loading::after {
+  content: "";
+  @apply absolute inset-0 flex items-center justify-center;
+}
+
+.btn-loading::before {
+  content: "";
+  @apply absolute inset-0 rounded-md bg-current opacity-25;
+}
+
+/* Card hover lift effect */
+.card-hover-lift {
+  @apply transition-all duration-300 ease-out;
+}
+
+.card-hover-lift:hover {
+  @apply -translate-y-1 shadow-lg;
+}
+
+/* Scale on hover */
+.hover-scale {
+  @apply transition-transform duration-200 ease-out;
+}
+
+.hover-scale:hover {
+  @apply scale-105;
+}
+
+/* Glow effect on hover */
+.card-glow {
+  @apply transition-all duration-300;
+}
+
+.card-glow:hover {
+  box-shadow: 0 0 20px -5px rgba(147, 51, 234, 0.3);
+}
+
+/* Subtle border glow */
+.border-glow {
+  @apply transition-all duration-300;
+}
+
+.border-glow:hover {
+  @apply border-purple-300 dark:border-purple-700;
+  box-shadow: 0 0 0 1px rgba(147, 51, 234, 0.2);
+}
+
+/* Page transition wrapper */
+.page-transition {
+  animation: fadeInUp 0.4s ease-out forwards;
+}
+
+/* Skeleton pulse */
+@keyframes pulse-skeleton {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.skeleton-pulse {
+  animation: pulse-skeleton 2s ease-in-out infinite;
+}
+
+/* Stagger animation delays for skeleton items */
+.skeleton-stagger > * {
+  @apply animate-pulse;
+}
+
+.skeleton-stagger > *:nth-child(1) { animation-delay: 0ms; }
+.skeleton-stagger > *:nth-child(2) { animation-delay: 100ms; }
+.skeleton-stagger > *:nth-child(3) { animation-delay: 200ms; }
+.skeleton-stagger > *:nth-child(4) { animation-delay: 300ms; }
+.skeleton-stagger > *:nth-child(5) { animation-delay: 400ms; }
+.skeleton-stagger > *:nth-child(6) { animation-delay: 500ms; }
+.skeleton-stagger > *:nth-child(7) { animation-delay: 600ms; }
+.skeleton-stagger > *:nth-child(8) { animation-delay: 700ms; }
+.skeleton-stagger > *:nth-child(9) { animation-delay: 800ms; }
+.skeleton-stagger > *:nth-child(10) { animation-delay: 900ms; }
+
+/* Focus ring animation */
+.focus-ring {
+  @apply transition-all duration-200;
+}
+
+.focus-ring:focus {
+  @apply ring-2 ring-purple-500 ring-offset-2;
+}
+
+/* Table row hover highlight */
+.table-row-hover {
+  @apply transition-colors duration-150;
+}
+
+.table-row-hover:hover {
+  @apply bg-slate-50 dark:bg-slate-800/50;
+}
+
+/* Badge pop animation */
+.badge-pop {
+  @apply transition-transform duration-200;
+}
+
+.badge-pop:hover {
+  @apply scale-110;
+}
+
+/* Icon rotation on hover */
+.icon-rotate {
+  @apply transition-transform duration-300;
+}
+
+.icon-rotate:hover {
+  @apply rotate-12;
+}
+
+/* Ripple effect base */
+.ripple {
+  @apply relative overflow-hidden;
+}
+
+.ripple::after {
+  content: "";
+  @apply absolute inset-0 bg-current opacity-0 transition-opacity duration-300;
+}
+
+.ripple:active::after {
+  @apply opacity-10;
+}
