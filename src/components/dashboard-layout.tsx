@@ -46,6 +46,44 @@ interface SidebarProps {
   children: React.ReactNode;
 }
 
+// Page title mapping
+const pageTitles: Record<string, string> = {
+  "/": "Overview",
+  "/analytics": "Analytics",
+  "/invoices": "Invoices",
+  "/clients": "Clients",
+  "/agents": "Agents & Teams",
+  "/knowledge": "Knowledge Base",
+  "/integrations": "Integrations",
+  "/sla": "SLA Compliance",
+  "/csat": "CSAT & NPS",
+  "/workload": "Workload Analytics",
+  "/reports": "Reports",
+  "/sites": "Sites & Servers",
+  "/feedback": "Feedback",
+  "/help": "Help & Support",
+  "/settings": "Settings",
+};
+
+// Breadcrumb mapping - defines parent pages
+const breadcrumbs: Record<string, { label: string; href: string }[]> = {
+  "/": [{ label: "Overview", href: "/" }],
+  "/analytics": [{ label: "Analytics", href: "/analytics" }],
+  "/invoices": [{ label: "Invoices", href: "/invoices" }],
+  "/clients": [{ label: "Clients", href: "/clients" }],
+  "/agents": [{ label: "Agents & Teams", href: "/agents" }],
+  "/knowledge": [{ label: "Knowledge Base", href: "/knowledge" }],
+  "/integrations": [{ label: "Integrations", href: "/integrations" }],
+  "/sla": [{ label: "SLA Compliance", href: "/sla" }],
+  "/csat": [{ label: "CSAT & NPS", href: "/csat" }],
+  "/workload": [{ label: "Workload Analytics", href: "/workload" }],
+  "/reports": [{ label: "Reports", href: "/reports" }],
+  "/sites": [{ label: "Sites & Servers", href: "/sites" }],
+  "/feedback": [{ label: "Feedback", href: "/feedback" }],
+  "/help": [{ label: "Help & Support", href: "/help" }],
+  "/settings": [{ label: "Settings", href: "/settings" }],
+};
+
 const mainNav = [
   { icon: Home, label: "Overview", href: "/" },
   { icon: BarChart3, label: "Analytics", href: "/analytics" },
@@ -97,6 +135,8 @@ export default function DashboardLayout({ children }: SidebarProps) {
   };
 
   const isActive = (href: string) => pathname === href;
+  
+  const currentBreadcrumbs = breadcrumbs[pathname] || [{ label: "Dashboard", href: "/" }];
 
   return (
     <div className="flex min-h-screen bg-[#f8f9fa] dark:bg-[#121212]">
@@ -255,10 +295,25 @@ export default function DashboardLayout({ children }: SidebarProps) {
       <main className="flex-1 ml-64">
         {/* Header */}
         <header className="h-16 bg-white dark:bg-[#1a1a1a] border-b border-slate-200 dark:border-slate-800 px-6 sticky top-0 z-20 flex items-center justify-between">
-          <div>
-            <h1 className="text-lg font-semibold">
-              {pathname === "/" ? "Overview" : pathname === "/invoices" ? "Invoices" : pathname === "/settings" ? "Settings" : "Dashboard"}
-            </h1>
+          <div className="flex items-center gap-2">
+            {/* Breadcrumb */}
+            <nav className="flex items-center gap-1 text-sm">
+              <Link href="/" className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 flex items-center gap-1">
+                <Home className="h-4 w-4" />
+              </Link>
+              {currentBreadcrumbs.map((crumb, idx) => (
+                <span key={idx} className="flex items-center gap-1">
+                  <ChevronRight className="h-4 w-4 text-slate-300" />
+                  {idx === currentBreadcrumbs.length - 1 ? (
+                    <span className="font-medium text-slate-900 dark:text-white">{crumb.label}</span>
+                  ) : (
+                    <Link href={crumb.href} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                      {crumb.label}
+                    </Link>
+                  )}
+                </span>
+              ))}
+            </nav>
           </div>
           <div className="flex items-center gap-3">
             <Button variant="ghost" size="icon" className="relative">
