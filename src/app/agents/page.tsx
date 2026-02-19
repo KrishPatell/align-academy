@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 import { 
- , BarChart, LineChart, Line Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area 
+  BarChart, LineChart, LineBar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area 
 } from "recharts";
 
 const agents = [

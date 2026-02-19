@@ -94,6 +94,28 @@ export default function ReportsPage() {
     }, 2000);
   };
 
+  const handlePrintReport = () => {
+    window.print();
+  };
+
+  const handleShareReport = () => {
+    // Create shareable link simulation
+    const shareUrl = `${window.location.origin}/reports/shared/${Date.now()}`;
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      alert('Share link copied to clipboard!');
+    }).catch(() => {
+      alert('Share link: ' + shareUrl);
+    });
+  };
+
+  const handleScheduleReport = () => {
+    // Open schedule dialog - simulation
+    const schedule = prompt('Enter schedule (e.g., "daily", "weekly", "monthly"):');
+    if (schedule) {
+      alert(`Report scheduled: ${schedule}`);
+    }
+  };
+
   return (
     <DashboardLayout>
       <div className="p-6 space-y-6">
@@ -103,9 +125,20 @@ export default function ReportsPage() {
             <h1 className="text-2xl font-bold">Reports</h1>
             <p className="text-slate-500 text-sm">Generate and schedule custom reports</p>
           </div>
-          <Button className="bg-purple-600 hover:bg-purple-700 gap-2">
-            <FileText className="h-4 w-4" /> Create Report
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" className="gap-2" onClick={handlePrintReport}>
+              <Printer className="h-4 w-4" /> Print
+            </Button>
+            <Button variant="outline" className="gap-2" onClick={handleShareReport}>
+              <Share2 className="h-4 w-4" /> Share
+            </Button>
+            <Button variant="outline" className="gap-2" onClick={handleScheduleReport}>
+              <Clock8 className="h-4 w-4" /> Schedule
+            </Button>
+            <Button className="bg-purple-600 hover:bg-purple-700 gap-2">
+              <FileText className="h-4 w-4" /> Create Report
+            </Button>
+          </div>
         </div>
 
         {/* Stats */}

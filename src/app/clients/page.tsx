@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   Search, Plus, MoreHorizontal, Mail, Phone, MapPin, Globe, Calendar, DollarSign, 
-  Edit, Trash2, Eye, FileText, Bell, Send, Tag, X, Upload, ImagePlus, StickyNote
+  Edit, Trash2, Eye, FileText, Bell, Send, Tag, X, Upload, ImagePlus, StickyNote, Download
 } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 
@@ -142,6 +142,19 @@ export default function ClientsPage() {
     }
     setEditingNotes(false);
     toast({ title: "Notes saved", description: "Client notes have been updated", variant: "success" });
+  };
+
+  const exportAllClients = () => {
+    const headers = ["Name", "Contact", "Email", "Phone", "Website", "Plan", "Spent", "Status", "Joined"];
+    const rows = filteredClients.map(c => [c.name, c.contact, c.email, c.phone, c.website, c.plan, c.spent, c.status, c.joined]);
+    const csv = [headers, ...rows].map(row => row.join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `clients-${new Date().toISOString().split("T")[0]}.csv`;
+    a.click();
+    toast({ title: "Export successful", description: `${filteredClients.length} clients exported to CSV`, variant: "success" });
   };
 
   // Loading skeleton

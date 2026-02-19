@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import CommandPalette from "@/components/command-palette";
+import { NotificationsDropdown, NotificationBadge } from "@/components/notifications";
 import {
   Home,
   Ticket,
@@ -44,7 +45,6 @@ import {
   Settings,
   LayoutDashboard,
   Search,
-  Bell,
   ChevronDown,
   ChevronRight,
   ChevronUp,
@@ -750,12 +750,7 @@ export default function DashboardLayout({ children }: SidebarProps) {
             </button>
 
             {/* Notifications */}
-            <Button variant="ghost" size="icon" className="relative h-9 w-9 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200">
-              <Bell className="h-5 w-5 text-slate-500" />
-              <span className="absolute -top-0.5 -right-0.5 h-4 w-4 bg-red-500 text-white text-[10px] font-medium rounded-full flex items-center justify-center">
-                3
-              </span>
-            </Button>
+            <NotificationsDropdown />
 
             {/* Theme Toggle - Icon Button */}
             <Button
