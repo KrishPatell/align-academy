@@ -29,7 +29,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { format, subDays, eachDayInterval } from "date-fns";
+import { format, subDays, eachDayOfInterval } from "date-fns";
 import {
   DollarSign,
   CheckCircle,
@@ -50,7 +50,7 @@ import {
 
 // Generate mock data
 const generateRevenueData = () => {
-  const days = eachDayInterval({
+  const days = eachDayOfInterval({
     start: subDays(new Date(), 29),
     end: new Date(),
   });
