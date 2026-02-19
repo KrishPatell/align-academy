@@ -440,7 +440,7 @@ export default function DashboardLayout({ children }: SidebarProps) {
               <Download className="h-4 w-4 text-slate-500" />
             </Button>
 
-            {/* Search */}
+            {/* Search - Premium styled */}
             <button
               onClick={() => setCommandPaletteOpen(true)}
               className="flex items-center gap-2 h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all duration-200"
