@@ -424,7 +424,7 @@ export default function InvoicesPage() {
                   return (
                     <TableRow 
                       key={invoice.id} 
-                      className="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-200 group"
+                      className="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-200 group table-row-hover"
                       onClick={() => handleViewInvoice(invoice)}
                     >
                       <TableCell>
@@ -433,7 +433,7 @@ export default function InvoicesPage() {
                             <FileText className="h-5 w-5 text-purple-600" />
                           </div>
                           <div>
-                            <span className="font-semibold">{invoice.invoiceNumber}</span>
+                            <span className="font-semibold group-hover:text-purple-600 transition-colors">{invoice.invoiceNumber}</span>
                             <ChevronRight className="h-4 w-4 text-slate-300 ml-2 inline-block opacity-0 group-hover:opacity-100 transition-opacity" />
                           </div>
                         </div>
@@ -446,7 +446,7 @@ export default function InvoicesPage() {
                       <TableCell>{formatDate(invoice.dueDate)}</TableCell>
                       <TableCell className="text-right font-semibold">{formatCurrency(invoice.total)}</TableCell>
                       <TableCell className="text-center">
-                        <Badge variant="outline" className="gap-1 cursor-pointer hover:scale-105 transition-transform" style={{ backgroundColor: status.bg, color: status.text, borderColor: "transparent" }} onClick={(e) => e.stopPropagation()}>
+                        <Badge variant="outline" className="gap-1 cursor-pointer hover:scale-105 transition-transform badge-pop" style={{ backgroundColor: status.bg, color: status.text, borderColor: "transparent" }} onClick={(e) => e.stopPropagation()}>
                           <StatusIcon className="h-3 w-3" />
                           {status.label}
                         </Badge>
