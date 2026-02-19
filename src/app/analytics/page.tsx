@@ -30,6 +30,8 @@ import {
   Legend,
   ResponsiveContainer,
   ReferenceLine,
+  Line,
+  ComposedChart,
 } from "recharts";
 import { format, subDays, subMonths, eachDayOfInterval, isWithinInterval, startOfMonth, endOfMonth } from "date-fns";
 import {
@@ -132,6 +134,18 @@ export default function DashboardPage() {
   const revenueData = useMemo(() => generateRevenueData(dateRange), [dateRange]);
   const previousPeriodData = useMemo(() => generatePreviousPeriodData(dateRange), [dateRange]);
 
+  // Combine current and previous period data for comparison chart
+  const chartData = useMemo(() => {
+    return revenueData.map((d, i) => {
+      const prev = previousPeriodData[i];
+      return {
+        ...d,
+        PreviousTotal: prev ? prev.Courses + prev.Membership + prev.Marketplace + prev.Certifications + prev.Coaching : 0,
+        CurrentTotal: d.Courses + d.Membership + d.Marketplace + d.Certifications + d.Coaching,
+      };
+    });
+  }, [revenueData, previousPeriodData]);
+
   const totalRevenue = revenueData.reduce((sum, d) => sum + d.Courses + d.Membership + d.Marketplace + d.Certifications + d.Coaching, 0);
   const prevTotalRevenue = previousPeriodData.reduce((sum, d) => sum + d.Courses + d.Membership + d.Marketplace + d.Certifications + d.Coaching, 0);
   const revenueChange = ((totalRevenue - prevTotalRevenue) / prevTotalRevenue) * 100;
@@ -171,6 +185,32 @@ export default function DashboardPage() {
     a.click();
     URL.revokeObjectURL(url);
   };
+
+  const exportToJSON = () => {
+    const data = revenueData.map(d => ({
+      date: d.fullDate.toISOString().split('T')[0],
+      revenue: {
+        Courses: d.Courses,
+        Membership: d.Membership,
+        Marketplace: d.Marketplace,
+        Certifications: d.Certifications,
+        Coaching: d.Coaching,
+      },
+      total: d.Courses + d.Membership + d.Marketplace + d.Certifications + d.Coaching,
+    }));
+    
+    const jsonContent = JSON.stringify(data, null, 2);
+    const blob = new Blob([jsonContent], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `analytics-${format(dateRange.from, "yyyy-MM-dd")}-${format(dateRange.to, "yyyy-MM-dd")}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // Export dropdown with multiple formats
+  const [exportOpen, setExportOpen] = useState(false);
 
   // Custom tooltip for chart
   const CustomTooltip = ({ active, payload, label }: any) => {
@@ -220,9 +260,35 @@ export default function DashboardPage() {
               />
               <Label htmlFor="compare-mode" className="text-sm cursor-pointer">Compare to previous period</Label>
             </div>
-            <Button variant="outline" size="sm" className="gap-2" onClick={exportToCSV}>
-              <Download className="h-4 w-4" /> Export CSV
-            </Button>
+            {/* Export Dropdown */}
+            <Popover open={exportOpen} onOpenChange={setExportOpen}>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Download className="h-4 w-4" /> Export
+                  <ChevronDown className="h-3 w-3" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-40">
+                <div className="grid gap-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="justify-start font-normal"
+                    onClick={() => { exportToCSV(); setExportOpen(false); }}
+                  >
+                    <Download className="h-4 w-4 mr-2" /> Export as CSV
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="justify-start font-normal"
+                    onClick={() => { exportToJSON(); setExportOpen(false); }}
+                  >
+                    <Download className="h-4 w-4 mr-2" /> Export as JSON
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
 
@@ -398,7 +464,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={380}>
-              <BarChart data={revenueData} barSize={14}>
+              <ComposedChart data={chartData} barSize={14}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" className="dark:stroke-slate-700" />
                 <XAxis 
                   dataKey="date" 
@@ -406,7 +472,7 @@ export default function DashboardPage() {
                   tickLine={false} 
                   tick={{ fill: "#64748b", fontSize: 11 }} 
                   dy={10}
-                  interval={Math.floor(revenueData.length / 10)}
+                  interval={Math.floor(chartData.length / 10)}
                 />
                 <YAxis 
                   axisLine={false} 
@@ -424,6 +490,18 @@ export default function DashboardPage() {
                   iconType="circle"
                   iconSize={8}
                 />
+                {compareMode && (
+                  <Line 
+                    type="monotone" 
+                    dataKey="PreviousTotal" 
+                    stroke="#94a3b8" 
+                    strokeWidth={2}
+                    strokeDasharray="5 5"
+                    dot={false}
+                    name="Previous Period"
+                    animationDuration={500}
+                  />
+                )}
                 <Bar 
                   dataKey="Courses" 
                   stackId={viewMode === "stacked" ? "a" : undefined} 
@@ -459,7 +537,7 @@ export default function DashboardPage() {
                   radius={[4, 4, 0, 0]} 
                   animationDuration={500}
                 />
-              </BarChart>
+              </ComposedChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>

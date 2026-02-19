@@ -138,6 +138,19 @@
   animation: shimmer 2s infinite;
 }
 
+.animate-pulse-once {
+  animation: pulse-once 2s ease-in-out;
+}
+
+@keyframes pulse-once {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
 /* Page transition animations */
 @keyframes fadeIn {
   from {

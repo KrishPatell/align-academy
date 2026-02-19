@@ -21,6 +21,7 @@ import {
   Filter,
   ChevronDown,
   ChevronUp,
+  ChevronRight,
   TrendingUp,
   TrendingDown,
   Clock,
@@ -248,7 +249,7 @@ export default function HomePage() {
         </div>
 
         {/* Quick Stats Section - Real-time metrics */}
-        <Card className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white overflow-hidden relative">
+        <Card className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white overflow-hidden relative hover:shadow-2xl hover:shadow-purple-500/25 transition-all duration-500">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRoLTJWMGgydjM0em0tNCAwSDIwVjBoMTJ2MzR6bS00IDBoLTJWMGgydjM0em0tNCAwSDEyVjBoMTJ2MzR6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-30"></div>
           <CardContent className="pt-6 relative z-10">
             <div className="flex items-center justify-between mb-4">
@@ -262,42 +263,42 @@ export default function HomePage() {
               </div>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer group">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-white/10 cursor-pointer group">
                 <div className="flex items-center gap-2 mb-1">
                   <Users className="h-4 w-4 text-blue-300" />
                   <span className="text-xs text-white/70">Active Agents</span>
                 </div>
                 <p className="text-2xl font-bold">{quickStats.activeAgents}</p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer group">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-white/10 cursor-pointer group">
                 <div className="flex items-center gap-2 mb-1">
                   <Ticket className="h-4 w-4 text-amber-300" />
                   <span className="text-xs text-white/70">Open Tickets</span>
                 </div>
                 <p className="text-2xl font-bold group-hover:scale-110 transition-transform">{quickStats.openTickets}</p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer group">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-white/10 cursor-pointer group">
                 <div className="flex items-center gap-2 mb-1">
                   <Clock className="h-4 w-4 text-green-300" />
                   <span className="text-xs text-white/70">Avg Response</span>
                 </div>
                 <p className="text-2xl font-bold">{quickStats.avgResponseTime}</p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer group">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-white/10 cursor-pointer group">
                 <div className="flex items-center gap-2 mb-1">
                   <ThumbsUp className="h-4 w-4 text-pink-300" />
                   <span className="text-xs text-white/70">CSAT Score</span>
                 </div>
                 <p className="text-2xl font-bold">{quickStats.csatScore}%</p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer group">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-white/10 cursor-pointer group">
                 <div className="flex items-center gap-2 mb-1">
                   <CheckCircle className="h-4 w-4 text-emerald-300" />
                   <span className="text-xs text-white/70">Resolved Today</span>
                 </div>
                 <p className="text-2xl font-bold group-hover:scale-110 transition-transform">{quickStats.resolvedToday}</p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer group">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-white/10 cursor-pointer group">
                 <div className="flex items-center gap-2 mb-1">
                   <AlertTriangle className="h-4 w-4 text-red-300" />
                   <span className="text-xs text-white/70">Pending SLA</span>
@@ -311,12 +312,12 @@ export default function HomePage() {
         {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {currentData.kpis.map((kpi, i) => (
-            <Card key={i} className="bg-white dark:bg-[#1a1a1a]">
+            <Card key={i} className="bg-white dark:bg-[#1a1a1a] hover:shadow-xl hover:shadow-purple-500/10 hover:-translate-y-1 transition-all duration-300 cursor-pointer group border border-transparent hover:border-purple-200 dark:hover:border-purple-800">
               <CardContent className="pt-6">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <p className="text-sm text-slate-500">{kpi.label}</p>
-                    <p className="text-3xl font-bold mt-1">{kpi.value}</p>
+                    <p className="text-sm text-slate-500 group-hover:text-purple-600 transition-colors">{kpi.label}</p>
+                    <p className="text-3xl font-bold mt-1 group-hover:scale-105 transition-transform">{kpi.value}</p>
                     <div className="flex items-center gap-1 mt-2">
                       {kpi.trend === "up" ? (
                         <TrendingUp className={`h-4 w-4 ${kpi.change > 0 ? "text-green-500" : "text-red-500"}`} />
@@ -329,16 +330,24 @@ export default function HomePage() {
                       <span className="text-xs text-slate-400">vs last period</span>
                     </div>
                   </div>
-                  {/* Green Sparkline */}
-                  <div className="flex items-end gap-1 h-14 w-20">
+                  {/* Enhanced Sparkline with gradient area */}
+                  <div className="flex items-end gap-1 h-14 w-20 relative">
+                    <div className="absolute inset-0 bg-gradient-to-t from-purple-100 to-transparent dark:from-purple-900/30 rounded opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     {kpi.sparkline.map((v, j) => (
                       <div
                         key={j}
-                        className="flex-1 bg-green-500 rounded-t transition-all hover:bg-green-600"
+                        className="flex-1 bg-gradient-to-t from-purple-600 to-purple-400 rounded-t transition-all hover:from-indigo-600 hover:to-indigo-400 group-hover:bg-purple-500"
                         style={{ height: `${(v / Math.max(...kpi.sparkline)) * 100}%` }}
                       />
                     ))}
                   </div>
+                </div>
+                {/* Mini progress bar */}
+                <div className="mt-3 h-1 w-full bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full transition-all duration-500 group-hover:from-green-500 group-hover:to-emerald-500"
+                    style={{ width: `${Math.min(100, Math.abs(kpi.change) * 10 + 50)}%` }}
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -397,11 +406,14 @@ export default function HomePage() {
             </CardContent>
           </Card>
 
-          {/* Latest Updates */}
-          <Card className="bg-white dark:bg-[#1a1a1a]">
+          {/* Recent Activity */}
+          <Card className="bg-white dark:bg-[#1a1a1a] hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Latest Updates</CardTitle>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  Recent Activity
+                </CardTitle>
                 <div className="flex gap-1">
                   {[
                     { key: "today", label: "Today" },
@@ -424,28 +436,40 @@ export default function HomePage() {
             <CardContent>
               <div className="space-y-3">
                 {currentData.updates.map((update, i) => (
-                  <div key={i} className="flex items-start gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      update.type === "ticket" ? "bg-blue-100" :
-                      update.type === "client" ? "bg-green-100" :
-                      update.type === "sla" ? "bg-red-100" :
-                      update.type === "assign" ? "bg-purple-100" :
-                      "bg-slate-100"
+                  <div 
+                    key={i} 
+                    className="flex items-start gap-3 p-3 rounded-xl hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 dark:hover:from-purple-900/20 dark:hover:to-indigo-900/20 cursor-pointer transition-all duration-200 group hover:scale-[1.02]"
+                  >
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 ${
+                      update.type === "ticket" ? "bg-blue-100 dark:bg-blue-900/30" :
+                      update.type === "client" ? "bg-green-100 dark:bg-green-900/30" :
+                      update.type === "sla" ? "bg-red-100 dark:bg-red-900/30" :
+                      update.type === "assign" ? "bg-purple-100 dark:bg-purple-900/30" :
+                      "bg-slate-100 dark:bg-slate-800"
                     }`}>
-                      {update.type === "ticket" && <FileText className="h-4 w-4 text-blue-600" />}
-                      {update.type === "client" && <Users className="h-4 w-4 text-green-600" />}
-                      {update.type === "assign" && <User className="h-4 w-4 text-purple-600" />}
-                      {update.type === "sla" && <AlertTriangle className="h-4 w-4 text-red-600" />}
-                      {update.type === "article" && <FileText className="h-4 w-4 text-slate-600" />}
-                      {update.type === "feedback" && <MessageSquare className="h-4 w-4 text-slate-600" />}
+                      {update.type === "ticket" && <FileText className="h-5 w-5 text-blue-600" />}
+                      {update.type === "client" && <Users className="h-5 w-5 text-green-600" />}
+                      {update.type === "assign" && <User className="h-5 w-5 text-purple-600" />}
+                      {update.type === "sla" && <AlertTriangle className="h-5 w-5 text-red-600" />}
+                      {update.type === "article" && <FileText className="h-5 w-5 text-slate-600" />}
+                      {update.type === "feedback" && <MessageSquare className="h-5 w-5 text-slate-600" />}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">{update.message}</p>
-                      <p className="text-xs text-slate-400">{update.time}</p>
+                      <p className="text-sm font-medium group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors">{update.message}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Clock className="h-3 w-3 text-slate-400" />
+                        <p className="text-xs text-slate-400">{update.time}</p>
+                      </div>
+                    </div>
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                      <ChevronRight className="h-4 w-4 text-slate-400" />
                     </div>
                   </div>
                 ))}
               </div>
+              <Button variant="outline" className="w-full mt-4 hover:bg-purple-50 hover:border-purple-200 hover:text-purple-600 transition-all">
+                View All Activity
+              </Button>
             </CardContent>
           </Card>
         </div>
@@ -671,6 +695,14 @@ export default function HomePage() {
           </div>
         )}
       </div>
+
+      {/* Floating Action Button */}
+      <Button
+        className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-purple-600 hover:bg-purple-700 shadow-xl hover:shadow-2xl transition-all hover:scale-110 z-50"
+        size="icon"
+      >
+        <Plus className="h-6 w-6" />
+      </Button>
     </DashboardLayout>
   );
 }
