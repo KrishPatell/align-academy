@@ -278,7 +278,7 @@ export default function DashboardLayout({ children }: SidebarProps) {
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto px-3 py-4">
           {/* Main Navigation */}
-          <div className="mb-4">
+          <div className="mb-6">
             {!isSidebarCollapsed && (
               <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider px-3 mb-2 transition-opacity duration-200">
                 Main Navigation

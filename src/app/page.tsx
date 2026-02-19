@@ -42,7 +42,6 @@ import {
   Server,
   MessageCircle,
   ThumbsUp,
-  TrendingDown,
 } from "lucide-react";
 import {
   DropdownMenu,
