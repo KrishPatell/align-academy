@@ -1,7 +1,7 @@
 "use client";
 
 // Kravio Dashboard - Premium Support Platform
-// Version 5.6 - Enhanced with breadcrumbs, skeletons, scroll-to-top, improved sidebar
+// Version 5.7 - Enhanced with Quick Create, Keyboard Shortcuts, Theme Toggle, User Avatar
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
@@ -10,6 +10,21 @@ import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import CommandPalette from "@/components/command-palette";
 import {
   Home,
@@ -41,15 +56,14 @@ import {
   Download,
   PanelLeftClose,
   PanelLeft,
+  Plus,
+  UserPlus,
+  FileText,
+  Moon,
+  Sun,
+  Keyboard,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 interface SidebarProps {
   children: React.ReactNode;
@@ -97,6 +111,66 @@ const supportNav = [
   { icon: HelpCircle, label: "Help & Support", href: "/help" },
   { icon: Settings, label: "Settings", href: "/settings" },
 ];
+
+// ======== IMPROVEMENT 5: Keyboard Shortcuts Modal ========
+function KeyboardShortcutsModal({ 
+  open, 
+  onOpenChange 
+}: { 
+  open: boolean; 
+  onOpenChange: (open: boolean) => void;
+}) {
+  const shortcuts = [
+    { keys: ["⌘", "K"], description: "Open command palette" },
+    { keys: ["⌘", "B"], description: "Toggle sidebar" },
+    { keys: ["?"], description: "Show keyboard shortcuts" },
+    { keys: ["⌘", "N"], description: "Create new ticket" },
+    { keys: ["⌘", "⇧", "N"], description: "Create new client" },
+    { keys: ["⌘", "I"], description: "Create new invoice" },
+    { keys: ["⌘", "/"], description: "Search" },
+    { keys: ["⌘", "D"], description: "Toggle dark mode" },
+    { keys: ["⌘", "S"], description: "Settings" },
+    { keys: ["Esc"], description: "Close modal / Cancel" },
+  ];
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Keyboard className="h-5 w-5" />
+            Keyboard Shortcuts
+          </DialogTitle>
+          <DialogDescription>
+            Quick shortcuts to navigate and perform actions faster.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-3 py-4">
+          {shortcuts.map((shortcut, index) => (
+            <div 
+              key={index} 
+              className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            >
+              <span className="text-sm text-slate-600 dark:text-slate-300">
+                {shortcut.description}
+              </span>
+              <div className="flex items-center gap-1">
+                {shortcut.keys.map((key, keyIndex) => (
+                  <kbd 
+                    key={keyIndex}
+                    className="inline-flex items-center justify-center min-w-[24px] h-6 px-1.5 text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded border border-slate-200 dark:border-slate-600"
+                  >
+                    {key}
+                  </kbd>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 // ======== IMPROVEMENT 1: Enhanced Breadcrumb Component ========
 function Breadcrumb({ 
@@ -356,6 +430,7 @@ export default function DashboardLayout({ children }: SidebarProps) {
   const [mounted, setMounted] = useState(false);
   const [openMenus, setOpenMenus] = useState<string[]>(["Invoices"]);
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
+  const [keyboardShortcutsOpen, setKeyboardShortcutsOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isSidebarHovered, setIsSidebarHovered] = useState(false);
   const [currentDate] = useState(() => {
@@ -384,6 +459,12 @@ export default function DashboardLayout({ children }: SidebarProps) {
   // Keyboard shortcut for Command Palette
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if user is typing in an input
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+      
+      // Keyboard shortcut for Command Palette
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
         setCommandPaletteOpen(true);
@@ -393,10 +474,25 @@ export default function DashboardLayout({ children }: SidebarProps) {
         e.preventDefault();
         toggleSidebar();
       }
+      // Keyboard shortcut for keyboard shortcuts modal
+      if (e.key === "?") {
+        e.preventDefault();
+        setKeyboardShortcutsOpen(true);
+      }
+      // Keyboard shortcut for dark mode toggle
+      if ((e.metaKey || e.ctrlKey) && e.key === "d") {
+        e.preventDefault();
+        setTheme(theme === "dark" ? "light" : "dark");
+      }
+      // Keyboard shortcut for new ticket
+      if ((e.metaKey || e.ctrlKey) && e.key === "n" && !e.shiftKey) {
+        e.preventDefault();
+        router.push("/invoices?new=ticket");
+      }
     };
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [toggleSidebar]);
+  }, [toggleSidebar, theme, router, setTheme]);
 
   useEffect(() => { setMounted(true); }, []);
   if (!mounted) return null;
@@ -586,7 +682,43 @@ export default function DashboardLayout({ children }: SidebarProps) {
           </div>
 
           {/* Right - Actions */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            {/* Quick Create Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button className="gap-2 bg-purple-600 hover:bg-purple-700 text-white">
+                  <Plus className="h-4 w-4" />
+                  Quick Create
+                  <ChevronDown className="h-3 w-3 opacity-70" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={() => router.push("/invoices?new=ticket")}>
+                  <Ticket className="h-4 w-4 mr-2" />
+                  New Ticket
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push("/clients?new=true")}>
+                  <UserPlus className="h-4 w-4 mr-2" />
+                  New Client
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push("/invoices?new=invoice")}>
+                  <FileText className="h-4 w-4 mr-2" />
+                  New Invoice
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Keyboard Shortcuts Hint */}
+            <Button 
+              variant="outline" 
+              size="icon" 
+              className="h-9 w-9 rounded-lg border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200"
+              onClick={() => setKeyboardShortcutsOpen(true)}
+              title="Keyboard Shortcuts (?)"
+            >
+              <Keyboard className="h-4 w-4 text-slate-500" />
+            </Button>
+
             {/* Refresh */}
             <Button 
               variant="outline" 
@@ -625,16 +757,62 @@ export default function DashboardLayout({ children }: SidebarProps) {
               </span>
             </Button>
 
-            {/* Theme Toggle */}
-            <div className="flex items-center gap-1.5 px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg">
-              <span className="text-[10px] text-slate-400">☀</span>
-              <Switch 
-                checked={theme === "dark"} 
-                onCheckedChange={(c) => setTheme(c ? "dark" : "light")}
-                className="scale-75"
-              />
-              <span className="text-[10px] text-slate-400">🌙</span>
-            </div>
+            {/* Theme Toggle - Icon Button */}
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-9 w-9 rounded-lg border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+            >
+              {theme === "dark" ? (
+                <Sun className="h-4 w-4 text-slate-500" />
+              ) : (
+                <Moon className="h-4 w-4 text-slate-500" />
+              )}
+            </Button>
+
+            {/* User Avatar Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-9 w-9 rounded-full p-0 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200">
+                  <Avatar className="h-9 w-9">
+                    <AvatarImage src="" alt="Krish Walker" />
+                    <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-500 text-white text-sm font-medium">
+                      KW
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <div className="flex items-center gap-3 p-3">
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src="" alt="Krish Walker" />
+                    <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-500 text-white">
+                      KW
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="text-sm font-medium">Krish Walker</p>
+                    <p className="text-xs text-slate-500">krish@alignacademy.com</p>
+                  </div>
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => router.push("/settings")}>
+                  <Settings className="h-4 w-4 mr-2" />
+                  Settings
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push("/help")}>
+                  <HelpCircle className="h-4 w-4 mr-2" />
+                  Help & Support
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="text-red-600" onClick={() => { alert("Signed out"); console.log("[Auth] User signed out at", new Date().toISOString()); }}>
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </header>
 
@@ -645,6 +823,9 @@ export default function DashboardLayout({ children }: SidebarProps) {
 
         {/* Global Command Palette */}
         <CommandPalette open={commandPaletteOpen} onOpenChange={setCommandPaletteOpen} />
+        
+        {/* Keyboard Shortcuts Modal */}
+        <KeyboardShortcutsModal open={keyboardShortcutsOpen} onOpenChange={setKeyboardShortcutsOpen} />
         
         {/* Scroll to Top Button */}
         <ScrollToTop threshold={300} />

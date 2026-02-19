@@ -53,6 +53,7 @@ import {
   User,
   Calendar,
   ChevronRight,
+  Printer,
 } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 import {
@@ -284,6 +285,40 @@ export default function InvoicesPage() {
     a.click();
   };
 
+  const printInvoice = () => {
+    const printContent = document.getElementById('invoices-table');
+    if (!printContent) return;
+    
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+    
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Invoices - Print View</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; }
+            h1 { margin-bottom: 20px; }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #f5f5f5; }
+            .status-paid { color: green; }
+            .status-pending { color: orange; }
+            .status-overdue { color: red; }
+            .status-draft { color: gray; }
+          </style>
+        </head>
+        <body>
+          <h1>Invoices Report</h1>
+          <p>Generated: ${new Date().toLocaleDateString()}</p>
+          ${printContent.innerHTML}
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+  };
+
   return (
     <DashboardLayout>
       <div className="p-6 space-y-6">
@@ -376,6 +411,7 @@ export default function InvoicesPage() {
               <Input placeholder="Search invoices..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10 w-full" />
             </div>
             <Button variant="outline" size="sm" onClick={exportCSV}><Download className="h-4 w-4 mr-1" />Export</Button>
+            <Button variant="outline" size="sm" onClick={printInvoice}><Printer className="h-4 w-4 mr-1" />Print</Button>
             <Button variant="outline" size="sm" onClick={() => toast({ title: "Notifications enabled", description: "You'll receive invoice alerts", variant: "info" })}><Bell className="h-4 w-4" /></Button>
             <Button size="sm" onClick={handleCreateInvoice}><Plus className="h-4 w-4 mr-1" />Create Invoice</Button>
           </div>
@@ -405,7 +441,7 @@ export default function InvoicesPage() {
         {/* Invoice Table */}
         <Card className="bg-white dark:bg-[#1a1a1a]">
           <CardContent className="p-0">
-            <Table>
+            <Table id="invoices-table">
               <TableHeader>
                 <TableRow>
                   <TableHead>Invoice</TableHead>

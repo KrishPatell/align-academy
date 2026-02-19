@@ -19,7 +19,7 @@ import {
 import { 
   Search, Download, FileText, Calendar, BarChart3, PieChart, 
   LineChart, Clock, Users, DollarSign, TrendingUp, Filter,
-  Play, CheckCircle, XCircle, Zap, Eye, Loader2, X
+  Play, CheckCircle, XCircle, Zap, Eye, Loader2, X, Printer, Share2, Clock8
 } from "lucide-react";
 
 const reportTemplates = [
