@@ -270,7 +270,7 @@ export default function DashboardPage() {
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" className="dark:stroke-slate-700" />
                 <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 12 }} dy={10} />
                 <YAxis axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 12 }} tickFormatter={(v) => `$${v / 1000}k`} dx={-10} />
-                <Tooltip contentStyle={{ backgroundColor: "white", border: "1px solid #e2e8f0", borderRadius: "8px" }} formatter={(value: number) => formatCurrency(value)} />
+                <Tooltip contentStyle={{ backgroundColor: "white", border: "1px solid #e2e8f0", borderRadius: "8px" }} formatter={(value: any) => formatCurrency(Number(value))} />
                 <Legend wrapperStyle={{ paddingTop: "20px" }} />
                 <Bar dataKey="Courses" stackId={viewMode === "stacked" ? "a" : undefined} fill="#7c3aed" radius={[4, 4, 0, 0]} />
                 <Bar dataKey="Membership" stackId={viewMode === "stacked" ? "a" : undefined} fill="#3b82f6" radius={[4, 4, 0, 0]} />
