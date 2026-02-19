@@ -182,52 +182,52 @@ export default function ClientsPage() {
         </div>
 
         {/* Clients Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 stagger-children">
           {filteredClients.map((client) => (
             <Card 
               key={client.id} 
-              className="bg-white dark:bg-[#1a1a1a] hover:shadow-lg transition-all duration-300 cursor-pointer group"
+              className="bg-white dark:bg-[#1a1a1a] hover:shadow-xl transition-all duration-300 cursor-pointer group card-hover-lift border-glow"
               onClick={() => openClientDetail(client)}
             >
               <CardContent className="pt-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-semibold text-lg">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-semibold text-lg group-hover:scale-110 transition-transform duration-300">
                       {client.name.charAt(0)}
                     </div>
                     <div>
-                      <h3 className="font-semibold group-hover:text-purple-600 transition-colors">{client.name}</h3>
+                      <h3 className="font-semibold group-hover:text-purple-600 transition-colors duration-200">{client.name}</h3>
                       <p className="text-sm text-slate-500">{client.contact}</p>
                     </div>
                   </div>
-                  <Badge className={client.status === "active" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"}>
+                  <Badge className={`badge-pop ${client.status === "active" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"}`}>
                     {client.status}
                   </Badge>
                 </div>
                 
                 <div className="space-y-2 text-sm">
-                  <div className="flex items-center gap-2 text-slate-500">
+                  <div className="flex items-center gap-2 text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors">
                     <Mail className="h-4 w-4" />
                     <span className="truncate">{client.email}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-slate-500">
+                  <div className="flex items-center gap-2 text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors">
                     <Globe className="h-4 w-4" />
                     <span>{client.website}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-slate-500">
+                  <div className="flex items-center gap-2 text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors">
                     <DollarSign className="h-4 w-4" />
                     <span>{client.spent} · {client.plan}</span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2 mt-4 pt-4 border-t">
-                  <Button variant="outline" size="sm" className="flex-1" onClick={(e) => { e.stopPropagation(); openClientDetail(client); }}>
+                  <Button variant="outline" size="sm" className="flex-1 hover-scale" onClick={(e) => { e.stopPropagation(); openClientDetail(client); }}>
                     <Eye className="h-4 w-4 mr-1" /> View
                   </Button>
-                  <Button variant="outline" size="sm" className="flex-1" onClick={(e) => { e.stopPropagation(); setSelectedClient(client); setIsEditOpen(true); }}>
+                  <Button variant="outline" size="sm" className="flex-1 hover-scale" onClick={(e) => { e.stopPropagation(); setSelectedClient(client); setIsEditOpen(true); }}>
                     <Edit className="h-4 w-4 mr-1" /> Edit
                   </Button>
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 icon-rotate">
                     <MoreHorizontal className="h-4 w-4" />
                   </Button>
                 </div>
