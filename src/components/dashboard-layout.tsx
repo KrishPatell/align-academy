@@ -33,6 +33,8 @@ import {
   Command,
   MoreHorizontal,
   LogOut,
+  RefreshCw,
+  Download,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -45,25 +47,6 @@ import {
 interface SidebarProps {
   children: React.ReactNode;
 }
-
-// Page title mapping
-const pageTitles: Record<string, string> = {
-  "/": "Overview",
-  "/analytics": "Analytics",
-  "/invoices": "Invoices",
-  "/clients": "Clients",
-  "/agents": "Agents & Teams",
-  "/knowledge": "Knowledge Base",
-  "/integrations": "Integrations",
-  "/sla": "SLA Compliance",
-  "/csat": "CSAT & NPS",
-  "/workload": "Workload Analytics",
-  "/reports": "Reports",
-  "/sites": "Sites & Servers",
-  "/feedback": "Feedback",
-  "/help": "Help & Support",
-  "/settings": "Settings",
-};
 
 // Breadcrumb mapping - defines parent pages
 const breadcrumbs: Record<string, { label: string; href: string }[]> = {
@@ -114,6 +97,10 @@ export default function DashboardLayout({ children }: SidebarProps) {
   const [mounted, setMounted] = useState(false);
   const [openMenus, setOpenMenus] = useState<string[]>(["Invoices"]);
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
+  const [currentDate] = useState(() => {
+    const now = new Date();
+    return now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  });
 
   // Keyboard shortcut for Command Palette
   useEffect(() => {
@@ -152,28 +139,8 @@ export default function DashboardLayout({ children }: SidebarProps) {
           </Link>
         </div>
 
-        {/* Search */}
-        <div className="p-4">
-          <button
-            onClick={() => setCommandPaletteOpen(true)}
-            className="w-full relative"
-          >
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-              <Input 
-                placeholder="Search anything" 
-                className="pl-10 bg-slate-100 dark:bg-slate-800 border-0 text-sm cursor-pointer" 
-                readOnly
-              />
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs text-slate-400 bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded pointer-events-none">
-                <Command className="h-3 w-3" />K
-              </div>
-            </div>
-          </button>
-        </div>
-
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto px-3 pb-4">
+        <nav className="flex-1 overflow-y-auto px-3 py-4">
           {/* Main Navigation */}
           <div className="mb-4">
             <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider px-3 mb-2">Main Navigation</p>
@@ -295,35 +262,65 @@ export default function DashboardLayout({ children }: SidebarProps) {
       <main className="flex-1 ml-64">
         {/* Header */}
         <header className="h-16 bg-white dark:bg-[#1a1a1a] border-b border-slate-200 dark:border-slate-800 px-6 sticky top-0 z-20 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            {/* Breadcrumb */}
-            <nav className="flex items-center gap-1 text-sm">
-              <Link href="/" className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 flex items-center gap-1">
-                <Home className="h-4 w-4" />
-              </Link>
-              {currentBreadcrumbs.map((crumb, idx) => (
-                <span key={idx} className="flex items-center gap-1">
-                  <ChevronRight className="h-4 w-4 text-slate-300" />
-                  {idx === currentBreadcrumbs.length - 1 ? (
-                    <span className="font-medium text-slate-900 dark:text-white">{crumb.label}</span>
-                  ) : (
-                    <Link href={crumb.href} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
-                      {crumb.label}
-                    </Link>
-                  )}
-                </span>
-              ))}
-            </nav>
+          {/* Left - Title */}
+          <div className="flex flex-col">
+            <h1 className="text-lg font-semibold text-slate-900 dark:text-white">
+              {currentBreadcrumbs[currentBreadcrumbs.length - 1]?.label || "Dashboard"}
+            </h1>
+            <p className="text-xs text-slate-400">
+              {currentDate} · All clouds
+            </p>
           </div>
+
+          {/* Right - Actions */}
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" className="relative">
-              <Bell className="h-5 w-5 text-slate-500" />
-              <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">3</span>
+            {/* Refresh */}
+            <Button 
+              variant="outline" 
+              size="icon" 
+              className="h-9 w-9 rounded-lg border-slate-200 dark:border-slate-700"
+            >
+              <RefreshCw className="h-4 w-4 text-slate-500" />
             </Button>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-slate-500">Light</span>
-              <Switch checked={theme === "dark"} onCheckedChange={(c) => setTheme(c ? "dark" : "light")} />
-              <span className="text-xs text-slate-500">Dark</span>
+
+            {/* Download */}
+            <Button 
+              variant="outline" 
+              size="icon" 
+              className="h-9 w-9 rounded-lg border-slate-200 dark:border-slate-700"
+            >
+              <Download className="h-4 w-4 text-slate-500" />
+            </Button>
+
+            {/* Search */}
+            <button
+              onClick={() => setCommandPaletteOpen(true)}
+              className="flex items-center gap-2 h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+            >
+              <Search className="h-4 w-4 text-slate-400" />
+              <span className="text-sm text-slate-400">Search</span>
+              <kbd className="hidden sm:flex items-center gap-1 text-xs text-slate-400 bg-slate-200 dark:bg-slate-600 px-1.5 py-0.5 rounded">
+                <Command className="h-3 w-3" />K
+              </kbd>
+            </button>
+
+            {/* Notifications */}
+            <Button variant="ghost" size="icon" className="relative h-9 w-9 rounded-lg">
+              <Bell className="h-5 w-5 text-slate-500" />
+              <span className="absolute -top-0.5 -right-0.5 h-4 w-4 bg-red-500 text-white text-[10px] font-medium rounded-full flex items-center justify-center">
+                3
+              </span>
+            </Button>
+
+            {/* Theme Toggle */}
+            <div className="flex items-center gap-1.5 px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg">
+              <span className="text-[10px] text-slate-400">☀</span>
+              <Switch 
+                checked={theme === "dark"} 
+                onCheckedChange={(c) => setTheme(c ? "dark" : "light")}
+                className="scale-75"
+              />
+              <span className="text-[10px] text-slate-400">🌙</span>
             </div>
           </div>
         </header>
