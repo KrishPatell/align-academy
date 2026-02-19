@@ -69,9 +69,9 @@ export default function SLAPage() {
     breached: { color: "bg-red-500", icon: XCircle, label: "Breached" },
   };
 
-  const priorityColors = {
-    Critical-100 text-red-700",
-    High:: "bg-red "bg-orange-100 text-orange-700",
+  const priorityColors: Record<string, string> = {
+    Critical: "bg-red-100 text-red-700",
+    High: "bg-orange-100 text-orange-700",
     Medium: "bg-blue-100 text-blue-700",
     Low: "bg-slate-100 text-slate-700",
   };

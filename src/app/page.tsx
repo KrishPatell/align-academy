@@ -159,6 +159,27 @@ export default function HomePage() {
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [filterPriority, setFilterPriority] = useState("all");
   const [selectedTicket, setSelectedTicket] = useState<typeof initialTickets[0] | null>(null);
+  const [quickStats, setQuickStats] = useState({
+    activeAgents: 12,
+    openTickets: 47,
+    avgResponseTime: "3.2m",
+    csatScore: 94.5,
+    resolvedToday: 156,
+    pendingSLA: 8,
+  });
+
+  // Simulate real-time metric updates
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setQuickStats(prev => ({
+        ...prev,
+        openTickets: prev.openTickets + Math.floor(Math.random() * 3) - 1,
+        resolvedToday: prev.resolvedToday + Math.floor(Math.random() * 2),
+        pendingSLA: Math.max(0, prev.pendingSLA + Math.floor(Math.random() * 3) - 2),
+      }));
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => { setMounted(true); }, []);
   if (!mounted) return null;
