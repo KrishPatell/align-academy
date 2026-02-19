@@ -1,7 +1,7 @@
 "use client";
 
 // Kravio Dashboard - Premium Support Platform
-// Version 3.8 - Relentless focus
+// Version 3.9 - Unmatched dedication
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
