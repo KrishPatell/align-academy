@@ -3,317 +3,131 @@
 import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/dashboard-layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Search,
-  Filter,
-  MoreHorizontal,
-  ChevronDown,
-  ChevronUp,
-  TrendingUp,
-  TrendingDown,
-  Clock,
-  AlertTriangle,
-  CheckCircle,
-  XCircle,
-  Calendar,
-  FileText,
-  User,
-  X,
-} from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter 
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Search, Filter, ChevronDown, ChevronUp, Clock, AlertTriangle, CheckCircle, XCircle, MoreHorizontal, Eye, MessageSquare, Calendar, User, ArrowRight } from "lucide-react";
 
-// SLA Data
 const slaMetrics = {
-  overall: 92.4,
-  firstResponse: 94.2,
-  resolution: 89.8,
-  breached: 23,
-  atRisk: 15,
+  overall: 94.2,
+  firstResponse: 96.5,
+  resolution: 91.8,
+  breached: 12,
+  atRisk: 8,
   onTrack: 156,
 };
 
-const slaByPriority = [
-  { priority: "High", total: 245, met: 228, rate: 93.1, target: 95 },
-  { priority: "Medium", total: 412, met: 385, rate: 93.4, target: 90 },
-  { priority: "Low", total: 189, met: 181, rate: 95.8, target: 85 },
+const tickets = [
+  { id: "TKT-001", title: "Login issues on mobile app", priority: "Critical", status: "on_track", client: "Acme Corp", agent: "Sarah M.", due: "2h", created: "2h ago" },
+  { id: "TKT-002", title: "Payment processing error", priority: "High", status: "at_risk", client: "TechStart", agent: "John D.", due: "1h", created: "3h ago" },
+  { id: "TKT-003", title: "API rate limit exceeded", priority: "High", status: "on_track", client: "Global Media", agent: "Emily R.", due: "4h", created: "5h ago" },
+  { id: "TKT-004", title: "Cannot export reports", priority: "Medium", status: "breached", client: "StartupXYZ", agent: "Mike T.", due: "Overdue", created: "1d ago" },
+  { id: "TKT-005", title: "Feature request: Dark mode", priority: "Low", status: "on_track", client: "DataFlow", agent: "Lisa A.", due: "2d", created: "2d ago" },
+  { id: "TKT-006", title: "Integration not working", priority: "High", status: "at_risk", client: "Acme Corp", agent: "Sarah M.", due: "30m", created: "4h ago" },
 ];
 
-const slaTickets = [
-  { id: "#2341", subject: "Payment failed on invoice", priority: "high", customer: "Umbrella Corp", created: "2026-02-19 10:30", due: "2026-02-19 14:30", status: "at_risk", agent: "Sarah M.", responseTime: "15m" },
-  { id: "#2342", subject: "Dashboard not loading", priority: "high", customer: "Acme Corp", created: "2026-02-19 09:15", due: "2026-02-19 13:15", status: "breached", agent: "John D.", responseTime: "2h 15m" },
-  { id: "#2343", subject: "Feature request: Export PDF", priority: "low", customer: "Globex Inc", created: "2026-02-19 08:00", due: "2026-02-21 08:00", status: "on_track", agent: "Emily R.", responseTime: "5m" },
-  { id: "#2344", subject: "API rate limit exceeded", priority: "medium", customer: "Initech", created: "2026-02-19 07:45", due: "2026-02-19 15:45", status: "on_track", agent: "Mike T.", responseTime: "30m" },
-  { id: "#2345", subject: "Billing discrepancy", priority: "high", customer: "Wayne Ent", created: "2026-02-18 16:00", due: "2026-02-19 08:00", status: "breached", agent: "Sarah M.", responseTime: "4h 30m" },
+const priorityBreakdown = [
+  { priority: "Critical", total: 12, onTrack: 8, atRisk: 3, breached: 1, avgTime: "45m" },
+  { priority: "High", total: 34, onTrack: 22, atRisk: 8, breached: 4, avgTime: "2h" },
+  { priority: "Medium", total: 89, onTrack: 68, atRisk: 15, breached: 6, avgTime: "4h" },
+  { priority: "Low", total: 41, onTrack: 38, atRisk: 2, breached: 1, avgTime: "8h" },
 ];
-
-const statusConfig: Record<string, { bg: string; text: string; icon: any; label: string }> = {
-  on_track: { bg: "bg-green-100", text: "text-green-700", icon: CheckCircle, label: "On Track" },
-  at_risk: { bg: "bg-amber-100", text: "text-amber-700", icon: AlertTriangle, label: "At Risk" },
-  breached: { bg: "bg-red-100", text: "text-red-700", icon: XCircle, label: "Breached" },
-};
-
-const priorityColors: Record<string, string> = {
-  high: "bg-red-100 text-red-700",
-  medium: "bg-amber-100 text-amber-700",
-  low: "bg-green-100 text-green-700",
-};
-
-// Ticket Detail Modal
-function TicketDetailModal({ ticket, onClose }: { ticket: typeof slaTickets[0]; onClose: () => void }) {
-  const status = statusConfig[ticket.status];
-  const StatusIcon = status.icon;
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-      <div className="relative bg-white dark:bg-[#1a1a1a] rounded-xl shadow-xl w-full max-w-lg mx-4">
-        <div className="flex items-center justify-between p-4 border-b">
-          <div className="flex items-center gap-3">
-            <span className="text-lg font-bold text-purple-600">{ticket.id}</span>
-            <span className={`px-2 py-1 rounded-full text-xs font-medium ${priorityColors[ticket.priority]}`}>
-              {ticket.priority}
-            </span>
-          </div>
-          <Button variant="ghost" size="sm" onClick={onClose}>
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
-        <div className="p-4 space-y-4">
-          <div>
-            <h3 className="font-semibold text-lg">{ticket.subject}</h3>
-            <p className="text-sm text-slate-500">{ticket.customer}</p>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-sm text-slate-500">SLA Status</p>
-              <span className={`px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 w-fit ${status.bg} ${status.text}`}>
-                <StatusIcon className="h-3 w-3" />
-                {status.label}
-              </span>
-            </div>
-            <div>
-              <p className="text-sm text-slate-500">Response Time</p>
-              <p className="font-medium">{ticket.responseTime}</p>
-            </div>
-            <div>
-              <p className="text-sm text-slate-500">Created</p>
-              <p className="font-medium">{ticket.created}</p>
-            </div>
-            <div>
-              <p className="text-sm text-slate-500">Due</p>
-              <p className="font-medium">{ticket.due}</p>
-            </div>
-            <div>
-              <p className="text-sm text-slate-500">Assigned Agent</p>
-              <div className="flex items-center gap-2 mt-1">
-                <div className="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center text-xs">
-                  {ticket.agent.charAt(0)}
-                </div>
-                <span className="text-sm">{ticket.agent}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex gap-2 pt-4">
-            <Button className="flex-1 bg-purple-600 hover:bg-purple-700">View Full Ticket</Button>
-            <Button variant="outline">Assign</Button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export default function SLAPage() {
   const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
-  const [sortField, setSortField] = useState<string | null>(null);
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
-  const [priorityFilter, setPriorityFilter] = useState<string | null>(null);
-  const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [expandedPriority, setExpandedPriority] = useState<string[]>(["High", "Medium", "Low"]);
-  const [selectedTicket, setSelectedTicket] = useState<typeof slaTickets[0] | null>(null);
+  const [priorityFilter, setPriorityFilter] = useState("all");
+  const [selectedTicket, setSelectedTicket] = useState<typeof tickets[0] | null>(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [expandedPriority, setExpandedPriority] = useState<string | null>(null);
 
   useEffect(() => { setMounted(true); }, []);
   if (!mounted) return null;
 
-  const handleSort = (field: string) => {
-    if (sortField === field) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-    } else {
-      setSortField(field);
-      setSortDirection("asc");
-    }
-  };
-
-  const togglePriorityFilter = (priority: string) => {
-    setPriorityFilter(priorityFilter === priority ? null : priority);
-  };
-
-  const toggleStatusFilter = (status: string) => {
-    setStatusFilter(statusFilter === status ? null : status);
-  };
-
-  const togglePrioritySection = (priority: string) => {
-    setExpandedPriority(prev => 
-      prev.includes(priority) 
-        ? prev.filter(p => p !== priority)
-        : [...prev, priority]
-    );
-  };
-
-  const filteredTickets = slaTickets.filter(ticket => {
-    const matchesPriority = !priorityFilter || ticket.priority === priorityFilter;
-    const matchesStatus = !statusFilter || ticket.status === statusFilter;
-    const matchesSearch = !searchQuery || 
-      ticket.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ticket.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ticket.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ticket.agent.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesPriority && matchesStatus && matchesSearch;
+  const filteredTickets = tickets.filter(t => {
+    const matchesSearch = t.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                         t.id.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesPriority = priorityFilter === "all" || t.priority.toLowerCase() === priorityFilter;
+    return matchesSearch && matchesPriority;
   });
 
-  const sortedTickets = [...filteredTickets].sort((a, b) => {
-    if (!sortField) return 0;
-    const aVal = a[sortField as keyof typeof a];
-    const bVal = b[sortField as keyof typeof b];
-    if (aVal < bVal) return sortDirection === "asc" ? -1 : 1;
-    if (aVal > bVal) return sortDirection === "asc" ? 1 : -1;
-    return 0;
-  });
+  const openTicketDetail = (ticket: typeof tickets[0]) => {
+    setSelectedTicket(ticket);
+    setIsDetailOpen(true);
+  };
+
+  const statusConfig = {
+    on_track: { color: "bg-green-500", icon: CheckCircle, label: "On Track" },
+    at_risk: { color: "bg-amber-500", icon: AlertTriangle, label: "At Risk" },
+    breached: { color: "bg-red-500", icon: XCircle, label: "Breached" },
+  };
+
+  const priorityColors = {
+    Critical-100 text-red-700",
+    High:: "bg-red "bg-orange-100 text-orange-700",
+    Medium: "bg-blue-100 text-blue-700",
+    Low: "bg-slate-100 text-slate-700",
+  };
 
   return (
     <DashboardLayout>
       <div className="p-6 space-y-6">
-        {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
             <div className="text-sm text-slate-500 mb-1">Analytics / SLA Compliance</div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">SLA Compliance</h1>
-            <p className="text-slate-500 text-sm">Monitor and manage your Service Level Agreements</p>
+            <h1 className="text-2xl font-bold">SLA Compliance</h1>
+            <p className="text-slate-500 text-sm">Track service level agreement performance</p>
           </div>
-          <div className="flex items-center gap-2">
-            <Select defaultValue="30">
-              <SelectTrigger className="w-40">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="7">Last 7 days</SelectItem>
-                <SelectItem value="30">Last 30 days</SelectItem>
-                <SelectItem value="90">Last 90 days</SelectItem>
-              </SelectContent>
-            </Select>
+          <div className="flex gap-2">
+            <Button variant="outline" className="gap-2">
+              <Filter className="h-4 w-4" /> Filter
+            </Button>
           </div>
         </div>
 
-        {/* Stats */}
+        {/* Stats Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
-          <Card className="bg-white dark:bg-[#1a1a1a] border-2 border-transparent hover:border-purple-200 dark:hover:border-purple-800 transition-all">
+          <Card className="bg-white dark:bg-[#1a1a1a]">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-slate-500">Overall SLA</p>
-                <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
-                  <TrendingUp className="h-5 w-5 text-purple-600" />
-                </div>
-              </div>
-              <p className="text-2xl font-bold mt-2 bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">{slaMetrics.overall}%</p>
-              <div className="flex items-center gap-1 mt-2">
-                <TrendingUp className="h-4 w-4 text-green-500" />
-                <span className="text-xs text-green-500">+2.1%</span>
-              </div>
+              <p className="text-sm text-slate-500">Overall SLA</p>
+              <p className="text-2xl font-bold text-green-600">{slaMetrics.overall}%</p>
             </CardContent>
           </Card>
-          <Card className="bg-white dark:bg-[#1a1a1a] border-2 border-transparent hover:border-blue-200 dark:hover:border-blue-800 transition-all">
+          <Card className="bg-white dark:bg-[#1a1a1a]">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-slate-500">First Response</p>
-                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                  <Clock className="h-5 w-5 text-blue-600" />
-                </div>
-              </div>
-              <p className="text-2xl font-bold mt-2 text-blue-600">{slaMetrics.firstResponse}%</p>
-              <div className="flex items-center gap-1 mt-2">
-                <TrendingUp className="h-4 w-4 text-green-500" />
-                <span className="text-xs text-green-500">+1.5%</span>
-              </div>
+              <p className="text-sm text-slate-500">First Response</p>
+              <p className="text-2xl font-bold text-blue-600">{slaMetrics.firstResponse}%</p>
             </CardContent>
           </Card>
-          <Card className="bg-white dark:bg-[#1a1a1a] border-2 border-transparent hover:border-indigo-200 dark:hover:border-indigo-800 transition-all">
+          <Card className="bg-white dark:bg-[#1a1a1a]">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-slate-500">Resolution</p>
-                <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                  <CheckCircle className="h-5 w-5 text-indigo-600" />
-                </div>
-              </div>
-              <p className="text-2xl font-bold mt-2 text-indigo-600">{slaMetrics.resolution}%</p>
-              <div className="flex items-center gap-1 mt-2">
-                <TrendingDown className="h-4 w-4 text-red-500" />
-                <span className="text-xs text-red-500">-0.8%</span>
-              </div>
+              <p className="text-sm text-slate-500">Resolution</p>
+              <p className="text-2xl font-bold text-purple-600">{slaMetrics.resolution}%</p>
             </CardContent>
           </Card>
-          <Card className="bg-white dark:bg-[#1a1a1a] border-2 border-transparent hover:border-red-200 dark:hover:border-red-800 transition-all">
+          <Card className="bg-white dark:bg-[#1a1a1a]">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-slate-500">Breached</p>
-                <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
-                  <XCircle className="h-5 w-5 text-red-600" />
-                </div>
-              </div>
-              <p className="text-2xl font-bold mt-2 text-red-600">{slaMetrics.breached}</p>
-              <div className="flex items-center gap-1 mt-2">
-                <XCircle className="h-4 w-4 text-red-500" />
-                <span className="text-xs text-slate-500">tickets</span>
-              </div>
+              <p className="text-sm text-slate-500">Breached</p>
+              <p className="text-2xl font-bold text-red-600">{slaMetrics.breached}</p>
             </CardContent>
           </Card>
-          <Card className="bg-white dark:bg-[#1a1a1a] border-2 border-transparent hover:border-amber-200 dark:hover:border-amber-800 transition-all">
+          <Card className="bg-white dark:bg-[#1a1a1a]">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-slate-500">At Risk</p>
-                <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
-                  <AlertTriangle className="h-5 w-5 text-amber-600" />
-                </div>
-              </div>
-              <p className="text-2xl font-bold mt-2 text-amber-600">{slaMetrics.atRisk}</p>
-              <div className="flex items-center gap-1 mt-2">
-                <AlertTriangle className="h-4 w-4 text-amber-500" />
-                <span className="text-xs text-slate-500">tickets</span>
-              </div>
+              <p className="text-sm text-slate-500">At Risk</p>
+              <p className="text-2xl font-bold text-amber-600">{slaMetrics.atRisk}</p>
             </CardContent>
           </Card>
-          <Card className="bg-white dark:bg-[#1a1a1a] border-2 border-transparent hover:border-green-200 dark:hover:border-green-800 transition-all">
+          <Card className="bg-white dark:bg-[#1a1a1a]">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-slate-500">On Track</p>
-                <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                  <CheckCircle className="h-5 w-5 text-green-600" />
-                </div>
-              </div>
-              <p className="text-2xl font-bold mt-2 text-green-600">{slaMetrics.onTrack}</p>
-              <div className="flex items-center gap-1 mt-2">
-                <CheckCircle className="h-4 w-4 text-green-500" />
-                <span className="text-xs text-slate-500">tickets</span>
-              </div>
+              <p className="text-sm text-slate-500">On Track</p>
+              <p className="text-2xl font-bold text-green-600">{slaMetrics.onTrack}</p>
             </CardContent>
           </Card>
         </div>
@@ -322,36 +136,22 @@ export default function SLAPage() {
           <TabsList>
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="tickets">SLA Tickets</TabsTrigger>
-            <TabsTrigger value="bypriority">By Priority</TabsTrigger>
+            <TabsTrigger value="priority">By Priority</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="overview" className="mt-4 space-y-4">
+          <TabsContent value="overview" className="mt-4">
             <Card className="bg-white dark:bg-[#1a1a1a]">
               <CardHeader>
-                <CardTitle className="text-lg">SLA Compliance by Priority</CardTitle>
+                <CardTitle className="text-lg">SLA Performance Trend</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-6">
-                  {slaByPriority.map((item) => (
-                    <div key={item.priority} className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${priorityColors[item.priority.toLowerCase()]}`}>
-                            {item.priority}
-                          </span>
-                          <span className="text-sm text-slate-500">{item.total} tickets</span>
-                        </div>
-                        <div className="flex items-center gap-4">
-                          <span className="text-sm">Target: {item.target}%</span>
-                          <span className={`font-bold ${item.rate >= item.target ? 'text-green-600' : 'text-red-600'}`}>{item.rate}%</span>
-                        </div>
+                <div className="h-48 flex items-end justify-between gap-2">
+                  {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day, i) => (
+                    <div key={i} className="flex-1 flex flex-col items-center gap-2">
+                      <div className="w-full h-32 flex items-end gap-1">
+                        <div className="flex-1 bg-purple-500 rounded-t-md" style={{ height: `${70 + Math.random() * 30}%` }} />
                       </div>
-                      <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
-                        <div 
-                          className={`h-full rounded-full ${item.rate >= item.target ? 'bg-green-500' : 'bg-red-500'}`}
-                          style={{ width: `${Math.min(item.rate, 100)}%` }}
-                        />
-                      </div>
+                      <span className="text-xs text-slate-500">{day}</span>
                     </div>
                   ))}
                 </div>
@@ -359,203 +159,87 @@ export default function SLAPage() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="tickets" className="mt-4">
+          <TabsContent value="tickets" className="mt-4 space-y-4">
+            {/* Search & Filter */}
+            <div className="flex flex-col lg:flex-row gap-4">
+              <div className="relative flex-1 max-w-md">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <Input 
+                  placeholder="Search tickets..." 
+                  className="pl-10"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+              <div className="flex gap-2">
+                {["all", "critical", "high", "medium", "low"].map((p) => (
+                  <Button 
+                    key={p}
+                    variant={priorityFilter === p ? "default" : "outline"} 
+                    size="sm"
+                    onClick={() => setPriorityFilter(p)}
+                    className={priorityFilter === p ? "bg-purple-600" : ""}
+                  >
+                    {p.charAt(0).toUpperCase() + p.slice(1)}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            {/* Tickets Table */}
             <Card className="bg-white dark:bg-[#1a1a1a]">
-              <CardHeader>
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                  <CardTitle className="text-lg">SLA Tickets</CardTitle>
-                  <div className="flex flex-wrap items-center gap-2">
-                    {/* Priority Quick Filters */}
-                    <div className="flex items-center gap-1">
-                      <span className="text-xs text-slate-500 mr-1">Priority:</span>
-                      <Button
-                        variant={priorityFilter === "high" ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => togglePriorityFilter("high")}
-                        className={`h-7 text-xs ${priorityFilter === "high" ? "bg-red-500 hover:bg-red-600" : ""}`}
-                      >
-                        Critical
-                      </Button>
-                      <Button
-                        variant={priorityFilter === "medium" ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => togglePriorityFilter("medium")}
-                        className={`h-7 text-xs ${priorityFilter === "medium" ? "bg-amber-500 hover:bg-amber-600" : ""}`}
-                      >
-                        Medium
-                      </Button>
-                      <Button
-                        variant={priorityFilter === "low" ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => togglePriorityFilter("low")}
-                        className={`h-7 text-xs ${priorityFilter === "low" ? "bg-green-500 hover:bg-green-600" : ""}`}
-                      >
-                        Low
-                      </Button>
-                    </div>
-
-                    {/* Status Quick Filters */}
-                    <div className="flex items-center gap-1">
-                      <span className="text-xs text-slate-500 mr-1">Status:</span>
-                      <Button
-                        variant={statusFilter === "on_track" ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => toggleStatusFilter("on_track")}
-                        className={`h-7 text-xs gap-1 ${statusFilter === "on_track" ? "bg-green-500 hover:bg-green-600" : ""}`}
-                      >
-                        <CheckCircle className="h-3 w-3" /> On Track
-                      </Button>
-                      <Button
-                        variant={statusFilter === "at_risk" ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => toggleStatusFilter("at_risk")}
-                        className={`h-7 text-xs gap-1 ${statusFilter === "at_risk" ? "bg-amber-500 hover:bg-amber-600" : ""}`}
-                      >
-                        <AlertTriangle className="h-3 w-3" /> At Risk
-                      </Button>
-                      <Button
-                        variant={statusFilter === "breached" ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => toggleStatusFilter("breached")}
-                        className={`h-7 text-xs gap-1 ${statusFilter === "breached" ? "bg-red-500 hover:bg-red-600" : ""}`}
-                      >
-                        <XCircle className="h-3 w-3" /> Breached
-                      </Button>
-                    </div>
-
-                    {/* Clear Filters */}
-                    {(priorityFilter || statusFilter) && (
-                      <Button variant="ghost" size="sm" onClick={() => { setPriorityFilter(null); setStatusFilter(null); }} className="h-7 text-xs">
-                        <X className="h-3 w-3 mr-1" /> Clear
-                      </Button>
-                    )}
-
-                    {/* Search */}
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 text-slate-400" />
-                      <Input 
-                        placeholder="Search tickets..." 
-                        className="w-64 pl-9 h-7 text-xs" 
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="p-0">
-                {/* Filter Results Summary */}
-                <div className="flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border-b">
-                  <div className="flex items-center gap-2 text-sm text-slate-500">
-                    <FileText className="h-4 w-4" />
-                    <span>Showing <span className="font-medium text-slate-700 dark:text-slate-300">{sortedTickets.length}</span> of <span className="font-medium text-slate-700 dark:text-slate-300">{slaTickets.length}</span> tickets</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {(priorityFilter || statusFilter || searchQuery) && (
-                      <div className="flex items-center gap-1 text-xs">
-                        <span className="text-slate-500">Active filters:</span>
-                        {priorityFilter && (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-100 text-red-700 rounded-full">
-                            {priorityFilter === 'high' ? 'Critical' : priorityFilter}
-                            <X className="h-3 w-3 cursor-pointer" onClick={() => setPriorityFilter(null)} />
-                          </span>
-                        )}
-                        {statusFilter && (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-slate-200 text-slate-700 rounded-full">
-                            {statusConfig[statusFilter]?.label}
-                            <X className="h-3 w-3 cursor-pointer" onClick={() => setStatusFilter(null)} />
-                          </span>
-                        )}
-                        {searchQuery && (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-100 text-purple-700 rounded-full">
-                            "{searchQuery}"
-                            <X className="h-3 w-3 cursor-pointer" onClick={() => setSearchQuery("")} />
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
+              <CardContent className="pt-6">
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>
                       <tr className="border-b">
-                        <th className="text-left py-3 px-4 text-xs font-medium text-slate-500 uppercase cursor-pointer" onClick={() => handleSort("id")}>
-                          <div className="flex items-center gap-1">Ticket {sortField === "id" && (sortDirection === "asc" ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />)}</div>
-                        </th>
-                        <th className="text-left py-3 px-4 text-xs font-medium text-slate-500 uppercase">Subject</th>
-                        <th className="text-left py-3 px-4 text-xs font-medium text-slate-500 uppercase cursor-pointer hover:text-purple-600" onClick={() => handleSort("priority")}>
-                          <div className="flex items-center gap-1">Priority {sortField === "priority" && (sortDirection === "asc" ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />)}</div>
-                        </th>
-                        <th className="text-left py-3 px-4 text-xs font-medium text-slate-500 uppercase">Customer</th>
-                        <th className="text-left py-3 px-4 text-xs font-medium text-slate-500 uppercase">Due</th>
-                        <th className="text-left py-3 px-4 text-xs font-medium text-slate-500 uppercase cursor-pointer hover:text-purple-600" onClick={() => handleSort("status")}>
-                          <div className="flex items-center gap-1">SLA Status {sortField === "status" && (sortDirection === "asc" ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />)}</div>
-                        </th>
-                        <th className="text-left py-3 px-4 text-xs font-medium text-slate-500 uppercase">Agent</th>
-                        <th className="text-left py-3 px-4 text-xs font-medium text-slate-500 uppercase">Response</th>
-                        <th className="text-right py-3 px-4 text-xs font-medium text-slate-500 uppercase">Actions</th>
+                        <th className="text-left py-3 px-4 font-medium text-slate-500">Ticket</th>
+                        <th className="text-left py-3 px-4 font-medium text-slate-500">Priority</th>
+                        <th className="text-left py-3 px-4 font-medium text-slate-500">Status</th>
+                        <th className="text-left py-3 px-4 font-medium text-slate-500">Client</th>
+                        <th className="text-left py-3 px-4 font-medium text-slate-500">Agent</th>
+                        <th className="text-left py-3 px-4 font-medium text-slate-500">Due</th>
+                        <th className="text-left py-3 px-4 font-medium text-slate-500">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {sortedTickets.map((ticket) => {
-                        const status = statusConfig[ticket.status];
+                      {filteredTickets.map((ticket) => {
+                        const status = statusConfig[ticket.status as keyof typeof statusConfig];
                         const StatusIcon = status.icon;
                         return (
                           <tr 
                             key={ticket.id} 
-                            className="border-b hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 dark:hover:from-purple-900/20 dark:hover:to-indigo-900/20 cursor-pointer transition-all duration-200 group"
-                            onClick={() => setSelectedTicket(ticket)}
+                            className="border-b hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer transition-colors"
+                            onClick={() => openTicketDetail(ticket)}
                           >
-                            <td className="py-3 px-4 font-medium text-purple-600">{ticket.id}</td>
-                            <td className="py-3 px-4">{ticket.subject}</td>
                             <td className="py-3 px-4">
-                              <span 
-                                className={`px-2 py-1 rounded-full text-xs font-medium cursor-pointer hover:ring-2 hover:ring-offset-1 transition-all ${priorityColors[ticket.priority]} ${priorityFilter === ticket.priority ? 'ring-2 ring-purple-500' : ''}`}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  togglePriorityFilter(ticket.priority);
-                                }}
-                              >
-                                {ticket.priority === 'high' ? 'Critical' : ticket.priority}
-                              </span>
+                              <div>
+                                <p className="font-medium">{ticket.id}</p>
+                                <p className="text-sm text-slate-500 truncate max-w-xs">{ticket.title}</p>
+                              </div>
                             </td>
-                            <td className="py-3 px-4">{ticket.customer}</td>
-                            <td className="py-3 px-4 text-sm">{ticket.due}</td>
                             <td className="py-3 px-4">
-                              <span 
-                                className={`px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 w-fit cursor-pointer hover:ring-2 hover:ring-offset-1 transition-all ${status.bg} ${status.text} ${statusFilter === ticket.status ? 'ring-2 ring-purple-500' : ''}`}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  toggleStatusFilter(ticket.status);
-                                }}
-                              >
-                                <StatusIcon className="h-3 w-3" />
-                                {status.label}
-                              </span>
+                              <Badge className={priorityColors[ticket.priority as keyof typeof priorityColors]}>
+                                {ticket.priority}
+                              </Badge>
                             </td>
                             <td className="py-3 px-4">
                               <div className="flex items-center gap-2">
-                                <div className="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center text-xs">
-                                  {ticket.agent.charAt(0)}
-                                </div>
-                                <span className="text-sm">{ticket.agent}</span>
+                                <StatusIcon className={`h-4 w-4 ${status.color}`} />
+                                <span className="text-sm">{status.label}</span>
                               </div>
                             </td>
-                            <td className="py-3 px-4 text-sm">{ticket.responseTime}</td>
-                            <td className="py-3 px-4 text-right" onClick={(e) => e.stopPropagation()}>
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                    <MoreHorizontal className="h-4 w-4" />
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                  <DropdownMenuItem onClick={() => setSelectedTicket(ticket)}>View details</DropdownMenuItem>
-                                  <DropdownMenuItem>Extend SLA</DropdownMenuItem>
-                                  <DropdownMenuItem>Assign to...</DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
+                            <td className="py-3 px-4 text-slate-600">{ticket.client}</td>
+                            <td className="py-3 px-4 text-slate-600">{ticket.agent}</td>
+                            <td className="py-3 px-4">
+                              <span className={ticket.due === "Overdue" ? "text-red-600 font-medium" : ""}>
+                                {ticket.due}
+                              </span>
+                            </td>
+                            <td className="py-3 px-4">
+                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                <Eye className="h-4 w-4" />
+                              </Button>
                             </td>
                           </tr>
                         );
@@ -567,77 +251,120 @@ export default function SLAPage() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="bypriority" className="mt-4">
-            <Card className="bg-white dark:bg-[#1a1a1a]">
-              <CardHeader>
-                <CardTitle className="text-lg">SLA by Priority</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 gap-4">
-                  {slaByPriority.map((item) => (
-                    <div key={item.priority} className="rounded-xl border overflow-hidden">
-                      {/* Collapsible Header */}
-                      <div 
-                        className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                        onClick={() => togglePrioritySection(item.priority)}
-                      >
-                        <div className="flex items-center gap-4">
-                          {expandedPriority.includes(item.priority) ? (
-                            <ChevronDown className="h-5 w-5 text-slate-400" />
-                          ) : (
-                            <ChevronUp className="h-5 w-5 text-slate-400" />
-                          )}
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${priorityColors[item.priority.toLowerCase()]}`}>
-                            {item.priority}
-                          </span>
-                          <span className="text-sm text-slate-500">{item.total} tickets</span>
-                        </div>
-                        <div className="flex items-center gap-4">
-                          <span className="text-sm">Target: {item.target}%</span>
-                          <span className={`text-2xl font-bold ${item.rate >= item.target ? 'text-green-600' : 'text-red-600'}`}>{item.rate}%</span>
-                        </div>
-                      </div>
-                      
-                      {/* Collapsible Content */}
-                      {expandedPriority.includes(item.priority) && (
-                        <div className="p-4 border-t">
-                          <div className="h-3 bg-slate-100 rounded-full overflow-hidden mb-4">
-                            <div 
-                              className={`h-full rounded-full ${item.rate >= item.target ? 'bg-green-500' : 'bg-red-500'}`}
-                              style={{ width: `${Math.min(item.rate, 100)}%` }}
-                            />
-                          </div>
-                          <div className="grid grid-cols-3 gap-4 text-center">
-                            <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-900">
-                              <p className="text-2xl font-bold">{item.total}</p>
-                              <p className="text-xs text-slate-500">Total</p>
-                            </div>
-                            <div className="p-3 rounded-lg bg-green-50 dark:bg-green-900/20">
-                              <p className="text-2xl font-bold text-green-600">{item.met}</p>
-                              <p className="text-xs text-slate-500">SLA Met</p>
-                            </div>
-                            <div className="p-3 rounded-lg bg-red-50 dark:bg-red-900/20">
-                              <p className="text-2xl font-bold text-red-600">{item.total - item.met}</p>
-                              <p className="text-xs text-slate-500">Breached</p>
-                            </div>
-                          </div>
-                        </div>
+          <TabsContent value="priority" className="mt-4 space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {priorityBreakdown.map((item, idx) => (
+                <Card 
+                  key={idx} 
+                  className="bg-white dark:bg-[#1a1a1a] cursor-pointer transition-all hover:shadow-lg"
+                  onClick={() => setExpandedPriority(expandedPriority === item.priority ? null : item.priority)}
+                >
+                  <CardContent className="pt-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <Badge className={priorityColors[item.priority as keyof typeof priorityColors]}>
+                        {item.priority}
+                      </Badge>
+                      {expandedPriority === item.priority ? (
+                        <ChevronUp className="h-5 w-5 text-slate-400" />
+                      ) : (
+                        <ChevronDown className="h-5 w-5 text-slate-400" />
                       )}
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                    <p className="text-3xl font-bold mb-1">{item.total}</p>
+                    <p className="text-sm text-slate-500">tickets</p>
+                    
+                    <div className="mt-4 space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-slate-500">On Track</span>
+                        <span className="font-medium text-green-600">{item.onTrack}</span>
+                      </div>
+                      <Progress value={(item.onTrack / item.total) * 100} className="h-2" />
+                    </div>
+
+                    {expandedPriority === item.priority && (
+                      <div className="mt-4 pt-4 border-t space-y-3 animate-fade-in">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-slate-500">At Risk</span>
+                          <span className="font-medium text-amber-600">{item.atRisk}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-slate-500">Breached</span>
+                          <span className="font-medium text-red-600">{item.breached}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-slate-500">Avg. Time</span>
+                          <span className="font-medium">{item.avgTime}</span>
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </TabsContent>
         </Tabs>
 
-        {/* Ticket Detail Modal */}
-        {selectedTicket && (
-          <TicketDetailModal 
-            ticket={selectedTicket} 
-            onClose={() => setSelectedTicket(null)} 
-          />
-        )}
+        {/* Ticket Detail Dialog */}
+        <Dialog open={isDetailOpen} onOpenChange={setIsDetailOpen}>
+          <DialogContent className="max-w-2xl">
+            {selectedTicket && (
+              <>
+                <DialogHeader>
+                  <div className="flex items-center gap-3">
+                    <Badge className={priorityColors[selectedTicket.priority as keyof typeof priorityColors]}>
+                      {selectedTicket.priority}
+                    </Badge>
+                    <DialogTitle>{selectedTicket.id}</DialogTitle>
+                  </div>
+                </DialogHeader>
+                
+                <div className="py-4 space-y-4">
+                  <div>
+                    <h3 className="text-lg font-semibold">{selectedTicket.title}</h3>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800">
+                      <div className="flex items-center gap-2 mb-1">
+                        <User className="h-4 w-4 text-slate-400" />
+                        <span className="text-sm text-slate-500">Client</span>
+                      </div>
+                      <p className="font-medium">{selectedTicket.client}</p>
+                    </div>
+                    <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800">
+                      <div className="flex items-center gap-2 mb-1">
+                        <User className="h-4 w-4 text-slate-400" />
+                        <span className="text-sm text-slate-500">Agent</span>
+                      </div>
+                      <p className="font-medium">{selectedTicket.agent}</p>
+                    </div>
+                    <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Clock className="h-4 w-4 text-slate-400" />
+                        <span className="text-sm text-slate-500">Due In</span>
+                      </div>
+                      <p className="font-medium">{selectedTicket.due}</p>
+                    </div>
+                    <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Calendar className="h-4 w-4 text-slate-400" />
+                        <span className="text-sm text-slate-500">Created</span>
+                      </div>
+                      <p className="font-medium">{selectedTicket.created}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setIsDetailOpen(false)}>Close</Button>
+                  <Button className="bg-purple-600 hover:bg-purple-700 gap-2">
+                    <MessageSquare className="h-4 w-4" /> Reply
+                  </Button>
+                </DialogFooter>
+              </>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </DashboardLayout>
   );
