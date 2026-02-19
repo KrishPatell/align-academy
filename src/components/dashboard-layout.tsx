@@ -1,7 +1,7 @@
 "use client";
 
 // Kravio Dashboard - Premium Support Platform
-// Version 4.6 - Beast mode
+// Version 4.7 - David Goggins mode
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
