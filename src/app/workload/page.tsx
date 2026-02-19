@@ -64,8 +64,8 @@ export default function WorkloadPage() {
   };
 
   const getCapacityWarning = (capacity: number) => {
-    if (capacity >= 90) return { icon: AlertTriangle, message: "Critical capacity - immediate attention needed", color: "text-red-600" };
-    if (capacity >= 75) return { icon: AlertTriangle, message: "High capacity - consider redistributing tickets", color: "text-amber-600" };
+    if (capacity >= 90) return { message: "Critical capacity - immediate attention needed", color: "text-red-600 bg-red-50 dark:bg-red-900/20" };
+    if (capacity >= 75) return { message: "High capacity - consider redistributing tickets", color: "text-amber-600 bg-amber-50 dark:bg-amber-900/20" };
     return null;
   };
 
@@ -221,8 +221,8 @@ export default function WorkloadPage() {
                       
                       {/* Capacity Warning */}
                       {warning && (
-                        <div className={`flex items-center gap-2 p-2 rounded-lg mb-3 ${warning.color} bg-opacity-10`}>
-                          <warning.icon className="h-4 w-4" />
+                        <div className={`flex items-center gap-2 p-2 rounded-lg mb-3 ${warning.color}`}>
+                          <AlertTriangle className="h-4 w-4" />
                           <span className="text-sm">{warning.message}</span>
                         </div>
                       )}
@@ -386,8 +386,8 @@ export default function WorkloadPage() {
                     </div>
                   </div>
                   {getCapacityWarning(selectedAgent.capacity) && (
-                    <div className={`flex items-center gap-2 p-3 rounded-lg ${getCapacityWarning(selectedAgent.capacity)?.color} bg-opacity-10`}>
-                      {getCapacityWarning(selectedAgent.capacity) && <getCapacityWarning(selectedAgent.capacity)!.icon className="h-4 w-4" />}
+                    <div className={`flex items-center gap-2 p-3 rounded-lg ${getCapacityWarning(selectedAgent.capacity)?.color}`}>
+                      <AlertTriangle className="h-4 w-4" />
                       <span className="text-sm">{getCapacityWarning(selectedAgent.capacity)?.message}</span>
                     </div>
                   )}
