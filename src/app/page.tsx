@@ -45,31 +45,82 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-// Mock data
-const kpiData = [
-  { label: "Current Tickets", value: "3,484", change: 7.1, trend: "up", sparkline: [30, 45, 35, 50, 65, 55, 70] },
-  { label: "Daily Avg. Resolution", value: "486", change: 2, trend: "up", sparkline: [40, 42, 38, 45, 48, 46, 50] },
-  { label: "SLA Compliance Rate", value: "92%", change: -1.3, trend: "down", sparkline: [95, 94, 93, 92, 93, 92, 91] },
-];
-
-const ticketVolumeData = [
-  { day: "Sun", volume: 420 },
-  { day: "Mon", volume: 512 },
-  { day: "Tue", volume: 584 },
-  { day: "Wed", volume: 548 },
-  { day: "Thu", volume: 620 },
-  { day: "Fri", volume: 590 },
-  { day: "Sat", volume: 380 },
-];
-
-const updates = [
-  { type: "ticket", message: "Ticket #2341 status changed to 'In Progress'", time: "2 min ago", icon: "ticket" },
-  { type: "client", message: "New client 'Acme Corp' registered", time: "15 min ago", icon: "user" },
-  { type: "assign", message: "Ticket #2338 reassigned to Sarah", time: "32 min ago", icon: "assign" },
-  { type: "sla", message: "SLA breach risk: Ticket #2319", time: "1 hour ago", icon: "alert" },
-  { type: "article", message: "New KB article published", time: "2 hours ago", icon: "file" },
-  { type: "feedback", message: "New customer feedback received", time: "3 hours ago", icon: "message" },
-];
+// Data for different time periods
+const periodData: Record<string, { 
+  kpis: { label: string; value: string; change: number; trend: string; sparkline: number[] }[];
+  volume: { day: string; volume: number }[];
+  updates: { type: string; message: string; time: string; icon: string }[];
+}> = {
+  today: {
+    kpis: [
+      { label: "Current Tickets", value: "3,484", change: 7.1, trend: "up", sparkline: [30, 45, 35, 50, 65, 55, 70] },
+      { label: "Daily Avg. Resolution", value: "486", change: 2, trend: "up", sparkline: [40, 42, 38, 45, 48, 46, 50] },
+      { label: "SLA Compliance Rate", value: "92%", change: -1.3, trend: "down", sparkline: [95, 94, 93, 92, 93, 92, 91] },
+      { label: "First Response Time", value: "4.2m", change: -8.5, trend: "down", sparkline: [6, 5, 5.5, 4.8, 4.5, 4.2, 4] },
+    ],
+    volume: [
+      { day: "Sun", volume: 420 },
+      { day: "Mon", volume: 512 },
+      { day: "Tue", volume: 584 },
+      { day: "Wed", volume: 548 },
+      { day: "Thu", volume: 620 },
+      { day: "Fri", volume: 590 },
+      { day: "Sat", volume: 380 },
+    ],
+    updates: [
+      { type: "ticket", message: "Ticket #2341 status changed to 'In Progress'", time: "2 min ago", icon: "ticket" },
+      { type: "client", message: "New client 'Acme Corp' registered", time: "15 min ago", icon: "user" },
+      { type: "assign", message: "Ticket #2338 reassigned to Sarah", time: "32 min ago", icon: "assign" },
+      { type: "sla", message: "SLA breach risk: Ticket #2319", time: "1 hour ago", icon: "alert" },
+    ],
+  },
+  yesterday: {
+    kpis: [
+      { label: "Current Tickets", value: "3,256", change: 3.2, trend: "up", sparkline: [28, 35, 40, 38, 42, 45, 48] },
+      { label: "Daily Avg. Resolution", value: "412", change: -5, trend: "down", sparkline: [45, 44, 42, 40, 41, 39, 38] },
+      { label: "SLA Compliance Rate", value: "94%", change: 0.8, trend: "up", sparkline: [92, 93, 94, 93, 94, 95, 94] },
+      { label: "First Response Time", value: "5.1m", change: -12.3, trend: "down", sparkline: [7, 6.5, 6, 5.8, 5.5, 5.2, 5] },
+    ],
+    volume: [
+      { day: "Sun", volume: 380 },
+      { day: "Mon", volume: 456 },
+      { day: "Tue", volume: 520 },
+      { day: "Wed", volume: 490 },
+      { day: "Thu", volume: 580 },
+      { day: "Fri", volume: 540 },
+      { day: "Sat", volume: 320 },
+    ],
+    updates: [
+      { type: "ticket", message: "Ticket #2335 resolved successfully", time: "1 hour ago", icon: "ticket" },
+      { type: "client", message: "New client 'TechStart' registered", time: "3 hours ago", icon: "user" },
+      { type: "assign", message: "Ticket #2330 reassigned to John", time: "5 hours ago", icon: "assign" },
+      { type: "article", message: "New KB article published", time: "6 hours ago", icon: "file" },
+    ],
+  },
+  week: {
+    kpis: [
+      { label: "Current Tickets", value: "3,847", change: 12.5, trend: "up", sparkline: [35, 42, 48, 55, 62, 58, 65] },
+      { label: "Daily Avg. Resolution", value: "478", change: 8, trend: "up", sparkline: [38, 40, 42, 45, 47, 46, 48] },
+      { label: "SLA Compliance Rate", value: "89%", change: -3.2, trend: "down", sparkline: [96, 95, 94, 92, 91, 90, 89] },
+      { label: "First Response Time", value: "5.8m", change: -15.2, trend: "down", sparkline: [8, 7.5, 7, 6.5, 6.2, 6, 5.5] },
+    ],
+    volume: [
+      { day: "Sun", volume: 380 },
+      { day: "Mon", volume: 520 },
+      { day: "Tue", volume: 640 },
+      { day: "Wed", volume: 580 },
+      { day: "Thu", volume: 690 },
+      { day: "Fri", volume: 650 },
+      { day: "Sat", volume: 420 },
+    ],
+    updates: [
+      { type: "ticket", message: "Ticket #2300-#2310 batch resolved", time: "2 days ago", icon: "ticket" },
+      { type: "client", message: "5 new clients registered this week", time: "2 days ago", icon: "user" },
+      { type: "sla", message: "SLA breach on 3 tickets last week", time: "3 days ago", icon: "alert" },
+      { type: "feedback", message: "New customer feedback received", time: "4 days ago", icon: "message" },
+    ],
+  },
+};
 
 const initialTickets = [
   { id: "#2319", subject: "Payment failed on invoice", priority: "high", agent: "Sarah M.", agentInitials: "SM", status: "In Review", slaDue: "2h left", slaStatus: "warning" },
@@ -77,6 +128,9 @@ const initialTickets = [
   { id: "#2321", subject: "Feature request: Dark mode", priority: "low", agent: "Emily R.", agentInitials: "ER", status: "In Progress", slaDue: "3d left", slaStatus: "ok" },
   { id: "#2322", subject: "API integration issue", priority: "high", agent: "Mike T.", agentInitials: "MT", status: "In Review", slaDue: "4h left", slaStatus: "warning" },
   { id: "#2323", subject: "Billing question", priority: "medium", agent: "Sarah M.", agentInitials: "SM", status: "In Progress", slaDue: "6h left", slaStatus: "ok" },
+  { id: "#2324", subject: "Account locked out", priority: "high", agent: "John D.", agentInitials: "JD", status: "Open", slaDue: "30m left", slaStatus: "critical" },
+  { id: "#2325", subject: "Password reset request", priority: "medium", agent: "Emily R.", agentInitials: "ER", status: "Delivered", slaDue: "8h left", slaStatus: "ok" },
+  { id: "#2326", subject: "Mobile app crash", priority: "high", agent: "Mike T.", agentInitials: "MT", status: "In Progress", slaDue: "1h left", slaStatus: "warning" },
 ];
 
 const priorityColors: Record<string, string> = {
@@ -103,9 +157,8 @@ export default function HomePage() {
   useEffect(() => { setMounted(true); }, []);
   if (!mounted) return null;
 
-  const totalVolume = ticketVolumeData.reduce((sum, d) => sum + d.volume, 0);
-  const maxVolume = Math.max(...ticketVolumeData.map(d => d.volume));
-  const volumeChange = 8;
+  const currentData = periodData[activeTab];
+  const maxVolume = Math.max(...currentData.volume.map(d => d.volume));
 
   const handleSort = (field: string) => {
     if (sortField === field) {
@@ -167,8 +220,8 @@ export default function HomePage() {
         </div>
 
         {/* KPI Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {kpiData.map((kpi, i) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {currentData.kpis.map((kpi, i) => (
             <Card key={i} className="bg-white dark:bg-[#1a1a1a]">
               <CardContent className="pt-6">
                 <div className="flex items-start justify-between">
@@ -184,16 +237,16 @@ export default function HomePage() {
                       <span className={`text-sm font-medium ${kpi.change > 0 ? "text-green-500" : "text-red-500"}`}>
                         {kpi.change > 0 ? "+" : ""}{kpi.change}%
                       </span>
-                      <span className="text-xs text-slate-400">vs last week</span>
+                      <span className="text-xs text-slate-400">vs last period</span>
                     </div>
                   </div>
-                  {/* Sparkline */}
-                  <div className="flex items-end gap-1 h-14 w-24">
+                  {/* Green Sparkline */}
+                  <div className="flex items-end gap-1 h-14 w-20">
                     {kpi.sparkline.map((v, j) => (
                       <div
                         key={j}
-                        className="flex-1 bg-purple-500 rounded-t transition-all hover:bg-purple-600"
-                        style={{ height: `${(v / 70) * 100}%` }}
+                        className="flex-1 bg-green-500 rounded-t transition-all hover:bg-green-600"
+                        style={{ height: `${(v / Math.max(...kpi.sparkline)) * 100}%` }}
                       />
                     ))}
                   </div>
@@ -212,8 +265,7 @@ export default function HomePage() {
                 <div>
                   <CardTitle className="text-lg">Ticket Volume</CardTitle>
                   <p className="text-sm text-slate-500 mt-1">
-                    {totalVolume.toLocaleString()} total tickets • 
-                    <span className="text-green-600 font-medium"> +{volumeChange}%</span> vs last week
+                    {currentData.volume.reduce((sum, d) => sum + d.volume, 0).toLocaleString()} total tickets
                   </p>
                 </div>
                 <DropdownMenu>
@@ -233,7 +285,7 @@ export default function HomePage() {
             <CardContent>
               {/* Smooth Bar Chart */}
               <div className="flex items-end justify-between h-52 gap-3">
-                {ticketVolumeData.map((d, i) => (
+                {currentData.volume.map((d, i) => (
                   <div key={i} className="flex-1 flex flex-col items-center gap-2 group">
                     <div className="w-full h-full flex items-end">
                       <div 
@@ -259,15 +311,19 @@ export default function HomePage() {
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg">Latest Updates</CardTitle>
                 <div className="flex gap-1">
-                  {["today", "yesterday", "this week"].map((tab) => (
+                  {[
+                    { key: "today", label: "Today" },
+                    { key: "yesterday", label: "Yest." },
+                    { key: "week", label: "Week" }
+                  ].map((tab) => (
                     <Button
-                      key={tab}
-                      variant={activeTab === tab ? "default" : "ghost"}
+                      key={tab.key}
+                      variant={activeTab === tab.key ? "default" : "ghost"}
                       size="sm"
-                      onClick={() => setActiveTab(tab)}
-                      className={`text-xs px-2 h-7 ${activeTab === tab ? "bg-purple-600 hover:bg-purple-700" : "text-slate-500"}`}
+                      onClick={() => setActiveTab(tab.key)}
+                      className={`text-xs px-2 h-7 ${activeTab === tab.key ? "bg-purple-600 hover:bg-purple-700" : "text-slate-500"}`}
                     >
-                      {tab === "this week" ? "Week" : tab === "today" ? "Today" : "Yest."}
+                      {tab.label}
                     </Button>
                   ))}
                 </div>
@@ -275,7 +331,7 @@ export default function HomePage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {updates.map((update, i) => (
+                {currentData.updates.map((update, i) => (
                   <div key={i} className="flex items-start gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                       update.type === "ticket" ? "bg-blue-100" :
@@ -361,7 +417,12 @@ export default function HomePage() {
                         {sortField === "agent" && (sortDirection === "asc" ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />)}
                       </div>
                     </th>
-                    <th className="text-left py-3 px-4 text-xs font-medium text-slate-500 uppercase">Status</th>
+                    <th className="text-left py-3 px-4 text-xs font-medium text-slate-500 uppercase cursor-pointer hover:text-slate-700" onClick={() => handleSort("status")}>
+                      <div className="flex items-center gap-1">
+                        Status
+                        {sortField === "status" && (sortDirection === "asc" ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />)}
+                      </div>
+                    </th>
                     <th className="text-left py-3 px-4 text-xs font-medium text-slate-500 uppercase cursor-pointer hover:text-slate-700" onClick={() => handleSort("slaDue")}>
                       <div className="flex items-center gap-1">
                         SLA Due
@@ -416,22 +477,12 @@ export default function HomePage() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem>
-                              <Eye className="h-4 w-4 mr-2" /> View details
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <UserPlus className="h-4 w-4 mr-2" /> Assign to...
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Flag className="h-4 w-4 mr-2" /> Change priority
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <RefreshCw className="h-4 w-4 mr-2" /> Mark as pending
-                            </DropdownMenuItem>
+                            <DropdownMenuItem><Eye className="h-4 w-4 mr-2" /> View details</DropdownMenuItem>
+                            <DropdownMenuItem><UserPlus className="h-4 w-4 mr-2" /> Assign to...</DropdownMenuItem>
+                            <DropdownMenuItem><Flag className="h-4 w-4 mr-2" /> Change priority</DropdownMenuItem>
+                            <DropdownMenuItem><RefreshCw className="h-4 w-4 mr-2" /> Mark as pending</DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem className="text-red-600">
-                              <XCircle className="h-4 w-4 mr-2" /> Close ticket
-                            </DropdownMenuItem>
+                            <DropdownMenuItem className="text-red-600"><XCircle className="h-4 w-4 mr-2" /> Close ticket</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </td>
