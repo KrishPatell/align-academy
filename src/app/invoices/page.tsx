@@ -310,20 +310,36 @@ export default function InvoicesPage() {
         </div>
 
         {/* Actions Bar */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <Tabs value={statusFilter} onValueChange={setStatusFilter}>
-            <TabsList>
-              <TabsTrigger value="all">All</TabsTrigger>
-              <TabsTrigger value="paid">Paid</TabsTrigger>
-              <TabsTrigger value="pending">Pending</TabsTrigger>
-              <TabsTrigger value="overdue">Overdue</TabsTrigger>
-              <TabsTrigger value="draft">Draft</TabsTrigger>
-            </TabsList>
-          </Tabs>
-          <div className="flex items-center gap-2">
-            <div className="relative">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center gap-3">
+            <Tabs value={statusFilter} onValueChange={setStatusFilter}>
+              <TabsList>
+                <TabsTrigger value="all">All</TabsTrigger>
+                <TabsTrigger value="paid">Paid</TabsTrigger>
+                <TabsTrigger value="pending">Pending</TabsTrigger>
+                <TabsTrigger value="overdue">Overdue</TabsTrigger>
+                <TabsTrigger value="draft">Draft</TabsTrigger>
+              </TabsList>
+            </Tabs>
+            <div className="flex items-center gap-2">
+              <Filter className="h-4 w-4 text-slate-400" />
+              <Select value={clientFilter} onValueChange={setClientFilter}>
+                <SelectTrigger className="w-48">
+                  <SelectValue placeholder="Filter by client" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Clients</SelectItem>
+                  {uniqueClients.map(client => (
+                    <SelectItem key={client} value={client}>{client}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 w-full lg:w-auto">
+            <div className="relative flex-1 lg:flex-none lg:w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-              <Input placeholder="Search invoices..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10 w-64" />
+              <Input placeholder="Search invoices..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10 w-full" />
             </div>
             <Button variant="outline" size="sm" onClick={exportCSV}><Download className="h-4 w-4 mr-1" />Export</Button>
             <Button size="sm" onClick={handleCreateInvoice}><Plus className="h-4 w-4 mr-1" />Create Invoice</Button>

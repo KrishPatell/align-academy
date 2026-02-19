@@ -414,6 +414,38 @@ export default function SLAPage() {
                 </div>
               </CardHeader>
               <CardContent className="p-0">
+                {/* Filter Results Summary */}
+                <div className="flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border-b">
+                  <div className="flex items-center gap-2 text-sm text-slate-500">
+                    <FileText className="h-4 w-4" />
+                    <span>Showing <span className="font-medium text-slate-700 dark:text-slate-300">{sortedTickets.length}</span> of <span className="font-medium text-slate-700 dark:text-slate-300">{slaTickets.length}</span> tickets</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {(priorityFilter || statusFilter || searchQuery) && (
+                      <div className="flex items-center gap-1 text-xs">
+                        <span className="text-slate-500">Active filters:</span>
+                        {priorityFilter && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-100 text-red-700 rounded-full">
+                            {priorityFilter === 'high' ? 'Critical' : priorityFilter}
+                            <X className="h-3 w-3 cursor-pointer" onClick={() => setPriorityFilter(null)} />
+                          </span>
+                        )}
+                        {statusFilter && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-slate-200 text-slate-700 rounded-full">
+                            {statusConfig[statusFilter]?.label}
+                            <X className="h-3 w-3 cursor-pointer" onClick={() => setStatusFilter(null)} />
+                          </span>
+                        )}
+                        {searchQuery && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-100 text-purple-700 rounded-full">
+                            "{searchQuery}"
+                            <X className="h-3 w-3 cursor-pointer" onClick={() => setSearchQuery("")} />
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>
