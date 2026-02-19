@@ -1,7 +1,7 @@
 "use client";
 
 // Kravio Dashboard - Premium Support Platform
-// Version 5.9 - Always more
+// Version 6.0 - 120 commits!
 // Version 5.7 - Enhanced with Quick Create, Keyboard Shortcuts, Theme Toggle, User Avatar
 
 import { useState, useEffect, useCallback, useRef } from "react";
