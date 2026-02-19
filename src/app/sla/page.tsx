@@ -61,7 +61,7 @@ const slaTickets = [
   { id: "#2345", subject: "Billing discrepancy", priority: "high", customer: "Wayne Ent", created: "2026-02-18 16:00", due: "2026-02-19 08:00", status: "breached", agent: "Sarah M.", responseTime: "4h 30m" },
 ];
 
-const statusConfig = {
+const statusConfig: Record<string, { bg: string; text: string; icon: any; label: string }> = {
   on_track: { bg: "bg-green-100", text: "text-green-700", icon: CheckCircle, label: "On Track" },
   at_risk: { bg: "bg-amber-100", text: "text-amber-700", icon: AlertTriangle, label: "At Risk" },
   breached: { bg: "bg-red-100", text: "text-red-700", icon: XCircle, label: "Breached" },
