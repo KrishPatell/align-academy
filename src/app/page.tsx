@@ -768,7 +768,17 @@ export default function HomePage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredTickets.map((ticket) => (
+                  {tableCollapsed ? (
+                    <tr>
+                      <td colSpan={8} className="py-8 text-center text-slate-500">
+                        <div className="flex flex-col items-center gap-2">
+                          <ChevronsDown className="h-8 w-8 text-slate-300" />
+                          <p>Table collapsed. Click "Expand All" to show rows.</p>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredTickets.map((ticket) => (
                     <tr 
                       key={ticket.id} 
                       className="border-b hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 dark:hover:from-purple-900/20 dark:hover:to-indigo-900/20 cursor-pointer transition-all duration-200"
