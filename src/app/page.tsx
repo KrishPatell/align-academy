@@ -47,10 +47,13 @@ import {
   HardDrive,
   Activity,
   Database,
-  Zap,
-  Ticket,
-  Server,
-  MessageCircle,
+  GripVertical,
+  ArrowDownAZ,
+  ArrowUpAZ,
+  ArrowDown01,
+  ArrowUp01,
+  Calendar,
+  AlertOctagon,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -60,6 +63,23 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Progress } from "@/components/ui/progress";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 // System Status Data
 const systemStatus = {
@@ -169,12 +189,117 @@ const slaStatusColors: Record<string, string> = {
   critical: "text-red-600",
 };
 
+type SortField = "id" | "priority" | "agent" | "status" | "slaDue";
+type SortOption = "custom" | "id-asc" | "id-desc" | "priority-asc" | "priority-desc" | "agent-asc" | "agent-desc" | "status-asc" | "status-desc" | "slaDue-asc" | "slaDue-desc";
+
+// Sortable Row Component
+function SortableRow({ 
+  ticket, 
+  isSelected,Row 
+  onToggle, 
+  onRowClick,
+  setSelectedTicket 
+}: { 
+  ticket: typeof initialTickets[0]; 
+  isSelected: boolean;
+  onToggleRow: (id: string) => void;
+  onRowClick: () => void;
+  setSelectedTicket: (ticket: typeof initialTickets[0]) => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: ticket.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 1000 : "auto",
+  };
+
+  return (
+    <tr 
+      ref={setNodeRef}
+      style={style}
+      className={`border-b hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 dark:hover:from-purple-900/20 dark:hover:to-indigo-900/20 cursor-pointer transition-all duration-200 ${isDragging ? 'bg-purple-50 shadow-lg' : ''}`}
+      onClick={onRowClick}
+    >
+      <td className="py-3 px-4" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center gap-2">
+          <button
+            className="cursor-grab active:cursor-grabbing p-1 hover:bg-slate-100 rounded"
+            {...attributes}
+            {...listeners}
+          >
+            <GripVertical className="h-4 w-4 text-slate-400" />
+          </button>
+          <input 
+            type="checkbox" 
+            checked={isSelected}
+            onChange={() => onToggleRow(ticket.id)}
+            className="rounded"
+          />
+        </div>
+      </td>
+      <td className="py-3 px-4 font-medium text-purple-600">{ticket.id}</td>
+      <td className="py-3 px-4">{ticket.subject}</td>
+      <td className="py-3 px-4">
+        <span className={`px-2 py-1 rounded-full text-xs font-medium ${priorityColors[ticket.priority]}`}>
+          {ticket.priority.charAt(0).toUpperCase() + ticket.priority.slice(1)}
+        </span>
+      </td>
+      <td className="py-3 px-4">
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white text-xs">
+            {ticket.agentInitials}
+          </div>
+          <span>{ticket.agent}</span>
+        </div>
+      </td>
+      <td className="py-3 px-4">
+        <Badge variant="outline" className="bg-slate-50">
+          {ticket.status}
+        </Badge>
+      </td>
+      <td className={`py-3 px-4 font-medium ${slaStatusColors[ticket.slaStatus]}`}>
+        <div className="flex items-center gap-1">
+          <Clock className="h-3 w-3" />
+          {ticket.slaDue}
+        </div>
+      </td>
+      <td className="py-3 px-4 text-right" onClick={(e) => e.stopPropagation()}>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-slate-100">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => setSelectedTicket(ticket)}><Eye className="h-4 w-4 mr-2" /> View details</DropdownMenuItem>
+            <DropdownMenuItem><UserPlus className="h-4 w-4 mr-2" /> Assign to...</DropdownMenuItem>
+            <DropdownMenuItem><Flag className="h-4 w-4 mr-2" /> Change priority</DropdownMenuItem>
+            <DropdownMenuItem><RefreshCw className="h-4 w-4 mr-2" /> Mark as pending</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="text-red-600"><XCircle className="h-4 w-4 mr-2" /> Close ticket</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </td>
+    </tr>
+  );
+}
+
 export default function HomePage() {
   const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState("today");
   const [tickets, setTickets] = useState(initialTickets);
-  const [sortField, setSortField] = useState<string | null>(null);
+  const [sortField, setSortField] = useState<SortField | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [sortOption, setSortOption] = useState<SortOption>("custom");
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [filterPriority, setFilterPriority] = useState("all");
   const [selectedTicket, setSelectedTicket] = useState<typeof initialTickets[0] | null>(null);
@@ -186,6 +311,33 @@ export default function HomePage() {
     resolvedToday: 156,
     pendingSLA: 8,
   });
+
+  // DnD sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  // Handle drag end
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    
+    if (over && active.id !== over.id) {
+      setTickets((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
+        const newItems = arrayMove(items, oldIndex, newIndex);
+        setSortOption("custom");
+        return newItems;
+      });
+    }
+  };
 
   // Simulate real-time metric updates
   useEffect(() => {
