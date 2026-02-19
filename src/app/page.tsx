@@ -438,8 +438,12 @@ export default function HomePage() {
                 </thead>
                 <tbody>
                   {filteredTickets.map((ticket) => (
-                    <tr key={ticket.id} className="border-b hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                      <td className="py-3 px-4">
+                    <tr 
+                      key={ticket.id} 
+                      className="border-b hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 dark:hover:from-purple-900/20 dark:hover:to-indigo-900/20 cursor-pointer transition-all duration-200"
+                      onClick={() => setSelectedTicket(ticket)}
+                    >
+                      <td className="py-3 px-4" onClick={(e) => e.stopPropagation()}>
                         <input 
                           type="checkbox" 
                           checked={selectedRows.includes(ticket.id)}
@@ -473,7 +477,7 @@ export default function HomePage() {
                           {ticket.slaDue}
                         </div>
                       </td>
-                      <td className="py-3 px-4 text-right">
+                      <td className="py-3 px-4 text-right" onClick={(e) => e.stopPropagation()}>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-slate-100">
@@ -481,7 +485,7 @@ export default function HomePage() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem><Eye className="h-4 w-4 mr-2" /> View details</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setSelectedTicket(ticket)}><Eye className="h-4 w-4 mr-2" /> View details</DropdownMenuItem>
                             <DropdownMenuItem><UserPlus className="h-4 w-4 mr-2" /> Assign to...</DropdownMenuItem>
                             <DropdownMenuItem><Flag className="h-4 w-4 mr-2" /> Change priority</DropdownMenuItem>
                             <DropdownMenuItem><RefreshCw className="h-4 w-4 mr-2" /> Mark as pending</DropdownMenuItem>
