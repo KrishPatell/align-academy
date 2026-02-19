@@ -14,7 +14,8 @@ import { Skeleton, SkeletonCard, SkeletonTable, SkeletonTableRow } from "@/compo
 import { 
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
-import { Search, Plus, MoreHorizontal, Mail, Phone, Star, Clock, MessageSquare, Edit, Trash2, UserPlus } from "lucide-react";
+import { Search, Plus, MoreHorizontal, Mail, Phone, Star, Clock, MessageSquare, Edit, Trash2, UserPlus, Bell } from "lucide-react";
+import { useToast } from "@/components/ui/toast";
 
 const agents = [
   { id: 1, name: "Sarah Mitchell", role: "Senior Support Lead", email: "sarah@company.com", phone: "+1 234 567 890", status: "online", tickets: 45, rating: 4.8, joined: "Jan 2024" },
@@ -25,6 +26,7 @@ const agents = [
 ];
 
 export default function AgentsPage() {
+  const { toast } = useToast();
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -82,9 +84,14 @@ export default function AgentsPage() {
             <h1 className="text-2xl font-bold">Agents & Teams</h1>
             <p className="text-slate-500 text-sm">Manage your support team members</p>
           </div>
-          <Button className="bg-purple-600 hover:bg-purple-700 gap-2">
-            <UserPlus className="h-4 w-4" /> Add Agent
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={() => toast({ title: "Notifications enabled", description: "You'll receive agent activity alerts", variant: "info" })}>
+              <Bell className="h-4 w-4" />
+            </Button>
+            <Button className="bg-purple-600 hover:bg-purple-700 gap-2">
+              <UserPlus className="h-4 w-4" /> Add Agent
+            </Button>
+          </div>
         </div>
 
         {/* Stats */}
@@ -117,6 +124,27 @@ export default function AgentsPage() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Demo Toast Buttons */}
+        <Card className="bg-white dark:bg-[#1a1a1a]">
+          <CardContent className="pt-6">
+            <p className="text-sm font-medium mb-3">Toast Notifications Demo</p>
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" size="sm" onClick={() => toast({ title: "Success!", description: "Agent added to team", variant: "success" })}>
+                Success Toast
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => toast({ title: "Error", description: "Failed to remove agent", variant: "destructive" })}>
+                Error Toast
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => toast({ title: "Warning", description: "Agent rating below threshold", variant: "warning" })}>
+                Warning Toast
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => toast({ title: "Info", description: "New agent training available", variant: "info" })}>
+                Info Toast
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Search */}
         <div className="relative max-w-md">

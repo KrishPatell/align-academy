@@ -168,6 +168,10 @@ export default function SLAPage() {
     setPriorityFilter(priorityFilter === priority ? null : priority);
   };
 
+  const toggleStatusFilter = (status: string) => {
+    setStatusFilter(statusFilter === status ? null : status);
+  };
+
   const togglePrioritySection = (priority: string) => {
     setExpandedPriority(prev => 
       prev.includes(priority) 
@@ -176,9 +180,16 @@ export default function SLAPage() {
     );
   };
 
-  const filteredTickets = priorityFilter 
-    ? slaTickets.filter(t => t.priority === priorityFilter)
-    : slaTickets;
+  const filteredTickets = slaTickets.filter(ticket => {
+    const matchesPriority = !priorityFilter || ticket.priority === priorityFilter;
+    const matchesStatus = !statusFilter || ticket.status === statusFilter;
+    const matchesSearch = !searchQuery || 
+      ticket.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      ticket.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      ticket.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      ticket.agent.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesPriority && matchesStatus && matchesSearch;
+  });
 
   const sortedTickets = [...filteredTickets].sort((a, b) => {
     if (!sortField) return 0;
@@ -333,7 +344,7 @@ export default function SLAPage() {
                         onClick={() => togglePriorityFilter("high")}
                         className={`h-7 text-xs ${priorityFilter === "high" ? "bg-red-500 hover:bg-red-600" : ""}`}
                       >
-                        High
+                        Critical
                       </Button>
                       <Button
                         variant={priorityFilter === "medium" ? "default" : "outline"}
@@ -351,13 +362,54 @@ export default function SLAPage() {
                       >
                         Low
                       </Button>
-                      {priorityFilter && (
-                        <Button variant="ghost" size="sm" onClick={() => setPriorityFilter(null)} className="h-7 px-2">
-                          <X className="h-3 w-3" />
-                        </Button>
-                      )}
                     </div>
-                    <Input placeholder="Search tickets..." className="w-64" />
+
+                    {/* Status Quick Filters */}
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs text-slate-500 mr-1">Status:</span>
+                      <Button
+                        variant={statusFilter === "on_track" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => toggleStatusFilter("on_track")}
+                        className={`h-7 text-xs gap-1 ${statusFilter === "on_track" ? "bg-green-500 hover:bg-green-600" : ""}`}
+                      >
+                        <CheckCircle className="h-3 w-3" /> On Track
+                      </Button>
+                      <Button
+                        variant={statusFilter === "at_risk" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => toggleStatusFilter("at_risk")}
+                        className={`h-7 text-xs gap-1 ${statusFilter === "at_risk" ? "bg-amber-500 hover:bg-amber-600" : ""}`}
+                      >
+                        <AlertTriangle className="h-3 w-3" /> At Risk
+                      </Button>
+                      <Button
+                        variant={statusFilter === "breached" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => toggleStatusFilter("breached")}
+                        className={`h-7 text-xs gap-1 ${statusFilter === "breached" ? "bg-red-500 hover:bg-red-600" : ""}`}
+                      >
+                        <XCircle className="h-3 w-3" /> Breached
+                      </Button>
+                    </div>
+
+                    {/* Clear Filters */}
+                    {(priorityFilter || statusFilter) && (
+                      <Button variant="ghost" size="sm" onClick={() => { setPriorityFilter(null); setStatusFilter(null); }} className="h-7 text-xs">
+                        <X className="h-3 w-3 mr-1" /> Clear
+                      </Button>
+                    )}
+
+                    {/* Search */}
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 text-slate-400" />
+                      <Input 
+                        placeholder="Search tickets..." 
+                        className="w-64 pl-9 h-7 text-xs" 
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                      />
+                    </div>
                   </div>
                 </div>
               </CardHeader>
@@ -370,12 +422,12 @@ export default function SLAPage() {
                           <div className="flex items-center gap-1">Ticket {sortField === "id" && (sortDirection === "asc" ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />)}</div>
                         </th>
                         <th className="text-left py-3 px-4 text-xs font-medium text-slate-500 uppercase">Subject</th>
-                        <th className="text-left py-3 px-4 text-xs font-medium text-slate-500 uppercase cursor-pointer" onClick={() => handleSort("priority")}>
+                        <th className="text-left py-3 px-4 text-xs font-medium text-slate-500 uppercase cursor-pointer hover:text-purple-600" onClick={() => handleSort("priority")}>
                           <div className="flex items-center gap-1">Priority {sortField === "priority" && (sortDirection === "asc" ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />)}</div>
                         </th>
                         <th className="text-left py-3 px-4 text-xs font-medium text-slate-500 uppercase">Customer</th>
                         <th className="text-left py-3 px-4 text-xs font-medium text-slate-500 uppercase">Due</th>
-                        <th className="text-left py-3 px-4 text-xs font-medium text-slate-500 uppercase cursor-pointer" onClick={() => handleSort("status")}>
+                        <th className="text-left py-3 px-4 text-xs font-medium text-slate-500 uppercase cursor-pointer hover:text-purple-600" onClick={() => handleSort("status")}>
                           <div className="flex items-center gap-1">SLA Status {sortField === "status" && (sortDirection === "asc" ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />)}</div>
                         </th>
                         <th className="text-left py-3 px-4 text-xs font-medium text-slate-500 uppercase">Agent</th>
@@ -396,14 +448,26 @@ export default function SLAPage() {
                             <td className="py-3 px-4 font-medium text-purple-600">{ticket.id}</td>
                             <td className="py-3 px-4">{ticket.subject}</td>
                             <td className="py-3 px-4">
-                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${priorityColors[ticket.priority]}`}>
-                                {ticket.priority}
+                              <span 
+                                className={`px-2 py-1 rounded-full text-xs font-medium cursor-pointer hover:ring-2 hover:ring-offset-1 transition-all ${priorityColors[ticket.priority]} ${priorityFilter === ticket.priority ? 'ring-2 ring-purple-500' : ''}`}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  togglePriorityFilter(ticket.priority);
+                                }}
+                              >
+                                {ticket.priority === 'high' ? 'Critical' : ticket.priority}
                               </span>
                             </td>
                             <td className="py-3 px-4">{ticket.customer}</td>
                             <td className="py-3 px-4 text-sm">{ticket.due}</td>
                             <td className="py-3 px-4">
-                              <span className={`px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 w-fit ${status.bg} ${status.text}`}>
+                              <span 
+                                className={`px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 w-fit cursor-pointer hover:ring-2 hover:ring-offset-1 transition-all ${status.bg} ${status.text} ${statusFilter === ticket.status ? 'ring-2 ring-purple-500' : ''}`}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  toggleStatusFilter(ticket.status);
+                                }}
+                              >
                                 <StatusIcon className="h-3 w-3" />
                                 {status.label}
                               </span>

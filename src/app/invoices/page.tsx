@@ -46,7 +46,14 @@ import {
   Save,
   FileText,
   DollarSign,
+  Bell,
+  Eye,
+  Filter,
+  User,
+  Calendar,
+  ChevronRight,
 } from "lucide-react";
+import { useToast } from "@/components/ui/toast";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -126,12 +133,16 @@ const statusConfig: Record<InvoiceStatus, { bg: string; text: string; label: str
 };
 
 export default function InvoicesPage() {
+  const { toast } = useToast();
   const [mounted, setMounted] = useState(false);
   const [invoices, setInvoices] = useState(initialInvoices);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [clientFilter, setClientFilter] = useState("all");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [viewingInvoice, setViewingInvoice] = useState<Invoice | null>(null);
   const [editingInvoice, setEditingInvoice] = useState<Partial<Invoice>>({});
 
   useEffect(() => { setMounted(true); }, []);
@@ -145,9 +156,16 @@ export default function InvoicesPage() {
   const pendingAmount = invoices.filter(inv => inv.status === "pending").reduce((sum, inv) => sum + inv.total, 0);
   const overdueAmount = invoices.filter(inv => inv.status === "overdue").reduce((sum, inv) => sum + inv.total, 0);
 
+  // Get unique clients for filter dropdown
+  const uniqueClients = [...new Set(invoices.map(inv => inv.customer.name))].sort();
+
   const filteredInvoices = invoices.filter(inv => {
-    const matchesSearch = inv.invoiceNumber.toLowerCase().includes(searchQuery.toLowerCase()) || inv.customer.name.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesSearch && (statusFilter === "all" || inv.status === statusFilter);
+    const matchesSearch = 
+      inv.invoiceNumber.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      inv.customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      inv.customer.email.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesClient = clientFilter === "all" || inv.customer.name === clientFilter;
+    return matchesSearch && matchesClient && (statusFilter === "all" || inv.status === statusFilter);
   });
 
   const handleCreateInvoice = () => {
@@ -163,6 +181,11 @@ export default function InvoicesPage() {
     };
     setEditingInvoice(newInvoice);
     setIsCreateModalOpen(true);
+  };
+
+  const handleViewInvoice = (invoice: Invoice) => {
+    setViewingInvoice(invoice);
+    setIsDetailModalOpen(true);
   };
 
   const handleEditInvoice = (invoice: Invoice) => {
