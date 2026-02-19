@@ -1,7 +1,7 @@
 "use client";
 
 // Kravio Dashboard - Premium Support Platform
-// Version 2.9 - Innovation continues
+// Version 3.0 - The milestone release
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
