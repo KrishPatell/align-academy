@@ -313,7 +313,7 @@ export default function DashboardLayout({ children }: SidebarProps) {
 
           {/* Analytics & Insights */}
           {!isSidebarCollapsed && (
-            <div className="mb-4 animate-fade-in">
+            <div className="mb-6 animate-fade-in">
               <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider px-3 mb-2">Analytics & Insights</p>
               {analyticsNav.map((item) => (
                 <Link
