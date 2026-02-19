@@ -285,22 +285,25 @@ export default function HomePage() {
             <CardContent>
               {/* Smooth Bar Chart */}
               <div className="flex items-end justify-between h-52 gap-3">
-                {currentData.volume.map((d, i) => (
-                  <div key={i} className="flex-1 flex flex-col items-center gap-2 group">
-                    <div className="w-full h-full flex items-end">
-                      <div 
-                        className="w-full bg-gradient-to-t from-purple-600 to-purple-400 rounded-t-lg transition-all duration-300 group-hover:from-purple-700 group-hover:to-purple-500 cursor-pointer relative"
-                        style={{ height: `${(d.volume / maxVolume) * 100}%` }}
-                      >
-                        {/* Tooltip */}
-                        <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-                          {d.volume} tickets
+                {currentData.volume.map((d, i) => {
+                  const barHeight = Math.max((d.volume / maxVolume) * 100, 5);
+                  return (
+                    <div key={i} className="flex-1 flex flex-col items-center gap-2 group">
+                      <div className="w-full h-full flex items-end">
+                        <div 
+                          className="w-full bg-gradient-to-t from-purple-600 to-purple-400 rounded-t-lg transition-all duration-300 group-hover:from-purple-700 group-hover:to-purple-500 cursor-pointer relative"
+                          style={{ height: `${barHeight}%`, minHeight: '8px' }}
+                        >
+                          {/* Tooltip */}
+                          <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                            {d.volume} tickets
+                          </div>
                         </div>
                       </div>
+                      <span className="text-xs text-slate-500">{d.day}</span>
                     </div>
-                    <span className="text-xs text-slate-500">{d.day}</span>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </CardContent>
           </Card>
