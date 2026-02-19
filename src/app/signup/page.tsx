@@ -8,18 +8,142 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Eye, EyeOff, Chrome } from "lucide-react";
+import { Eye, EyeOff, Chrome, Loader2, Check, X } from "lucide-react";
+
+interface FormErrors {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  password?: string;
+  terms?: string;
+}
+
+type PasswordStrength = "weak" | "fair" | "good" | "strong";
+
+interface PasswordCriteria {
+  length: boolean;
+  uppercase: boolean;
+  lowercase: boolean;
+  number: boolean;
+  special: boolean;
+}
 
 export default function SignupPage() {
   const [mounted, setMounted] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<FormErrors>({});
   const router = useRouter();
 
   useEffect(() => { setMounted(true); }, []);
   if (!mounted) return null;
 
-  const handleSignup = () => {
+  const getPasswordCriteria = (pwd: string): PasswordCriteria => {
+    return {
+      length: pwd.length >= 8,
+      uppercase: /[A-Z]/.test(pwd),
+      lowercase: /[a-z]/.test(pwd),
+      number: /[0-9]/.test(pwd),
+      special: /[!@#$%^&*(),.?":{}|<>]/.test(pwd),
+    };
+  };
+
+  const getPasswordStrength = (pwd: string): PasswordStrength => {
+    const criteria = getPasswordCriteria(pwd);
+    const score = Object.values(criteria).filter(Boolean).length;
+    
+    if (score <= 2) return "weak";
+    if (score === 3) return "fair";
+    if (score === 4) return "good";
+    return "strong";
+  };
+
+  const passwordCriteria = getPasswordCriteria(password);
+  const passwordStrength = getPasswordStrength(password);
+
+  const getStrengthColor = (strength: PasswordStrength): string => {
+    switch (strength) {
+      case "weak": return "bg-red-500";
+      case "fair": return "bg-yellow-500";
+      case "good": return "bg-blue-500";
+      case "strong": return "bg-green-500";
+    }
+  };
+
+  const getStrengthLabel = (strength: PasswordStrength): string => {
+    switch (strength) {
+      case "weak": return "Weak";
+      case "fair": return "Fair";
+      case "good": return "Good";
+      case "strong": return "Strong";
+    }
+  };
+
+  const getStrengthWidth = (strength: PasswordStrength): string => {
+    switch (strength) {
+      case "weak": return "25%";
+      case "fair": return "50%";
+      case "good": return "75%";
+      case "strong": return "100%";
+    }
+  };
+
+  const validateForm = (): boolean => {
+    const newErrors: FormErrors = {};
+    
+    if (!firstName.trim()) {
+      newErrors.firstName = "First name is required";
+    }
+    
+    if (!lastName.trim()) {
+      newErrors.lastName = "Last name is required";
+    }
+    
+    if (!email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+    
+    if (!password) {
+      newErrors.password = "Password is required";
+    } else if (password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+    }
+    
+    if (!agreeTerms) {
+      newErrors.terms = "You must agree to the terms";
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSignup = async () => {
+    // Reset errors
+    setErrors({});
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsLoading(true);
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
     router.push("/");
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleSignup();
+    }
   };
 
   return (
@@ -34,7 +158,7 @@ export default function SignupPage() {
         </div>
 
         <Card className="bg-[#1a1a1a] border-slate-800">
-          <CardContent className="pt-8 pb-8">
+          <CardContent className="pt-8 pb-8" onKeyDown={handleKeyDown}>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-2">
@@ -42,16 +166,32 @@ export default function SignupPage() {
                   <Input 
                     id="firstName" 
                     placeholder="John"
-                    className="bg-[#0f0f0f] border-slate-700 text-white placeholder:text-slate-500 focus:border-purple-500 focus:ring-purple-500"
+                    value={firstName}
+                    onChange={(e) => {
+                      setFirstName(e.target.value);
+                      if (errors.firstName) setErrors(prev => ({ ...prev, firstName: undefined }));
+                    }}
+                    className={`bg-[#0f0f0f] border-slate-700 text-white placeholder:text-slate-500 focus:border-purple-500 focus:ring-purple-500 ${errors.firstName ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""}`}
                   />
+                  {errors.firstName && (
+                    <p className="text-red-400 text-xs mt-1">{errors.firstName}</p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="lastName" className="text-slate-300">Last name</Label>
                   <Input 
                     id="lastName" 
                     placeholder="Doe"
-                    className="bg-[#0f0f0f] border-slate-700 text-white placeholder:text-slate-500 focus:border-purple-500 focus:ring-purple-500"
+                    value={lastName}
+                    onChange={(e) => {
+                      setLastName(e.target.value);
+                      if (errors.lastName) setErrors(prev => ({ ...prev, lastName: undefined }));
+                    }}
+                    className={`bg-[#0f0f0f] border-slate-700 text-white placeholder:text-slate-500 focus:border-purple-500 focus:ring-purple-500 ${errors.lastName ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""}`}
                   />
+                  {errors.lastName && (
+                    <p className="text-red-400 text-xs mt-1">{errors.lastName}</p>
+                  )}
                 </div>
               </div>
 
@@ -61,8 +201,16 @@ export default function SignupPage() {
                   id="email" 
                   type="email" 
                   placeholder="name@company.com"
-                  className="bg-[#0f0f0f] border-slate-700 text-white placeholder:text-slate-500 focus:border-purple-500 focus:ring-purple-500"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (errors.email) setErrors(prev => ({ ...prev, email: undefined }));
+                  }}
+                  className={`bg-[#0f0f0f] border-slate-700 text-white placeholder:text-slate-500 focus:border-purple-500 focus:ring-purple-500 ${errors.email ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""}`}
                 />
+                {errors.email && (
+                  <p className="text-red-400 text-xs mt-1">{errors.email}</p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -72,7 +220,12 @@ export default function SignupPage() {
                     id="password" 
                     type={showPassword ? "text" : "password"}
                     placeholder="Create a strong password"
-                    className="bg-[#0f0f0f] border-slate-700 text-white placeholder:text-slate-500 focus:border-purple-500 focus:ring-purple-500 pr-10"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (errors.password) setErrors(prev => ({ ...prev, password: undefined }));
+                    }}
+                    className={`bg-[#0f0f0f] border-slate-700 text-white placeholder:text-slate-500 focus:border-purple-500 focus:ring-purple-500 pr-10 ${errors.password ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""}`}
                   />
                   <Button
                     type="button"
@@ -84,11 +237,72 @@ export default function SignupPage() {
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </Button>
                 </div>
-                <p className="text-xs text-slate-500">Must be at least 8 characters</p>
+                
+                {/* Password Strength Indicator */}
+                {password && (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                        <div 
+                          className={`h-full ${getStrengthColor(passwordStrength)} transition-all duration-300`}
+                          style={{ width: getStrengthWidth(passwordStrength) }}
+                        />
+                      </div>
+                      <span className={`text-xs ${
+                        passwordStrength === "weak" ? "text-red-400" :
+                        passwordStrength === "fair" ? "text-yellow-400" :
+                        passwordStrength === "good" ? "text-blue-400" :
+                        "text-green-400"
+                      }`}>
+                        {getStrengthLabel(passwordStrength)}
+                      </span>
+                    </div>
+                    
+                    {/* Password Criteria */}
+                    <div className="grid grid-cols-2 gap-1">
+                      <div className={`text-xs flex items-center gap-1 ${
+                        passwordCriteria.length ? "text-green-400" : "text-slate-500"
+                      }`}>
+                        {passwordCriteria.length ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
+                        8+ characters
+                      </div>
+                      <div className={`text-xs flex items-center gap-1 ${
+                        passwordCriteria.uppercase ? "text-green-400" : "text-slate-500"
+                      }`}>
+                        {passwordCriteria.uppercase ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
+                        Uppercase
+                      </div>
+                      <div className={`text-xs flex items-center gap-1 ${
+                        passwordCriteria.lowercase ? "text-green-400" : "text-slate-500"
+                      }`}>
+                        {passwordCriteria.lowercase ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
+                        Lowercase
+                      </div>
+                      <div className={`text-xs flex items-center gap-1 ${
+                        passwordCriteria.number ? "text-green-400" : "text-slate-500"
+                      }`}>
+                        {passwordCriteria.number ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
+                        Number
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
+                {errors.password && (
+                  <p className="text-red-400 text-xs mt-1">{errors.password}</p>
+                )}
               </div>
 
               <div className="flex items-start gap-2">
-                <Checkbox id="terms" className="mt-1 border-slate-600 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600" />
+                <Checkbox 
+                  id="terms" 
+                  checked={agreeTerms}
+                  onCheckedChange={(checked) => {
+                    setAgreeTerms(checked as boolean);
+                    if (errors.terms) setErrors(prev => ({ ...prev, terms: undefined }));
+                  }}
+                  className={`mt-1 border-slate-600 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600 ${errors.terms ? "border-red-500" : ""}`} 
+                />
                 <Label htmlFor="terms" className="text-sm text-slate-400">
                   I agree to the{" "}
                   <Link href="/terms" className="text-purple-400 hover:text-purple-300">Terms of Service</Link>
@@ -96,12 +310,23 @@ export default function SignupPage() {
                   <Link href="/privacy" className="text-purple-400 hover:text-purple-300">Privacy Policy</Link>
                 </Label>
               </div>
+              {errors.terms && (
+                <p className="text-red-400 text-xs -mt-2">{errors.terms}</p>
+              )}
 
               <Button 
                 onClick={handleSignup}
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white py-6"
+                disabled={isLoading}
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white py-6 disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                Create account
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Creating account...
+                  </>
+                ) : (
+                  "Create account"
+                )}
               </Button>
 
               <div className="relative">
