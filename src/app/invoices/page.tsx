@@ -45,6 +45,7 @@ import {
   X,
   Save,
   FileText,
+  DollarSign,
 } from "lucide-react";
 import {
   DropdownMenu,
