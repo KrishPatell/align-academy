@@ -1,20 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
-import { useTheme } from "next-themes";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+import DashboardLayout from "@/components/dashboard-layout";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -30,29 +22,19 @@ import {
   DialogFooter,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
-  Home,
-  BarChart3,
-  Users,
-  FileText,
-  RefreshCcw,
-  DollarSign,
-  UserCheck,
-  Target,
-  FlaskConical,
-  MapPin,
-  Plug,
-  Settings,
-  LayoutDashboard,
   Plus,
   Search,
   Download,
-  Eye,
   Edit,
   Trash2,
   MoreHorizontal,
@@ -62,6 +44,7 @@ import {
   File,
   X,
   Save,
+  FileText,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -70,16 +53,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 
-// Types
 type InvoiceStatus = "paid" | "pending" | "overdue" | "draft";
 
 interface InvoiceItem {
@@ -102,104 +76,44 @@ interface Invoice {
   tax: number;
   total: number;
   notes: string;
-  paidDate?: string;
 }
 
-// Mock data
 const initialInvoices: Invoice[] = [
   {
-    id: "1",
-    invoiceNumber: "INV-001",
-    customer: { name: "Umbrella Corp", email: "billing@umbrella.com", address: "123 Evil Way, Raccoon City" },
-    date: "2026-02-01",
-    dueDate: "2026-02-15",
-    status: "paid",
-    items: [
-      { id: "1", description: "Enterprise License - Q1 2026", quantity: 1, rate: 45000, amount: 45000 },
-      { id: "2", description: "Setup & Onboarding", quantity: 1, rate: 5000, amount: 5000 },
-      { id: "3", description: "Training Sessions", quantity: 2, rate: 1423.50, amount: 2847 },
-    ],
-    subtotal: 52847,
-    tax: 0,
-    total: 52847,
-    notes: "Thank you for your business!",
-    paidDate: "2026-02-10",
+    id: "1", invoiceNumber: "INV-001", customer: { name: "Umbrella Corp", email: "billing@umbrella.com", address: "123 Evil Way" },
+    date: "2026-02-01", dueDate: "2026-02-15", status: "paid",
+    items: [{ id: "1", description: "Enterprise License", quantity: 1, rate: 45000, amount: 45000 }],
+    subtotal: 52847, tax: 0, total: 52847, notes: "Thank you!",
   },
   {
-    id: "2",
-    invoiceNumber: "INV-002",
-    customer: { name: "Acme Corporation", email: "accounts@acme.com", address: "456 Rocket Rd, Arizona" },
-    date: "2026-02-03",
-    dueDate: "2026-02-17",
-    status: "paid",
-    items: [
-      { id: "1", description: "Annual Subscription", quantity: 1, rate: 42000, amount: 42000 },
-      { id: "2", description: "Additional Users (10)", quantity: 10, rate: 619.20, amount: 6192 },
-    ],
-    subtotal: 48192,
-    tax: 0,
-    total: 48192,
-    paidDate: "2026-02-15",
-    notes: "",
+    id: "2", invoiceNumber: "INV-002", customer: { name: "Acme Corporation", email: "accounts@acme.com", address: "456 Rocket Rd" },
+    date: "2026-02-03", dueDate: "2026-02-17", status: "paid",
+    items: [{ id: "1", description: "Annual Subscription", quantity: 1, rate: 42000, amount: 42000 }],
+    subtotal: 48192, tax: 0, total: 48192, notes: "",
   },
   {
-    id: "3",
-    invoiceNumber: "INV-003",
-    customer: { name: "Globex Inc", email: "finance@globex.com", address: "789 Tech Park, San Francisco" },
-    date: "2026-02-10",
-    dueDate: "2026-02-24",
-    status: "pending",
-    items: [{ id: "1", description: "Pro Plan - Monthly", quantity: 12, rate: 2670.08, amount: 32041 }],
-    subtotal: 32041,
-    tax: 0,
-    total: 32041,
-    notes: "",
+    id: "3", invoiceNumber: "INV-003", customer: { name: "Globex Inc", email: "finance@globex.com", address: "789 Tech Park" },
+    date: "2026-02-10", dueDate: "2026-02-24", status: "pending",
+    items: [{ id: "1", description: "Pro Plan", quantity: 12, rate: 2670, amount: 32041 }],
+    subtotal: 32041, tax: 0, total: 32041, notes: "",
   },
   {
-    id: "4",
-    invoiceNumber: "INV-004",
-    customer: { name: "Initech", email: "ap@initech.com", address: "321 Cubicle Ave, Austin" },
-    date: "2026-02-12",
-    dueDate: "2026-02-26",
-    status: "pending",
-    items: [{ id: "1", description: "Consulting Services", quantity: 40, rate: 726.55, amount: 29062 }],
-    subtotal: 29062,
-    tax: 0,
-    total: 29062,
-    notes: "",
+    id: "4", invoiceNumber: "INV-004", customer: { name: "Initech", email: "ap@initech.com", address: "321 Cubicle Ave" },
+    date: "2026-02-12", dueDate: "2026-02-26", status: "pending",
+    items: [{ id: "1", description: "Consulting", quantity: 40, rate: 726, amount: 29062 }],
+    subtotal: 29062, tax: 0, total: 29062, notes: "",
   },
   {
-    id: "5",
-    invoiceNumber: "INV-005",
-    customer: { name: "Wayne Enterprises", email: "payments@wayne.com", address: "1007 Mountain Dr, Gotham" },
-    date: "2026-01-28",
-    dueDate: "2026-02-11",
-    status: "overdue",
-    items: [
-      { id: "1", description: "Security Suite License", quantity: 1, rate: 18000, amount: 18000 },
-      { id: "2", description: "Premium Support", quantity: 1, rate: 5000, amount: 5000 },
-      { id: "3", description: "Custom Integration", quantity: 1, rate: 1593, amount: 1593 },
-    ],
-    subtotal: 24593,
-    tax: 0,
-    total: 24593,
-    notes: "",
+    id: "5", invoiceNumber: "INV-005", customer: { name: "Wayne Enterprises", email: "payments@wayne.com", address: "1007 Mountain Dr" },
+    date: "2026-01-28", dueDate: "2026-02-11", status: "overdue",
+    items: [{ id: "1", description: "Security Suite", quantity: 1, rate: 18000, amount: 18000 }],
+    subtotal: 24593, tax: 0, total: 24593, notes: "",
   },
   {
-    id: "6",
-    invoiceNumber: "INV-006",
-    customer: { name: "Stark Industries", email: "legal@stark.com", address: "10880 Malibu Point, Malibu" },
-    date: "2026-02-08",
-    dueDate: "2026-02-22",
-    status: "draft",
-    items: [
-      { id: "1", description: "AI Module License", quantity: 1, rate: 15000, amount: 15000 },
-      { id: "2", description: "API Access - Enterprise", quantity: 1, rate: 3879, amount: 3879 },
-    ],
-    subtotal: 18879,
-    tax: 0,
-    total: 18879,
-    notes: "",
+    id: "6", invoiceNumber: "INV-006", customer: { name: "Stark Industries", email: "legal@stark.com", address: "10880 Malibu Point" },
+    date: "2026-02-08", dueDate: "2026-02-22", status: "draft",
+    items: [{ id: "1", description: "AI Module License", quantity: 1, rate: 15000, amount: 15000 }],
+    subtotal: 18879, tax: 0, total: 18879, notes: "Draft",
   },
 ];
 
@@ -210,18 +124,7 @@ const statusConfig: Record<InvoiceStatus, { bg: string; text: string; label: str
   draft: { bg: "#f5f5f3", text: "#4a4a4a", label: "Draft", icon: File },
 };
 
-const sidebarItems = [
-  { icon: Home, label: "Home", href: "/" },
-  { icon: BarChart3, label: "Revenue Analytics", href: "/" },
-  { icon: Users, label: "Subscriptions", href: "#" },
-  { icon: UserCheck, label: "Customers", href: "#" },
-  { icon: FileText, label: "Invoices", href: "/invoices", active: true },
-  { icon: RefreshCcw, label: "Refunds", href: "#" },
-  { icon: DollarSign, label: "Payouts", href: "#" },
-];
-
 export default function InvoicesPage() {
-  const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [invoices, setInvoices] = useState(initialInvoices);
   const [searchQuery, setSearchQuery] = useState("");
@@ -243,8 +146,7 @@ export default function InvoicesPage() {
 
   const filteredInvoices = invoices.filter(inv => {
     const matchesSearch = inv.invoiceNumber.toLowerCase().includes(searchQuery.toLowerCase()) || inv.customer.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = statusFilter === "all" || inv.status === statusFilter;
-    return matchesSearch && matchesStatus;
+    return matchesSearch && (statusFilter === "all" || inv.status === statusFilter);
   });
 
   const handleCreateInvoice = () => {
@@ -256,10 +158,7 @@ export default function InvoicesPage() {
       dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
       status: "draft",
       items: [{ id: "1", description: "", quantity: 1, rate: 0, amount: 0 }],
-      subtotal: 0,
-      tax: 0,
-      total: 0,
-      notes: "",
+      subtotal: 0, tax: 0, total: 0, notes: "",
     };
     setEditingInvoice(newInvoice);
     setIsCreateModalOpen(true);
@@ -283,7 +182,7 @@ export default function InvoicesPage() {
 
   const handleDeleteInvoice = (id: string) => setInvoices(invoices.filter(inv => inv.id !== id));
   const handleStatusChange = (id: string, newStatus: InvoiceStatus) => {
-    setInvoices(invoices.map(inv => inv.id === id ? { ...inv, status: newStatus, paidDate: newStatus === "paid" ? new Date().toISOString().split("T")[0] : undefined } : inv));
+    setInvoices(invoices.map(inv => inv.id === id ? { ...inv, status: newStatus } : inv));
   };
 
   const calculateTotals = (items: InvoiceItem[]) => {
@@ -328,153 +227,150 @@ export default function InvoicesPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#f8f9fa] dark:bg-[#121212]">
-      <aside className="fixed lg:static z-40 w-64 bg-white dark:bg-[#1a1a1a] border-r border-slate-200 dark:border-slate-800 h-full overflow-y-auto hidden lg:block">
-        <div className="p-4 border-b border-slate-200 dark:border-slate-800">
-          <div className="flex items-center gap-2">
-            <LayoutDashboard className="h-6 w-6 text-purple-600" />
-            <span className="font-semibold text-lg">Align Academy</span>
-          </div>
-        </div>
-        <nav className="p-4 space-y-6">
-          <div>
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-3 px-2">Main</p>
-            <ul className="space-y-1">
-              {sidebarItems.map((item) => (
-                <li key={item.label}>
-                  <Link href={item.href} className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${item.active ? "bg-purple-50 dark:bg-purple-900/20 text-purple-700" : "text-slate-600 hover:bg-slate-50"}`}>
-                    <item.icon className="h-4 w-4" />
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </nav>
-      </aside>
-
-      <main className="flex-1 min-w-0">
-        <header className="bg-white dark:bg-[#1a1a1a] border-b border-slate-200 dark:border-slate-800 px-4 lg:px-8 py-4 sticky top-0 z-30">
-          <div className="flex items-center justify-between">
-            <h1 className="text-xl font-semibold">Invoices</h1>
-            <div className="flex items-center gap-2">
-              <Switch checked={theme === "dark"} onCheckedChange={(c) => setTheme(c ? "dark" : "light")} />
-              <div className="h-8 w-8 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center">
-                <span className="text-sm font-medium text-purple-700">K</span>
-              </div>
-            </div>
-          </div>
-        </header>
-
-        <div className="p-4 lg:p-8 space-y-6">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              { label: "Total Invoiced", value: totalInvoiced, icon: DollarSign, color: "blue" },
-              { label: "Paid", value: paidAmount, icon: CheckCircle, color: "green" },
-              { label: "Pending", value: pendingAmount, icon: Clock, color: "amber" },
-              { label: "Overdue", value: overdueAmount, icon: AlertCircle, color: "red" },
-            ].map((stat, i) => (
-              <Card key={i} className="bg-white dark:bg-[#1a1a1a]">
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg bg-${stat.color}-500/10`}>
-                      <stat.icon className={`h-5 w-5 text-${stat.color}-600`} />
-                    </div>
-                    <div>
-                      <p className="text-sm text-slate-500">{stat.label}</p>
-                      <p className="text-xl font-bold">{formatCurrency(stat.value)}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <Tabs value={statusFilter} onValueChange={setStatusFilter}>
-              <TabsList>
-                <TabsTrigger value="all">All</TabsTrigger>
-                <TabsTrigger value="paid">Paid</TabsTrigger>
-                <TabsTrigger value="pending">Pending</TabsTrigger>
-                <TabsTrigger value="overdue">Overdue</TabsTrigger>
-                <TabsTrigger value="draft">Draft</TabsTrigger>
-              </TabsList>
-            </Tabs>
-            <div className="flex items-center gap-2">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                <Input placeholder="Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10 w-64" />
-              </div>
-              <Button variant="outline" size="sm" onClick={exportCSV}><Download className="h-4 w-4 mr-1" />Export</Button>
-              <Button size="sm" onClick={handleCreateInvoice}><Plus className="h-4 w-4 mr-1" />Create Invoice</Button>
-            </div>
-          </div>
-
+    <DashboardLayout>
+      <div className="p-6 space-y-6">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <Card className="bg-white dark:bg-[#1a1a1a]">
-            <CardContent className="p-0">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Invoice</TableHead>
-                    <TableHead>Customer</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Due Date</TableHead>
-                    <TableHead className="text-right">Amount</TableHead>
-                    <TableHead className="text-center">Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredInvoices.map((invoice) => {
-                    const status = statusConfig[invoice.status];
-                    const StatusIcon = status.icon;
-                    return (
-                      <TableRow key={invoice.id}>
-                        <TableCell>
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
-                              <FileText className="h-5 w-5 text-purple-600" />
-                            </div>
-                            <span className="font-semibold">{invoice.invoiceNumber}</span>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <p className="font-medium">{invoice.customer.name}</p>
-                          <p className="text-sm text-slate-500">{invoice.customer.email}</p>
-                        </TableCell>
-                        <TableCell>{formatDate(invoice.date)}</TableCell>
-                        <TableCell>{formatDate(invoice.dueDate)}</TableCell>
-                        <TableCell className="text-right font-semibold">{formatCurrency(invoice.total)}</TableCell>
-                        <TableCell className="text-center">
-                          <Badge variant="outline" className="gap-1" style={{ backgroundColor: status.bg, color: status.text, borderColor: "transparent" }}>
-                            <StatusIcon className="h-3 w-3" />
-                            {status.label}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0"><MoreHorizontal className="h-4 w-4" /></Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem onClick={() => handleEditInvoice(invoice)}><Edit className="h-4 w-4 mr-2" />Edit</DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, "paid")}><CheckCircle className="h-4 w-4 mr-2" />Mark Paid</DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, "pending")}><Clock className="h-4 w-4 mr-2" />Mark Pending</DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem onClick={() => handleDeleteInvoice(invoice.id)} className="text-red-600"><Trash2 className="h-4 w-4 mr-2" />Delete</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-blue-50 dark:bg-blue-900/20">
+                  <DollarSign className="h-5 w-5 text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-slate-500">Total Invoiced</p>
+                  <p className="text-xl font-bold">{formatCurrency(totalInvoiced)}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-white dark:bg-[#1a1a1a]">
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-green-50 dark:bg-green-900/20">
+                  <CheckCircle className="h-5 w-5 text-green-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-slate-500">Paid</p>
+                  <p className="text-xl font-bold">{formatCurrency(paidAmount)}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-white dark:bg-[#1a1a1a]">
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-900/20">
+                  <Clock className="h-5 w-5 text-amber-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-slate-500">Pending</p>
+                  <p className="text-xl font-bold">{formatCurrency(pendingAmount)}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-white dark:bg-[#1a1a1a]">
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-red-50 dark:bg-red-900/20">
+                  <AlertCircle className="h-5 w-5 text-red-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-slate-500">Overdue</p>
+                  <p className="text-xl font-bold">{formatCurrency(overdueAmount)}</p>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
-      </main>
+
+        {/* Actions Bar */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <Tabs value={statusFilter} onValueChange={setStatusFilter}>
+            <TabsList>
+              <TabsTrigger value="all">All</TabsTrigger>
+              <TabsTrigger value="paid">Paid</TabsTrigger>
+              <TabsTrigger value="pending">Pending</TabsTrigger>
+              <TabsTrigger value="overdue">Overdue</TabsTrigger>
+              <TabsTrigger value="draft">Draft</TabsTrigger>
+            </TabsList>
+          </Tabs>
+          <div className="flex items-center gap-2">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <Input placeholder="Search invoices..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10 w-64" />
+            </div>
+            <Button variant="outline" size="sm" onClick={exportCSV}><Download className="h-4 w-4 mr-1" />Export</Button>
+            <Button size="sm" onClick={handleCreateInvoice}><Plus className="h-4 w-4 mr-1" />Create Invoice</Button>
+          </div>
+        </div>
+
+        {/* Invoice Table */}
+        <Card className="bg-white dark:bg-[#1a1a1a]">
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Invoice</TableHead>
+                  <TableHead>Customer</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Due Date</TableHead>
+                  <TableHead className="text-right">Amount</TableHead>
+                  <TableHead className="text-center">Status</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredInvoices.map((invoice) => {
+                  const status = statusConfig[invoice.status];
+                  const StatusIcon = status.icon;
+                  return (
+                    <TableRow key={invoice.id}>
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                            <FileText className="h-5 w-5 text-purple-600" />
+                          </div>
+                          <span className="font-semibold">{invoice.invoiceNumber}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <p className="font-medium">{invoice.customer.name}</p>
+                        <p className="text-sm text-slate-500">{invoice.customer.email}</p>
+                      </TableCell>
+                      <TableCell>{formatDate(invoice.date)}</TableCell>
+                      <TableCell>{formatDate(invoice.dueDate)}</TableCell>
+                      <TableCell className="text-right font-semibold">{formatCurrency(invoice.total)}</TableCell>
+                      <TableCell className="text-center">
+                        <Badge variant="outline" className="gap-1" style={{ backgroundColor: status.bg, color: status.text, borderColor: "transparent" }}>
+                          <StatusIcon className="h-3 w-3" />
+                          {status.label}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0"><MoreHorizontal className="h-4 w-4" /></Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => handleEditInvoice(invoice)}><Edit className="h-4 w-4 mr-2" />Edit</DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, "paid")}><CheckCircle className="h-4 w-4 mr-2" />Mark Paid</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, "pending")}><Clock className="h-4 w-4 mr-2" />Mark Pending</DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => handleDeleteInvoice(invoice.id)} className="text-red-600"><Trash2 className="h-4 w-4 mr-2" />Delete</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Create/Edit Modal */}
       <Dialog open={isCreateModalOpen || isEditModalOpen} onOpenChange={(open) => { if (!open) { setIsCreateModalOpen(false); setIsEditModalOpen(false); setEditingInvoice({}); } }}>
@@ -578,6 +474,6 @@ export default function InvoicesPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </DashboardLayout>
   );
 }
