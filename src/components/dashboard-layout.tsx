@@ -48,17 +48,18 @@ const mainNav = [
   { icon: Home, label: "Overview", href: "/" },
   { icon: BarChart3, label: "Analytics", href: "/analytics" },
   { icon: Ticket, label: "Invoices", href: "/invoices", hasDropdown: true, items: ["All Invoices", "Pending", "Paid", "Overdue"] },
-  { icon: UsersRound, label: "Clients", href: "#" },
+  { icon: UsersRound, label: "Clients", href: "/clients" },
   { icon: Users, label: "Agents & Teams", href: "#", hasDropdown: true },
   { icon: BookOpen, label: "Knowledge Base", href: "#", hasDropdown: true },
   { icon: Zap, label: "Integrations", href: "#" },
 ];
 
 const analyticsNav = [
-  { icon: TrendingUp, label: "SLA Compliance", href: "#" },
-  { icon: Smile, label: "CSAT & NPS", href: "#" },
-  { icon: BarChart4, label: "Workload Analytics", href: "#" },
-  { icon: FileBarChart, label: "Reports", href: "#" },
+  { icon: TrendingUp, label: "SLA Compliance", href: "/sla" },
+  { icon: Smile, label: "CSAT & NPS", href: "/csat" },
+  { icon: BarChart4, label: "Workload Analytics", href: "/workload" },
+  { icon: FileBarChart, label: "Reports", href: "/reports" },
+  { icon: MapPin, label: "Sites", href: "/sites" },
 ];
 
 const supportNav = [
