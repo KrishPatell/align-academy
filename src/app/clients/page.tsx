@@ -11,7 +11,8 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Plus, MoreHorizontal, Mail, Phone, MapPin, Globe, Calendar, DollarSign, Edit, Trash2, Eye, FileText } from "lucide-react";
+import { Search, Plus, MoreHorizontal, Mail, Phone, MapPin, Globe, Calendar, DollarSign, Edit, Trash2, Eye, FileText, Bell } from "lucide-react";
+import { useToast } from "@/components/ui/toast";
 
 const clients = [
   { id: 1, name: "Acme Corporation", contact: "John Smith", email: "john@acme.com", phone: "+1 234 567 890", website: "acme.com", plan: "Enterprise", spent: "$12,450", status: "active", joined: "Jan 15, 2025" },
@@ -22,6 +23,7 @@ const clients = [
 ];
 
 export default function ClientsPage() {
+  const { toast } = useToast();
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedClient, setSelectedClient] = useState<typeof clients[0] | null>(null);
@@ -55,9 +57,14 @@ export default function ClientsPage() {
             <h1 className="text-2xl font-bold">Clients</h1>
             <p className="text-slate-500 text-sm">Manage your customer relationships</p>
           </div>
-          <Button className="bg-purple-600 hover:bg-purple-700 gap-2">
-            <Plus className="h-4 w-4" /> Add Client
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={() => toast({ title: "Notifications enabled", description: "You'll receive alerts for new clients", variant: "info" })}>
+              <Bell className="h-4 w-4" />
+            </Button>
+            <Button className="bg-purple-600 hover:bg-purple-700 gap-2">
+              <Plus className="h-4 w-4" /> Add Client
+            </Button>
+          </div>
         </div>
 
         {/* Stats */}

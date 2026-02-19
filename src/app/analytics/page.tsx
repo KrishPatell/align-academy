@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import DashboardLayout from "@/components/dashboard-layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -28,47 +29,58 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  ReferenceLine,
 } from "recharts";
-import { format, subDays, eachDayOfInterval } from "date-fns";
+import { format, subDays, subMonths, eachDayOfInterval, isWithinInterval, startOfMonth, endOfMonth } from "date-fns";
 import {
-  DollarSign,
-  CheckCircle,
-  Clock,
-  AlertCircle,
-  Plus,
-  Download,
-  Filter,
   TrendingUp,
   TrendingDown,
   Users,
   UserMinus,
-  FileText,
-  ArrowUpDown,
-  ChevronDown,
+  Download,
+  Filter,
   Calendar as CalendarIcon,
+  ChevronDown,
+  ArrowUpRight,
+  ArrowDownRight,
+  DollarSign,
+  Target,
+  Activity,
 } from "lucide-react";
 
-// Generate mock data
-const generateRevenueData = () => {
+// Generate mock data based on date range
+const generateRevenueData = (dateRange: { from: Date; to: Date }) => {
   const days = eachDayOfInterval({
-    start: subDays(new Date(), 29),
-    end: new Date(),
+    start: dateRange.from,
+    end: dateRange.to,
   });
 
   return days.map((day) => {
     const dayOfWeek = day.getDay();
     const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
     const multiplier = isWeekend ? 0.6 : 1;
+    const dateNum = day.getTime();
+    const randomSeed = (dateNum % 1000) / 1000;
     
     return {
       date: format(day, "MMM dd"),
-      Courses: Math.floor((Math.random() * 2500 + 1800) * multiplier),
-      Membership: Math.floor((Math.random() * 1800 + 1200) * multiplier),
-      Marketplace: Math.floor((Math.random() * 1200 + 600) * multiplier),
-      Certifications: Math.floor((Math.random() * 800 + 400) * multiplier),
-      Coaching: Math.floor((Math.random() * 600 + 150) * multiplier),
+      fullDate: day,
+      Courses: Math.floor((Math.random() * 2500 + 1800) * multiplier * (0.9 + randomSeed * 0.2)),
+      Membership: Math.floor((Math.random() * 1800 + 1200) * multiplier * (0.9 + randomSeed * 0.2)),
+      Marketplace: Math.floor((Math.random() * 1200 + 600) * multiplier * (0.9 + randomSeed * 0.2)),
+      Certifications: Math.floor((Math.random() * 800 + 400) * multiplier * (0.9 + randomSeed * 0.2)),
+      Coaching: Math.floor((Math.random() * 600 + 150) * multiplier * (0.9 + randomSeed * 0.2)),
     };
   });
+};
+
+// Generate previous period data for comparison
+const generatePreviousPeriodData = (dateRange: { from: Date; to: Date }) => {
+  const daysDiff = Math.ceil((dateRange.to.getTime() - dateRange.from.getTime()) / (1000 * 60 * 60 * 24));
+  const prevFrom = subDays(dateRange.from, daysDiff);
+  const prevTo = subDays(dateRange.from, 1);
+  
+  return generateRevenueData({ from: prevFrom, to: prevTo });
 };
 
 const productData = [
@@ -78,9 +90,6 @@ const productData = [
   { name: "Certifications", revenue: 48700, share: 13.7, change: 4.2, color: "#a855f7" },
   { name: "Coaching", revenue: 22500, share: 6.3, change: 3.8, color: "#ec4899" },
 ];
-
-const revenueData = generateRevenueData();
-const totalRevenue = revenueData.reduce((sum, d) => sum + d.Courses + d.Membership + d.Marketplace + d.Certifications + d.Coaching, 0);
 
 const stats = {
   todayRevenue: 12472,
@@ -95,9 +104,22 @@ const stats = {
   arpu: 49.20,
 };
 
+type DatePreset = "7d" | "14d" | "30d" | "90d" | "mtd" | "lmt";
+
+const datePresets: { label: string; value: DatePreset; getDates: () => { from: Date; to: Date } }[] = [
+  { label: "Last 7 days", value: "7d", getDates: () => ({ from: subDays(new Date(), 6), to: new Date() }) },
+  { label: "Last 14 days", value: "14d", getDates: () => ({ from: subDays(new Date(), 13), to: new Date() }) },
+  { label: "Last 30 days", value: "30d", getDates: () => ({ from: subDays(new Date(), 29), to: new Date() }) },
+  { label: "Last 90 days", value: "90d", getDates: () => ({ from: subDays(new Date(), 89), to: new Date() }) },
+  { label: "Month to date", value: "mtd", getDates: () => ({ from: startOfMonth(new Date()), to: new Date() }) },
+  { label: "Last month", value: "lmt", getDates: () => ({ from: startOfMonth(subMonths(new Date(), 1)), to: endOfMonth(subMonths(new Date(), 1)) }) },
+];
+
 export default function DashboardPage() {
   const [mounted, setMounted] = useState(false);
   const [viewMode, setViewMode] = useState<"stacked" | "grouped">("stacked");
+  const [compareMode, setCompareMode] = useState(false);
+  const [activePreset, setActivePreset] = useState<DatePreset>("30d");
   const [dateRange, setDateRange] = useState({
     from: subDays(new Date(), 29),
     to: new Date(),
@@ -107,18 +129,128 @@ export default function DashboardPage() {
   useEffect(() => { setMounted(true); }, []);
   if (!mounted) return null;
 
+  const revenueData = useMemo(() => generateRevenueData(dateRange), [dateRange]);
+  const previousPeriodData = useMemo(() => generatePreviousPeriodData(dateRange), [dateRange]);
+
+  const totalRevenue = revenueData.reduce((sum, d) => sum + d.Courses + d.Membership + d.Marketplace + d.Certifications + d.Coaching, 0);
+  const prevTotalRevenue = previousPeriodData.reduce((sum, d) => sum + d.Courses + d.Membership + d.Marketplace + d.Certifications + d.Coaching, 0);
+  const revenueChange = ((totalRevenue - prevTotalRevenue) / prevTotalRevenue) * 100;
+
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "USD",
       minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
     }).format(value);
+
+  const handlePresetChange = (preset: DatePreset) => {
+    const dates = datePresets.find(p => p.value === preset)?.getDates() || dateRange;
+    setDateRange(dates);
+    setActivePreset(preset);
+  };
+
+  const exportToCSV = () => {
+    const headers = ["Date", "Courses", "Membership", "Marketplace", "Certifications", "Coaching", "Total"];
+    const rows = revenueData.map(d => [
+      d.fullDate.toISOString().split('T')[0],
+      d.Courses,
+      d.Membership,
+      d.Marketplace,
+      d.Certifications,
+      d.Coaching,
+      d.Courses + d.Membership + d.Marketplace + d.Certifications + d.Coaching,
+    ]);
+    
+    const csvContent = [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `analytics-${format(dateRange.from, "yyyy-MM-dd")}-${format(dateRange.to, "yyyy-MM-dd")}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // Custom tooltip for chart
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      const total = payload.reduce((sum: number, entry: any) => sum + entry.value, 0);
+      return (
+        <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700">
+          <p className="font-semibold text-slate-900 dark:text-slate-100 mb-2">{label}</p>
+          <div className="space-y-1">
+            {payload.map((entry: any, index: number) => (
+              <div key={index} className="flex items-center justify-between gap-4 text-sm">
+                <div className="flex items-center gap-2">
+                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: entry.color }} />
+                  <span className="text-slate-600 dark:text-slate-300">{entry.dataKey}</span>
+                </div>
+                <span className="font-medium text-slate-900 dark:text-slate-100">{formatCurrency(entry.value)}</span>
+              </div>
+            ))}
+          </div>
+          <div className="mt-2 pt-2 border-t border-slate-200 dark:border-slate-700 flex justify-between">
+            <span className="text-sm text-slate-500">Total</span>
+            <span className="font-bold text-purple-600">{formatCurrency(total)}</span>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
     <DashboardLayout>
       <div className="p-6 space-y-6">
-        {/* KPI Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+        {/* Header with Controls */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Analytics</h1>
+            <p className="text-slate-500 dark:text-slate-400">Track your revenue and performance metrics</p>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            {/* Compare Toggle */}
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800">
+              <Switch
+                id="compare-mode"
+                checked={compareMode}
+                onCheckedChange={setCompareMode}
+                className="data-[state=checked]:bg-purple-600"
+              />
+              <Label htmlFor="compare-mode" className="text-sm cursor-pointer">Compare to previous period</Label>
+            </div>
+            <Button variant="outline" size="sm" className="gap-2" onClick={exportToCSV}>
+              <Download className="h-4 w-4" /> Export CSV
+            </Button>
+          </div>
+        </div>
+
+        {/* Enhanced KPI Summary Cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+          <Card className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-950/30 dark:to-violet-950/30 border-purple-200 dark:border-purple-800">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-sm font-medium text-purple-600 dark:text-purple-400">Total Revenue</p>
+                <div className="p-1.5 bg-purple-100 dark:bg-purple-900/50 rounded-lg">
+                  <DollarSign className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                </div>
+              </div>
+              <p className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{formatCurrency(totalRevenue)}</p>
+              <div className="flex items-center gap-1 mt-2">
+                {revenueChange >= 0 ? (
+                  <ArrowUpRight className="h-4 w-4 text-green-500" />
+                ) : (
+                  <ArrowDownRight className="h-4 w-4 text-red-500" />
+                )}
+                <span className={`text-sm font-medium ${revenueChange >= 0 ? "text-green-600" : "text-red-600"}`}>
+                  {revenueChange >= 0 ? "+" : ""}{revenueChange.toFixed(1)}%
+                </span>
+                <span className="text-xs text-slate-500">vs prev period</span>
+              </div>
+            </CardContent>
+          </Card>
+
           <Card className="bg-white dark:bg-[#1a1a1a]">
             <CardContent className="pt-6">
               <p className="text-sm font-medium text-slate-500 mb-1">Today's Revenue</p>
@@ -175,22 +307,6 @@ export default function DashboardPage() {
 
           <Card className="bg-white dark:bg-[#1a1a1a]">
             <CardContent className="pt-6">
-              <p className="text-sm font-medium text-slate-500 mb-1 flex items-center gap-1">
-                <UserMinus className="h-3 w-3" /> Churn Rate
-              </p>
-              <p className="text-2xl font-bold tracking-tight">{stats.churnRate}%</p>
-              <div className="flex items-center gap-2 mt-2">
-                <Badge variant="outline" className="text-green-600 bg-green-50">
-                  <TrendingDown className="h-3 w-3 mr-1" />
-                  -0.3%
-                </Badge>
-                <span className="text-xs text-slate-500">vs last mo</span>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white dark:bg-[#1a1a1a]">
-            <CardContent className="pt-6">
               <p className="text-sm font-medium text-slate-500 mb-1">ARPU</p>
               <p className="text-2xl font-bold tracking-tight">${stats.arpu}</p>
               <div className="flex items-center gap-2 mt-2">
@@ -209,18 +325,32 @@ export default function DashboardPage() {
           <CardHeader className="pb-2">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
               <div>
-                <CardTitle className="text-xl">Revenue</CardTitle>
+                <CardTitle className="text-xl">Revenue Breakdown</CardTitle>
                 <p className="text-sm text-slate-500 mt-1">
-                  {formatCurrency(totalRevenue)} total • +1.7% from previous period
+                  {formatCurrency(totalRevenue)} total • {revenueChange >= 0 ? "+" : ""}{revenueChange.toFixed(1)}% from previous period
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-2">
-                <Button variant="outline" size="sm" className="gap-2">
-                  <Filter className="h-4 w-4" /> Filter
-                </Button>
+                {/* Preset Date Ranges */}
+                <div className="flex gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-lg">
+                  {datePresets.slice(0, 5).map((preset) => (
+                    <Button
+                      key={preset.value}
+                      variant={activePreset === preset.value ? "default" : "ghost"}
+                      size="sm"
+                      onClick={() => handlePresetChange(preset.value)}
+                      className={activePreset === preset.value ? "bg-purple-600 hover:bg-purple-700" : "text-slate-600 dark:text-slate-300"}
+                    >
+                      {preset.value === "7d" ? "7D" : preset.value === "14d" ? "14D" : preset.value === "30d" ? "30D" : preset.value === "90d" ? "90D" : "MTD"}
+                    </Button>
+                  ))}
+                </div>
+                
+                {/* Custom Date Picker */}
                 <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
                   <PopoverTrigger asChild>
                     <Button variant="outline" size="sm" className="gap-2">
+                      <CalendarIcon className="h-4 w-4" />
                       {format(dateRange.from, "MMM dd")} – {format(dateRange.to, "MMM dd")}
                       <ChevronDown className="h-4 w-4" />
                     </Button>
@@ -232,6 +362,7 @@ export default function DashboardPage() {
                       onSelect={(range) => {
                         if (range?.from && range?.to) {
                           setDateRange({ from: range.from, to: range.to });
+                          setActivePreset("custom");
                         }
                       }}
                       numberOfMonths={2}
@@ -242,41 +373,92 @@ export default function DashboardPage() {
                     </div>
                   </PopoverContent>
                 </Popover>
-                <Button
-                  variant={viewMode === "stacked" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setViewMode("stacked")}
-                  className={viewMode === "stacked" ? "bg-purple-600" : ""}
-                >
-                  Stacked
-                </Button>
-                <Button
-                  variant={viewMode === "grouped" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setViewMode("grouped")}
-                  className={viewMode === "grouped" ? "bg-purple-600" : ""}
-                >
-                  Grouped
-                </Button>
-                <Button variant="outline" size="sm" className="gap-2">
-                  <Download className="h-4 w-4" /> Export
-                </Button>
+                
+                {/* View Mode Toggle */}
+                <div className="flex gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-lg">
+                  <Button
+                    variant={viewMode === "stacked" ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => setViewMode("stacked")}
+                    className={viewMode === "stacked" ? "bg-purple-600 hover:bg-purple-700" : "text-slate-600 dark:text-slate-300"}
+                  >
+                    Stacked
+                  </Button>
+                  <Button
+                    variant={viewMode === "grouped" ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => setViewMode("grouped")}
+                    className={viewMode === "grouped" ? "bg-purple-600 hover:bg-purple-700" : "text-slate-600 dark:text-slate-300"}
+                  >
+                    Grouped
+                  </Button>
+                </div>
               </div>
             </div>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={350}>
-              <BarChart data={revenueData} barSize={16}>
+            <ResponsiveContainer width="100%" height={380}>
+              <BarChart data={revenueData} barSize={14}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" className="dark:stroke-slate-700" />
-                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 12 }} dy={10} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 12 }} tickFormatter={(v) => `$${v / 1000}k`} dx={-10} />
-                <Tooltip contentStyle={{ backgroundColor: "white", border: "1px solid #e2e8f0", borderRadius: "8px" }} formatter={(value: any) => formatCurrency(Number(value))} />
-                <Legend wrapperStyle={{ paddingTop: "20px" }} />
-                <Bar dataKey="Courses" stackId={viewMode === "stacked" ? "a" : undefined} fill="#7c3aed" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="Membership" stackId={viewMode === "stacked" ? "a" : undefined} fill="#3b82f6" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="Marketplace" stackId={viewMode === "stacked" ? "a" : undefined} fill="#0ea5e9" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="Certifications" stackId={viewMode === "stacked" ? "a" : undefined} fill="#a855f7" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="Coaching" stackId={viewMode === "stacked" ? "a" : undefined} fill="#ec4899" radius={[4, 4, 0, 0]} />
+                <XAxis 
+                  dataKey="date" 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{ fill: "#64748b", fontSize: 11 }} 
+                  dy={10}
+                  interval={Math.floor(revenueData.length / 10)}
+                />
+                <YAxis 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{ fill: "#64748b", fontSize: 11 }} 
+                  tickFormatter={(v) => `$${v / 1000}k`} 
+                  dx={-10}
+                />
+                <Tooltip 
+                  content={<CustomTooltip />}
+                  cursor={{ fill: 'rgba(124, 58, 237, 0.1)' }}
+                />
+                <Legend 
+                  wrapperStyle={{ paddingTop: "20px" }} 
+                  iconType="circle"
+                  iconSize={8}
+                />
+                <Bar 
+                  dataKey="Courses" 
+                  stackId={viewMode === "stacked" ? "a" : undefined} 
+                  fill="#7c3aed" 
+                  radius={[4, 4, 0, 0]} 
+                  animationDuration={500}
+                />
+                <Bar 
+                  dataKey="Membership" 
+                  stackId={viewMode === "stacked" ? "a" : undefined} 
+                  fill="#3b82f6" 
+                  radius={[4, 4, 0, 0]} 
+                  animationDuration={500}
+                />
+                <Bar 
+                  dataKey="Marketplace" 
+                  stackId={viewMode === "stacked" ? "a" : undefined} 
+                  fill="#0ea5e9" 
+                  radius={[4, 4, 0, 0]} 
+                  animationDuration={500}
+                />
+                <Bar 
+                  dataKey="Certifications" 
+                  stackId={viewMode === "stacked" ? "a" : undefined} 
+                  fill="#a855f7" 
+                  radius={[4, 4, 0, 0]} 
+                  animationDuration={500}
+                />
+                <Bar 
+                  dataKey="Coaching" 
+                  stackId={viewMode === "stacked" ? "a" : undefined} 
+                  fill="#ec4899" 
+                  radius={[4, 4, 0, 0]} 
+                  animationDuration={500}
+                />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -300,7 +482,7 @@ export default function DashboardPage() {
                 </thead>
                 <tbody>
                   {productData.map((product) => (
-                    <tr key={product.name} className="border-b border-slate-100 dark:border-slate-800">
+                    <tr key={product.name} className="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                       <td className="py-4 px-4">
                         <div className="flex items-center gap-2">
                           <span className="h-3 w-3 rounded-full" style={{ backgroundColor: product.color }} />
