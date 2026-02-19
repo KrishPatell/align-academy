@@ -1,7 +1,7 @@
 "use client";
 
 // Kravio Dashboard - Premium Support Platform
-// Version 3.9 - Unmatched dedication
+// Version 4.0 - The hundred club
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
