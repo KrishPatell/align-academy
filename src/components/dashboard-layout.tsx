@@ -36,6 +36,7 @@ import {
   RefreshCw,
   Download,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -94,6 +95,7 @@ const supportNav = [
 export default function DashboardLayout({ children }: SidebarProps) {
   const { theme, setTheme } = useTheme();
   const pathname = usePathname();
+  const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [openMenus, setOpenMenus] = useState<string[]>(["Invoices"]);
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
@@ -248,10 +250,10 @@ export default function DashboardLayout({ children }: SidebarProps) {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem><Settings className="h-4 w-4 mr-2" />Settings</DropdownMenuItem>
-                <DropdownMenuItem><HelpCircle className="h-4 w-4 mr-2" />Help</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push("/settings")}><Settings className="h-4 w-4 mr-2" />Settings</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push("/help")}><HelpCircle className="h-4 w-4 mr-2" />Help</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-red-600"><LogOut className="h-4 w-4 mr-2" />Sign out</DropdownMenuItem>
+                <DropdownMenuItem className="text-red-600" onClick={() => { alert("Signed out"); console.log("[Auth] User signed out at", new Date().toISOString()); }}><LogOut className="h-4 w-4 mr-2" />Sign out</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
