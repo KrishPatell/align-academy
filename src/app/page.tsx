@@ -153,6 +153,7 @@ export default function HomePage() {
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [filterPriority, setFilterPriority] = useState("all");
+  const [selectedTicket, setSelectedTicket] = useState<typeof initialTickets[0] | null>(null);
 
   useEffect(() => { setMounted(true); }, []);
   if (!mounted) return null;
