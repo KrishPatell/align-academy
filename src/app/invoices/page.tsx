@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton, SkeletonCard, SkeletonTable, SkeletonTableRow } from "@/components/ui/skeleton";
 import {
   Select,
   SelectContent,
@@ -135,6 +136,7 @@ const statusConfig: Record<InvoiceStatus, { bg: string; text: string; label: str
 export default function InvoicesPage() {
   const { toast } = useToast();
   const [mounted, setMounted] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [invoices, setInvoices] = useState(initialInvoices);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -145,8 +147,40 @@ export default function InvoicesPage() {
   const [viewingInvoice, setViewingInvoice] = useState<Invoice | null>(null);
   const [editingInvoice, setEditingInvoice] = useState<Partial<Invoice>>({});
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => { 
+    setMounted(true);
+    // Simulate loading
+    const timer = setTimeout(() => setLoading(false), 800);
+    return () => clearTimeout(timer);
+  }, []);
   if (!mounted) return null;
+
+  // Loading skeleton
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <div className="p-6 space-y-6">
+          {/* Stats Cards Skeleton */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {[1, 2, 3, 4].map(i => <SkeletonCard key={i} />)}
+          </div>
+          
+          {/* Actions Bar Skeleton */}
+          <div className="flex items-center justify-between">
+            <Skeleton className="h-10 w-80" />
+            <div className="flex gap-2">
+              <Skeleton className="h-10 w-24" />
+              <Skeleton className="h-10 w-10" />
+              <Skeleton className="h-10 w-36" />
+            </div>
+          </div>
+          
+          {/* Table Skeleton */}
+          <SkeletonTable columns={7} rows={6} />
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   const formatCurrency = (value: number) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0 }).format(value);
   const formatDate = (date: string) => new Date(date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
