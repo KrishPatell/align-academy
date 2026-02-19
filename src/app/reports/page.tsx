@@ -6,23 +6,29 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { 
   Search, Download, FileText, Calendar, BarChart3, PieChart, 
   LineChart, Clock, Users, DollarSign, TrendingUp, Filter,
-  Play, CheckCircle, XCircle
+  Play, CheckCircle, XCircle, Zap, Eye, Loader2, X
 } from "lucide-react";
 
 const reportTemplates = [
-  { id: 1, name: "SLA Performance Report", description: "Track SLA compliance and breach rates", type: "SLA", lastRun: "2 hours ago", status: "ready" },
-  { id: 2, name: "Agent Performance", description: "Individual and team metrics", type: "Performance", lastRun: "1 day ago", status: "ready" },
-  { id: 3, name: "Customer Satisfaction", description: "CSAT scores and feedback analysis", type: "CSAT", lastRun: "3 hours ago", status: "ready" },
-  { id: 4, name: "Revenue Summary", description: "Billing and invoice overview", type: "Revenue", lastRun: "5 hours ago", status: "ready" },
-  { id: 5, name: "Ticket Volume Analysis", description: "Trends and patterns in support tickets", type: "Analytics", lastRun: "1 week ago", status: "ready" },
-  { id: 6, name: "Response Time Report", description: "First response and resolution times", type: "Performance", lastRun: "2 days ago", status: "ready" },
+  { id: 1, name: "SLA Performance Report", description: "Track SLA compliance and breach rates across all tickets and agents", type: "SLA", lastRun: "2 hours ago", status: "ready", metrics: ["SLA Compliance", "Breach Rate", "Response Time"], color: "blue" },
+  { id: 2, name: "Agent Performance", description: "Individual and team metrics including response times and resolution rates", type: "Performance", lastRun: "1 day ago", status: "ready", metrics: ["Avg Response Time", "Resolution Rate", "Tickets Closed"], color: "purple" },
+  { id: 3, name: "Customer Satisfaction", description: "CSAT scores and feedback analysis from customer surveys", type: "CSAT", lastRun: "3 hours ago", status: "ready", metrics: ["CSAT Score", "NPS Rating", "Feedback Count"], color: "green" },
+  { id: 4, name: "Revenue Summary", description: "Billing and invoice overview with revenue breakdown", type: "Revenue", lastRun: "5 hours ago", status: "ready", metrics: ["Total Revenue", "Invoices", "Payment Status"], color: "amber" },
+  { id: 5, name: "Ticket Volume Analysis", description: "Trends and patterns in support tickets over time", type: "Analytics", lastRun: "1 week ago", status: "ready", metrics: ["Ticket Count", "Volume Trend", "Category Breakdown"], color: "indigo" },
+  { id: 6, name: "Response Time Report", description: "First response and resolution times with SLA tracking", type: "Performance", lastRun: "2 days ago", status: "ready", metrics: ["First Response", "Resolution Time", "Wait Time"], color: "purple" },
 ];
 
 const scheduledReports = [
@@ -46,12 +52,47 @@ const reportStats = {
   downloads: 1247,
 };
 
+const typeColors: Record<string, string> = {
+  SLA: "bg-blue-50 dark:bg-blue-900/20 text-blue-600",
+  Performance: "bg-purple-50 dark:bg-purple-900/20 text-purple-600",
+  CSAT: "bg-green-50 dark:bg-green-900/20 text-green-600",
+  Revenue: "bg-amber-50 dark:bg-amber-900/20 text-amber-600",
+  Analytics: "bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600",
+};
+
+const typeIcons: Record<string, React.ElementType> = {
+  SLA: BarChart3,
+  Performance: TrendingUp,
+  CSAT: Users,
+  Revenue: DollarSign,
+  Analytics: LineChart,
+};
+
 export default function ReportsPage() {
   const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState("templates");
+  const [selectedTemplate, setSelectedTemplate] = useState<typeof reportTemplates[0] | null>(null);
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [generatingReport, setGeneratingReport] = useState(false);
+  const [generatedReport, setGeneratedReport] = useState(false);
 
   useEffect(() => { setMounted(true); }, []);
   if (!mounted) return null;
+
+  const handleQuickGenerate = (template: typeof reportTemplates[0]) => {
+    setSelectedTemplate(template);
+    setShowPreviewModal(true);
+    setGeneratedReport(false);
+  };
+
+  const handleGenerateReport = () => {
+    setGeneratingReport(true);
+    // Simulate report generation
+    setTimeout(() => {
+      setGeneratingReport(false);
+      setGeneratedReport(true);
+    }, 2000);
+  };
 
   return (
     <DashboardLayout>
@@ -144,34 +185,35 @@ export default function ReportsPage() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {reportTemplates.map((template) => (
-                    <div key={template.id} className="p-4 rounded-xl border hover:border-purple-500 transition-colors group">
+                    <div 
+                      key={template.id} 
+                      className="p-5 rounded-xl border hover:border-purple-500 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300 cursor-pointer group bg-white dark:bg-[#1a1a1a]"
+                      onClick={() => handleQuickGenerate(template)}
+                    >
                       <div className="flex items-start justify-between mb-3">
-                        <div className={`p-2 rounded-lg ${
-                          template.type === "SLA" ? "bg-blue-50 dark:bg-blue-900/20" :
-                          template.type === "Performance" ? "bg-purple-50 dark:bg-purple-900/20" :
-                          template.type === "CSAT" ? "bg-green-50 dark:bg-green-900/20" :
-                          "bg-amber-50 dark:bg-amber-900/20"
-                        }`}>
-                          {template.type === "SLA" && <BarChart3 className="h-5 w-5 text-blue-600" />}
-                          {template.type === "Performance" && <TrendingUp className="h-5 w-5 text-purple-600" />}
-                          {template.type === "CSAT" && <Users className="h-5 w-5 text-green-600" />}
-                          {template.type === "Revenue" && <DollarSign className="h-5 w-5 text-amber-600" />}
-                          {template.type === "Analytics" && <LineChart className="h-5 w-5 text-indigo-600" />}
+                        <div className={`p-2.5 rounded-xl ${typeColors[template.type]} transition-transform group-hover:scale-110`}>
+                          {React.createElement(typeIcons[template.type], { className: "h-5 w-5" })}
                         </div>
                         <Badge variant="secondary" className="text-xs">
                           {template.type}
                         </Badge>
                       </div>
                       <h3 className="font-semibold mb-1 group-hover:text-purple-600 transition-colors">{template.name}</h3>
-                      <p className="text-sm text-slate-500 mb-4">{template.description}</p>
+                      <p className="text-sm text-slate-500 mb-4 line-clamp-2">{template.description}</p>
                       <div className="flex items-center justify-between pt-3 border-t">
                         <span className="text-xs text-slate-500">Last run: {template.lastRun}</span>
-                        <div className="flex gap-2">
-                          <Button variant="ghost" size="sm" className="h-8">
-                            <Play className="h-4 w-4" />
-                          </Button>
-                          <Button variant="ghost" size="sm" className="h-8">
-                            <Calendar className="h-4 w-4" />
+                        <div className="flex gap-1">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-8 px-2 text-purple-600 hover:bg-purple-50 hover:text-purple-700"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleQuickGenerate(template);
+                            }}
+                          >
+                            <Zap className="h-4 w-4 mr-1" />
+                            Quick Generate
                           </Button>
                         </div>
                       </div>
@@ -190,7 +232,7 @@ export default function ReportsPage() {
               <CardContent>
                 <div className="space-y-3">
                   {scheduledReports.map((report) => (
-                    <div key={report.id} className="flex items-center justify-between p-4 rounded-xl border">
+                    <div key={report.id} className="flex items-center justify-between p-4 rounded-xl border hover:border-purple-500 transition-colors">
                       <div className="flex items-center gap-4">
                         <div className="p-2.5 rounded-xl bg-purple-50 dark:bg-purple-900/20">
                           <Calendar className="h-5 w-5 text-purple-600" />
@@ -278,6 +320,114 @@ export default function ReportsPage() {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Preview Modal */}
+        <Dialog open={showPreviewModal} onOpenChange={setShowPreviewModal}>
+          <DialogContent className="max-w-2xl">
+            {selectedTemplate && (
+              <>
+                <DialogHeader>
+                  <div className="flex items-center gap-3">
+                    <div className={`p-2.5 rounded-xl ${typeColors[selectedTemplate.type]}`}>
+                      {React.createElement(typeIcons[selectedTemplate.type], { className: "h-5 w-5" })}
+                    </div>
+                    <div>
+                      <DialogTitle className="text-xl">{selectedTemplate.name}</DialogTitle>
+                      <DialogDescription>{selectedTemplate.description}</DialogDescription>
+                    </div>
+                  </div>
+                </DialogHeader>
+                
+                {!generatedReport ? (
+                  <div className="space-y-6 py-4">
+                    <div>
+                      <h4 className="font-semibold mb-3 flex items-center gap-2">
+                        <BarChart3 className="h-4 w-4 text-purple-600" />
+                        Included Metrics
+                      </h4>
+                      <div className="grid grid-cols-3 gap-3">
+                        {selectedTemplate.metrics.map((metric, idx) => (
+                          <div key={idx} className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800 border">
+                            <p className="text-sm font-medium">{metric}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4 className="font-semibold mb-3 flex items-center gap-2">
+                        <Calendar className="h-4 w-4 text-purple-600" />
+                        Date Range
+                      </h4>
+                      <div className="flex gap-3">
+                        <div className="flex-1 p-3 rounded-lg bg-slate-50 dark:bg-slate-800 border">
+                          <p className="text-xs text-slate-500 mb-1">Start Date</p>
+                          <p className="font-medium">Feb 1, 2026</p>
+                        </div>
+                        <div className="flex-1 p-3 rounded-lg bg-slate-50 dark:bg-slate-800 border">
+                          <p className="text-xs text-slate-500 mb-1">End Date</p>
+                          <p className="font-medium">Feb 19, 2026</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-4 rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-800">
+                          <FileText className="h-5 w-5 text-purple-600" />
+                        </div>
+                        <div>
+                          <p className="font-medium">Estimated Output</p>
+                          <p className="text-sm text-slate-500">~2.4 MB • PDF Format</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <DialogFooter>
+                      <Button variant="outline" onClick={() => setShowPreviewModal(false)}>
+                        Cancel
+                      </Button>
+                      <Button 
+                        className="bg-purple-600 hover:bg-purple-700 gap-2"
+                        onClick={handleGenerateReport}
+                        disabled={generatingReport}
+                      >
+                        {generatingReport ? (
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                            Generating...
+                          </>
+                        ) : (
+                          <>
+                            <Zap className="h-4 w-4" />
+                            Generate Report
+                          </>
+                        )}
+                      </Button>
+                    </DialogFooter>
+                  </div>
+                ) : (
+                  <div className="py-8 text-center">
+                    <div className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center mx-auto mb-4">
+                      <CheckCircle className="h-8 w-8 text-green-600" />
+                    </div>
+                    <h3 className="text-xl font-semibold mb-2">Report Generated!</h3>
+                    <p className="text-slate-500 mb-6">Your report is ready for download</p>
+                    <div className="flex justify-center gap-3">
+                      <Button variant="outline" onClick={() => setShowPreviewModal(false)}>
+                        Close
+                      </Button>
+                      <Button className="bg-purple-600 hover:bg-purple-700 gap-2">
+                        <Download className="h-4 w-4" />
+                        Download PDF
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </DashboardLayout>
   );

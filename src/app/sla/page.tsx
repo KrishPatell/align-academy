@@ -28,6 +28,7 @@ import {
   Calendar,
   FileText,
   User,
+  X,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -73,11 +74,81 @@ const priorityColors: Record<string, string> = {
   low: "bg-green-100 text-green-700",
 };
 
+// Ticket Detail Modal
+function TicketDetailModal({ ticket, onClose }: { ticket: typeof slaTickets[0]; onClose: () => void }) {
+  const status = statusConfig[ticket.status];
+  const StatusIcon = status.icon;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+      <div className="relative bg-white dark:bg-[#1a1a1a] rounded-xl shadow-xl w-full max-w-lg mx-4">
+        <div className="flex items-center justify-between p-4 border-b">
+          <div className="flex items-center gap-3">
+            <span className="text-lg font-bold text-purple-600">{ticket.id}</span>
+            <span className={`px-2 py-1 rounded-full text-xs font-medium ${priorityColors[ticket.priority]}`}>
+              {ticket.priority}
+            </span>
+          </div>
+          <Button variant="ghost" size="sm" onClick={onClose}>
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+        <div className="p-4 space-y-4">
+          <div>
+            <h3 className="font-semibold text-lg">{ticket.subject}</h3>
+            <p className="text-sm text-slate-500">{ticket.customer}</p>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-sm text-slate-500">SLA Status</p>
+              <span className={`px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 w-fit ${status.bg} ${status.text}`}>
+                <StatusIcon className="h-3 w-3" />
+                {status.label}
+              </span>
+            </div>
+            <div>
+              <p className="text-sm text-slate-500">Response Time</p>
+              <p className="font-medium">{ticket.responseTime}</p>
+            </div>
+            <div>
+              <p className="text-sm text-slate-500">Created</p>
+              <p className="font-medium">{ticket.created}</p>
+            </div>
+            <div>
+              <p className="text-sm text-slate-500">Due</p>
+              <p className="font-medium">{ticket.due}</p>
+            </div>
+            <div>
+              <p className="text-sm text-slate-500">Assigned Agent</p>
+              <div className="flex items-center gap-2 mt-1">
+                <div className="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center text-xs">
+                  {ticket.agent.charAt(0)}
+                </div>
+                <span className="text-sm">{ticket.agent}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex gap-2 pt-4">
+            <Button className="flex-1 bg-purple-600 hover:bg-purple-700">View Full Ticket</Button>
+            <Button variant="outline">Assign</Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function SLAPage() {
   const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
   const [sortField, setSortField] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [priorityFilter, setPriorityFilter] = useState<string | null>(null);
+  const [expandedPriority, setExpandedPriority] = useState<string[]>(["High", "Medium", "Low"]);
+  const [selectedTicket, setSelectedTicket] = useState<typeof slaTickets[0] | null>(null);
 
   useEffect(() => { setMounted(true); }, []);
   if (!mounted) return null;
@@ -91,7 +162,23 @@ export default function SLAPage() {
     }
   };
 
-  const sortedTickets = [...slaTickets].sort((a, b) => {
+  const togglePriorityFilter = (priority: string) => {
+    setPriorityFilter(priorityFilter === priority ? null : priority);
+  };
+
+  const togglePrioritySection = (priority: string) => {
+    setExpandedPriority(prev => 
+      prev.includes(priority) 
+        ? prev.filter(p => p !== priority)
+        : [...prev, priority]
+    );
+  };
+
+  const filteredTickets = priorityFilter 
+    ? slaTickets.filter(t => t.priority === priorityFilter)
+    : slaTickets;
+
+  const sortedTickets = [...filteredTickets].sort((a, b) => {
     if (!sortField) return 0;
     const aVal = a[sortField as keyof typeof a];
     const bVal = b[sortField as keyof typeof b];
@@ -232,9 +319,42 @@ export default function SLAPage() {
           <TabsContent value="tickets" className="mt-4">
             <Card className="bg-white dark:bg-[#1a1a1a]">
               <CardHeader>
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                   <CardTitle className="text-lg">SLA Tickets</CardTitle>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    {/* Priority Quick Filters */}
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs text-slate-500 mr-1">Priority:</span>
+                      <Button
+                        variant={priorityFilter === "high" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => togglePriorityFilter("high")}
+                        className={`h-7 text-xs ${priorityFilter === "high" ? "bg-red-500 hover:bg-red-600" : ""}`}
+                      >
+                        High
+                      </Button>
+                      <Button
+                        variant={priorityFilter === "medium" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => togglePriorityFilter("medium")}
+                        className={`h-7 text-xs ${priorityFilter === "medium" ? "bg-amber-500 hover:bg-amber-600" : ""}`}
+                      >
+                        Medium
+                      </Button>
+                      <Button
+                        variant={priorityFilter === "low" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => togglePriorityFilter("low")}
+                        className={`h-7 text-xs ${priorityFilter === "low" ? "bg-green-500 hover:bg-green-600" : ""}`}
+                      >
+                        Low
+                      </Button>
+                      {priorityFilter && (
+                        <Button variant="ghost" size="sm" onClick={() => setPriorityFilter(null)} className="h-7 px-2">
+                          <X className="h-3 w-3" />
+                        </Button>
+                      )}
+                    </div>
                     <Input placeholder="Search tickets..." className="w-64" />
                   </div>
                 </div>
@@ -266,7 +386,11 @@ export default function SLAPage() {
                         const status = statusConfig[ticket.status];
                         const StatusIcon = status.icon;
                         return (
-                          <tr key={ticket.id} className="border-b hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                          <tr 
+                            key={ticket.id} 
+                            className="border-b hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer transition-colors"
+                            onClick={() => setSelectedTicket(ticket)}
+                          >
                             <td className="py-3 px-4 font-medium text-purple-600">{ticket.id}</td>
                             <td className="py-3 px-4">{ticket.subject}</td>
                             <td className="py-3 px-4">
@@ -291,7 +415,7 @@ export default function SLAPage() {
                               </div>
                             </td>
                             <td className="py-3 px-4 text-sm">{ticket.responseTime}</td>
-                            <td className="py-3 px-4 text-right">
+                            <td className="py-3 px-4 text-right" onClick={(e) => e.stopPropagation()}>
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                   <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
@@ -299,7 +423,7 @@ export default function SLAPage() {
                                   </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
-                                  <DropdownMenuItem>View details</DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => setSelectedTicket(ticket)}>View details</DropdownMenuItem>
                                   <DropdownMenuItem>Extend SLA</DropdownMenuItem>
                                   <DropdownMenuItem>Assign to...</DropdownMenuItem>
                                 </DropdownMenuContent>
@@ -321,29 +445,56 @@ export default function SLAPage() {
                 <CardTitle className="text-lg">SLA by Priority</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 gap-4">
                   {slaByPriority.map((item) => (
-                    <div key={item.priority} className="p-4 rounded-xl border">
-                      <div className="flex items-center justify-between mb-4">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${priorityColors[item.priority.toLowerCase()]}`}>
-                          {item.priority}
-                        </span>
-                        <span className="text-2xl font-bold">{item.rate}%</span>
+                    <div key={item.priority} className="rounded-xl border overflow-hidden">
+                      {/* Collapsible Header */}
+                      <div 
+                        className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                        onClick={() => togglePrioritySection(item.priority)}
+                      >
+                        <div className="flex items-center gap-4">
+                          {expandedPriority.includes(item.priority) ? (
+                            <ChevronDown className="h-5 w-5 text-slate-400" />
+                          ) : (
+                            <ChevronUp className="h-5 w-5 text-slate-400" />
+                          )}
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${priorityColors[item.priority.toLowerCase()]}`}>
+                            {item.priority}
+                          </span>
+                          <span className="text-sm text-slate-500">{item.total} tickets</span>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <span className="text-sm">Target: {item.target}%</span>
+                          <span className={`text-2xl font-bold ${item.rate >= item.target ? 'text-green-600' : 'text-red-600'}`}>{item.rate}%</span>
+                        </div>
                       </div>
-                      <div className="space-y-2 text-sm text-slate-500">
-                        <div className="flex justify-between">
-                          <span>Total Tickets</span>
-                          <span>{item.total}</span>
+                      
+                      {/* Collapsible Content */}
+                      {expandedPriority.includes(item.priority) && (
+                        <div className="p-4 border-t">
+                          <div className="h-3 bg-slate-100 rounded-full overflow-hidden mb-4">
+                            <div 
+                              className={`h-full rounded-full ${item.rate >= item.target ? 'bg-green-500' : 'bg-red-500'}`}
+                              style={{ width: `${Math.min(item.rate, 100)}%` }}
+                            />
+                          </div>
+                          <div className="grid grid-cols-3 gap-4 text-center">
+                            <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-900">
+                              <p className="text-2xl font-bold">{item.total}</p>
+                              <p className="text-xs text-slate-500">Total</p>
+                            </div>
+                            <div className="p-3 rounded-lg bg-green-50 dark:bg-green-900/20">
+                              <p className="text-2xl font-bold text-green-600">{item.met}</p>
+                              <p className="text-xs text-slate-500">SLA Met</p>
+                            </div>
+                            <div className="p-3 rounded-lg bg-red-50 dark:bg-red-900/20">
+                              <p className="text-2xl font-bold text-red-600">{item.total - item.met}</p>
+                              <p className="text-xs text-slate-500">Breached</p>
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex justify-between">
-                          <span>SLA Met</span>
-                          <span>{item.met}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Target</span>
-                          <span>{item.target}%</span>
-                        </div>
-                      </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -351,6 +502,14 @@ export default function SLAPage() {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Ticket Detail Modal */}
+        {selectedTicket && (
+          <TicketDetailModal 
+            ticket={selectedTicket} 
+            onClose={() => setSelectedTicket(null)} 
+          />
+        )}
       </div>
     </DashboardLayout>
   );
