@@ -6,10 +6,47 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Plus, MoreHorizontal, Check, Zap, Slack, Mail, MessageSquare, CreditCard, Globe, Twitter, Github, Youtube, MoreVertical, Headphones, Palette, Megaphone, Code, Video } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { 
+  Search, Plus, MoreHorizontal, Check, Zap, Slack, Mail, MessageSquare, 
+  CreditCard, Globe, Twitter, Github, Youtube, MoreVertical, Headphones, 
+  Palette, Megaphone, Code, Video, Settings, RefreshCw, Shield, Bell
+} from "lucide-react";
 
-const integrations = [
+interface Integration {
+  id: number;
+  name: string;
+  description: string;
+  icon: React.ComponentType<{ className?: string }>;
+  connected: boolean;
+  category: string;
+  participants: number;
+  quote: string;
+  date: string;
+  config?: {
+    webhookUrl?: string;
+    apiKey?: string;
+    notifications?: boolean;
+    autoSync?: boolean;
+  };
+}
+
+const integrationIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+  Slack, Mail, Headphones, Palette, Github, Twitter, CreditCard, Youtube, MessageSquare, Globe, Zap, Megaphone, Code, Video
+};
+
+const initialIntegrations: Integration[] = [
   { 
     id: 1, 
     name: "Slack Bot", 
@@ -19,7 +56,8 @@ const integrations = [
     category: "Communication",
     participants: 5,
     quote: "Streamlined our entire workflow!",
-    date: "15.02.26"
+    date: "15.02.26",
+    config: { webhookUrl: "https://hooks.slack.com/xxx", notifications: true, autoSync: true }
   },
   { 
     id: 2, 
@@ -30,7 +68,8 @@ const integrations = [
     category: "Support",
     participants: 3,
     quote: "Customers love the quick response time",
-    date: "22.11.25"
+    date: "22.11.25",
+    config: { notifications: true }
   },
   { 
     id: 3, 
@@ -52,7 +91,8 @@ const integrations = [
     category: "Marketing",
     participants: 6,
     quote: "Our campaigns are now fully automated",
-    date: "14.03.26"
+    date: "14.03.26",
+    config: { apiKey: "mk_live_xxx", autoSync: true }
   },
   { 
     id: 5, 
@@ -63,7 +103,8 @@ const integrations = [
     category: "Developer",
     participants: 4,
     quote: "Bugs get fixed faster than ever",
-    date: "16.01.26"
+    date: "16.01.26",
+    config: { webhookUrl: "https://api.github.com/xxx", notifications: true }
   },
   { 
     id: 6, 
@@ -85,7 +126,8 @@ const integrations = [
     category: "Payments",
     participants: 2,
     quote: "Payment issues are a thing of the past",
-    date: "10.02.26"
+    date: "10.02.26",
+    config: { apiKey: "sk_live_xxx", autoSync: true }
   },
   { 
     id: 8, 
@@ -106,6 +148,10 @@ export default function IntegrationsPage() {
   const [mounted, setMounted] = useState(false);
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [integrations, setIntegrations] = useState<Integration[]>(initialIntegrations);
+  const [configModalOpen, setConfigModalOpen] = useState(false);
+  const [selectedIntegration, setSelectedIntegration] = useState<Integration | null>(null);
+  const [tempConfig, setTempConfig] = useState<Integration["config"]>({});
 
   useEffect(() => { setMounted(true); }, []);
   if (!mounted) return null;
@@ -116,6 +162,35 @@ export default function IntegrationsPage() {
                          i.description.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
+
+  const toggleConnection = (id: number) => {
+    setIntegrations(prev => prev.map(integration => 
+      integration.id === id 
+        ? { ...integration, connected: !integration.connected }
+        : integration
+    ));
+  };
+
+  const openConfigModal = (integration: Integration) => {
+    setSelectedIntegration(integration);
+    setTempConfig(integration.config || {});
+    setConfigModalOpen(true);
+  };
+
+  const saveConfig = () => {
+    if (!selectedIntegration) return;
+    setIntegrations(prev => prev.map(integration => 
+      integration.id === selectedIntegration.id 
+        ? { ...integration, config: tempConfig }
+        : integration
+    ));
+    setConfigModalOpen(false);
+    setSelectedIntegration(null);
+  };
+
+  const getIconComponent = (iconName: string) => {
+    return integrationIcons[iconName] || Zap;
+  };
 
   return (
     <DashboardLayout>
@@ -161,25 +236,25 @@ export default function IntegrationsPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="bg-white dark:bg-[#1a1a1a]">
+          <Card className="bg-white dark:bg-[#1a1a1a] hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
             <CardContent className="pt-6">
               <p className="text-sm text-slate-500">Total Integrations</p>
               <p className="text-2xl font-bold">{integrations.length}</p>
             </CardContent>
           </Card>
-          <Card className="bg-white dark:bg-[#1a1a1a]">
+          <Card className="bg-white dark:bg-[#1a1a1a] hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
             <CardContent className="pt-6">
               <p className="text-sm text-slate-500">Connected</p>
               <p className="text-2xl font-bold text-green-600">{integrations.filter(i => i.connected).length}</p>
             </CardContent>
           </Card>
-          <Card className="bg-white dark:bg-[#1a1a1a]">
+          <Card className="bg-white dark:bg-[#1a1a1a] hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
             <CardContent className="pt-6">
               <p className="text-sm text-slate-500">Available</p>
               <p className="text-2xl font-bold">{integrations.filter(i => !i.connected).length}</p>
             </CardContent>
           </Card>
-          <Card className="bg-white dark:bg-[#1a1a1a]">
+          <Card className="bg-white dark:bg-[#1a1a1a] hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
             <CardContent className="pt-6">
               <p className="text-sm text-slate-500">Categories</p>
               <p className="text-2xl font-bold">{categories.length - 1}</p>
@@ -190,27 +265,39 @@ export default function IntegrationsPage() {
         {/* Integration Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map((integration) => (
-            <Card key={integration.id} className="bg-white dark:bg-[#1a1a1a] hover:shadow-lg transition-shadow group">
+            <Card 
+              key={integration.id} 
+              className={`bg-white dark:bg-[#1a1a1a] hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group overflow-hidden ${
+                integration.connected ? 'ring-2 ring-green-200 dark:ring-green-800' : ''
+              }`}
+            >
               <CardContent className="p-0">
                 {/* Card Header */}
                 <div className="p-5 pb-3">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
-                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
                         integration.connected 
-                          ? "bg-gradient-to-br from-purple-500 to-blue-500" 
-                          : "bg-slate-100 dark:bg-slate-800"
+                          ? "bg-gradient-to-br from-purple-500 to-blue-500 shadow-lg shadow-purple-500/25" 
+                          : "bg-slate-100 dark:bg-slate-800 group-hover:bg-purple-100 dark:group-hover:bg-purple-900/30"
                       }`}>
-                        <integration.icon className={`h-6 w-6 ${integration.connected ? "text-white" : "text-slate-500"}`} />
+                        <integration.icon className={`h-6 w-6 transition-colors ${integration.connected ? "text-white" : "text-slate-500 group-hover:text-purple-600"}`} />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-lg">{integration.name}</h3>
+                        <h3 className="font-semibold text-lg group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors">{integration.name}</h3>
                         <p className="text-sm text-slate-500">{integration.description}</p>
                       </div>
                     </div>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <MoreVertical className="h-4 w-4" />
-                    </Button>
+                    <div className="relative">
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-purple-100 dark:hover:bg-purple-900/30"
+                        onClick={() => openConfigModal(integration)}
+                      >
+                        <Settings className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
 
@@ -243,17 +330,36 @@ export default function IntegrationsPage() {
                       <span>{integration.date}</span>
                     </div>
                   </div>
-                  {/* Status */}
+                  {/* Status / Connect Button */}
                   {integration.connected ? (
-                    <Badge className="bg-green-100 text-green-700 hover:bg-green-100 gap-1">
-                      <Check className="h-3 w-3" /> Connected
-                    </Badge>
+                    <div className="flex items-center gap-2">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/20"
+                        onClick={() => openConfigModal(integration)}
+                      >
+                        <Settings className="h-3 w-3 mr-1" /> Configure
+                      </Button>
+                      <Badge className="bg-green-100 text-green-700 hover:bg-green-100 gap-1 cursor-pointer" onClick={() => toggleConnection(integration.id)}>
+                        <Check className="h-3 w-3" /> Connected
+                      </Badge>
+                    </div>
                   ) : (
-                    <Button size="sm" className="bg-black hover:bg-black/90 text-white">
+                    <Button 
+                      size="sm" 
+                      className="bg-black hover:bg-black/90 text-white transition-all duration-200 hover:shadow-lg hover:scale-105"
+                      onClick={() => toggleConnection(integration.id)}
+                    >
                       Connect
                     </Button>
                   )}
                 </div>
+
+                {/* Connected indicator bar */}
+                {integration.connected && (
+                  <div className="h-1 bg-gradient-to-r from-green-400 to-emerald-500" />
+                )}
               </CardContent>
             </Card>
           ))}
@@ -264,6 +370,102 @@ export default function IntegrationsPage() {
             <p className="text-slate-500">No integrations found matching your criteria.</p>
           </div>
         )}
+
+        {/* Configuration Modal */}
+        <Dialog open={configModalOpen} onOpenChange={setConfigModalOpen}>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                {selectedIntegration && (
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                    selectedIntegration.connected 
+                      ? "bg-gradient-to-br from-purple-500 to-blue-500" 
+                      : "bg-slate-100 dark:bg-slate-800"
+                  }`}>
+                    <selectedIntegration.icon className={`h-4 w-4 ${selectedIntegration.connected ? "text-white" : "text-slate-500"}`} />
+                  </div>
+                )}
+                Configure Integration
+              </DialogTitle>
+              <DialogDescription>
+                Customize settings for {selectedIntegration?.name}
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="grid gap-4 py-4">
+              {/* Webhook URL */}
+              <div className="grid gap-2">
+                <Label htmlFor="webhook" className="flex items-center gap-2">
+                  <RefreshCw className="h-4 w-4" /> Webhook URL
+                </Label>
+                <Input
+                  id="webhook"
+                  placeholder="https://your-webhook-url.com"
+                  value={tempConfig?.webhookUrl || ""}
+                  onChange={(e) => setTempConfig(prev => ({ ...prev, webhookUrl: e.target.value }))}
+                  className="col-span-3"
+                />
+              </div>
+
+              {/* API Key */}
+              <div className="grid gap-2">
+                <Label htmlFor="apikey" className="flex items-center gap-2">
+                  <Shield className="h-4 w-4" /> API Key
+                </Label>
+                <Input
+                  id="apikey"
+                  type="password"
+                  placeholder="Enter your API key"
+                  value={tempConfig?.apiKey || ""}
+                  onChange={(e) => setTempConfig(prev => ({ ...prev, apiKey: e.target.value }))}
+                  className="col-span-3"
+                />
+              </div>
+
+              {/* Notifications Toggle */}
+              <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <Bell className="h-4 w-4 text-slate-500" />
+                  <Label htmlFor="notifications" className="cursor-pointer">
+                    Enable Notifications
+                  </Label>
+                </div>
+                <Switch
+                  id="notifications"
+                  checked={tempConfig?.notifications || false}
+                  onCheckedChange={(checked) => setTempConfig(prev => ({ ...prev, notifications: checked }))}
+                />
+              </div>
+
+              {/* Auto Sync Toggle */}
+              <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <RefreshCw className="h-4 w-4 text-slate-500" />
+                  <Label htmlFor="autosync" className="cursor-pointer">
+                    Auto Sync
+                  </Label>
+                </div>
+                <Switch
+                  id="autosync"
+                  checked={tempConfig?.autoSync || false}
+                  onCheckedChange={(checked) => setTempConfig(prev => ({ ...prev, autoSync: checked }))}
+                />
+              </div>
+            </div>
+
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setConfigModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={saveConfig}
+                className="bg-purple-600 hover:bg-purple-700"
+              >
+                Save Changes
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </DashboardLayout>
   );
