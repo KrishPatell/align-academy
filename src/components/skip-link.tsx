@@ -52,15 +52,15 @@ export function SkipLink() {
           fixed top-4 left-4 z-[100] 
           flex items-center gap-2 
           px-4 py-2 
-          bg-purple-600 text-white 
+          bg-slate-600 text-white 
           font-medium text-sm 
           rounded-lg 
           transition-all duration-200
-          focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2
+          focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2
           ${isFocused ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4 pointer-events-none"}
           ${isVisible || isFocused ? "opacity-100 translate-y-0" : ""}
-          hover:bg-purple-700
-          shadow-lg shadow-purple-600/30
+          hover:bg-slate-700
+          shadow-lg shadow-slate-600/30
         `}
         aria-label="Skip to main content"
       >

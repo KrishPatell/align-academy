@@ -57,7 +57,7 @@ function AgentDetailModal({ agent, type, onClose }: { agent: typeof csatData.byA
       <div className="relative bg-white dark:bg-[#1a1a1a] rounded-xl shadow-xl w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-4 border-b sticky top-0 bg-white dark:bg-[#1a1a1a]">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-semibold text-lg">
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-slate-500 to-blue-500 flex items-center justify-center text-white font-semibold text-lg">
               {agent.agent.charAt(0)}
             </div>
             <div>
@@ -105,12 +105,12 @@ function AgentDetailModal({ agent, type, onClose }: { agent: typeof csatData.byA
           {npsAgent && (
             <div>
               <h4 className="font-medium mb-3 flex items-center gap-2">
-                <ThumbsUp className="h-4 w-4 text-purple-500" />
+                <ThumbsUp className="h-4 w-4 text-slate-500" />
                 NPS Breakdown
               </h4>
               <div className="flex items-center justify-center mb-4">
                 <div className="text-center">
-                  <p className="text-4xl font-bold text-purple-600">{npsAgent.nps}</p>
+                  <p className="text-4xl font-bold text-slate-600">{npsAgent.nps}</p>
                   <p className="text-xs text-slate-500">NPS Score</p>
                 </div>
               </div>
@@ -155,7 +155,7 @@ function AgentDetailModal({ agent, type, onClose }: { agent: typeof csatData.byA
           </div>
 
           <div className="flex gap-2 pt-2">
-            <Button className="flex-1 bg-purple-600 hover:bg-purple-700">View All Feedback</Button>
+            <Button className="flex-1 bg-slate-600 hover:bg-slate-700">View All Feedback</Button>
             <Button variant="outline">
               <Mail className="h-4 w-4" />
             </Button>
@@ -201,8 +201,8 @@ export default function CSATPage() {
               <Card className="bg-white dark:bg-[#1a1a1a]">
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-3">
-                    <div className="p-2.5 rounded-xl bg-purple-50">
-                      <Star className="h-5 w-5 text-purple-600" />
+                    <div className="p-2.5 rounded-xl bg-slate-50">
+                      <Star className="h-5 w-5 text-slate-600" />
                     </div>
                     <div>
                       <p className="text-sm text-slate-500">CSAT Score</p>
@@ -267,7 +267,7 @@ export default function CSATPage() {
                       {/* Agent Card Header - Clickable */}
                       <div className="flex items-center justify-between p-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-medium">
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-500 to-blue-500 flex items-center justify-center text-white font-medium">
                             {agent.agent.charAt(0)}
                           </div>
                           <div>
@@ -306,7 +306,7 @@ export default function CSATPage() {
                             </div>
                           </div>
                           <div className="mt-3 pt-3 border-t flex gap-2">
-                            <Button size="sm" className="flex-1 bg-purple-600 hover:bg-purple-700" onClick={() => setSelectedAgent(agent)}>
+                            <Button size="sm" className="flex-1 bg-slate-600 hover:bg-slate-700" onClick={() => setSelectedAgent(agent)}>
                               View Details
                             </Button>
                           </div>
@@ -326,7 +326,7 @@ export default function CSATPage() {
                   <div className="flex items-center justify-center">
                     <div className="text-center">
                       <p className="text-sm text-slate-500 mb-2">NPS Score</p>
-                      <p className="text-6xl font-bold text-purple-600">{npsData.score}</p>
+                      <p className="text-6xl font-bold text-slate-600">{npsData.score}</p>
                       <p className="text-sm text-slate-500 mt-2">Excellent (100+ is excellent)</p>
                     </div>
                   </div>
@@ -415,7 +415,7 @@ export default function CSATPage() {
                     >
                       <div className="flex items-center justify-between p-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-medium">
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-500 to-blue-500 flex items-center justify-center text-white font-medium">
                             {agent.agent.charAt(0)}
                           </div>
                           <div>

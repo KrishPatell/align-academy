@@ -230,7 +230,7 @@ function NotificationItem({
   return (
     <div 
       className={`group flex items-start gap-3 p-3 rounded-lg transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-800/50 ${
-        !notification.read ? "bg-purple-50/50 dark:bg-purple-900/10" : ""
+        !notification.read ? "bg-slate-50/50 dark:bg-slate-800/10" : ""
       }`}
     >
       {/* Icon */}
@@ -255,7 +255,7 @@ function NotificationItem({
             {notification.title}
           </p>
           {!notification.read && (
-            <span className="w-2 h-2 bg-purple-500 rounded-full shrink-0" />
+            <span className="w-2 h-2 bg-slate-500 rounded-full shrink-0" />
           )}
         </div>
         <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mt-0.5">
@@ -327,7 +327,7 @@ export function NotificationsDropdown({ className }: { className?: string }) {
           <div className="flex items-center gap-2">
             <h3 className="font-semibold text-sm text-slate-900 dark:text-white">Notifications</h3>
             {unreadCount > 0 && (
-              <span className="px-1.5 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-xs font-medium rounded-full">
+              <span className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800/30 text-slate-600 dark:text-slate-400 text-xs font-medium rounded-full">
                 {unreadCount} new
               </span>
             )}
@@ -338,7 +338,7 @@ export function NotificationsDropdown({ className }: { className?: string }) {
                 variant="ghost"
                 size="sm"
                 onClick={markAllAsRead}
-                className="h-7 px-2 text-xs text-slate-500 hover:text-purple-600 dark:hover:text-purple-400"
+                className="h-7 px-2 text-xs text-slate-500 hover:text-slate-600 dark:hover:text-slate-400"
               >
                 <CheckCheck className="h-3.5 w-3.5 mr-1" />
                 Mark all read
@@ -385,7 +385,7 @@ export function NotificationsDropdown({ className }: { className?: string }) {
         <div className="p-2 border-t border-slate-200 dark:border-slate-700">
           <Button
             variant="ghost"
-            className="w-full text-sm text-slate-500 hover:text-purple-600 dark:hover:text-purple-400"
+            className="w-full text-sm text-slate-500 hover:text-slate-600 dark:hover:text-slate-400"
           >
             View all notifications
           </Button>

@@ -14,9 +14,9 @@ import { Search, HelpCircle, MessageSquare, Mail, Phone, ChevronRight, ChevronDo
 const helpTopics = [
   { id: 1, title: "Getting Started", icon: Zap, color: "from-blue-500 to-cyan-500", articles: 12, description: "Learn the basics of Kravio" },
   { id: 2, title: "Account & Billing", icon: CreditCard, color: "from-green-500 to-emerald-500", articles: 8, description: "Manage your subscription" },
-  { id: 3, title: "Integrations", icon: Settings, color: "from-purple-500 to-pink-500", articles: 15, description: "Connect with your tools" },
+  { id: 3, title: "Integrations", icon: Settings, color: "from-slate-500 to-pink-500", articles: 15, description: "Connect with your tools" },
   { id: 4, title: "Team Management", icon: Users, color: "from-orange-500 to-red-500", articles: 10, description: "Add and manage team members" },
-  { id: 5, title: "Security", icon: HelpCircle, color: "from-indigo-500 to-purple-500", articles: 6, description: "Keep your account secure" },
+  { id: 5, title: "Security", icon: HelpCircle, color: "from-slate-500 to-slate-500", articles: 6, description: "Keep your account secure" },
   { id: 6, title: "API Reference", icon: FileText, color: "from-teal-500 to-blue-500", articles: 20, description: "Developer documentation" },
 ];
 
@@ -83,14 +83,14 @@ export default function HelpPage() {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="bg-gradient-to-br from-purple-600 to-blue-600 text-white cursor-pointer hover:shadow-xl transition-all hover:-translate-y-1">
+          <Card className="bg-gradient-to-br from-slate-600 to-blue-600 text-white cursor-pointer hover:shadow-xl transition-all hover:-translate-y-1">
             <CardContent className="pt-6 flex items-center gap-4">
               <div className="p-3 bg-white/20 rounded-xl">
                 <MessageSquare className="h-6 w-6" />
               </div>
               <div>
                 <h3 className="font-semibold">Live Chat</h3>
-                <p className="text-purple-100 text-sm">Chat with support</p>
+                <p className="text-slate-100 text-sm">Chat with support</p>
               </div>
             </CardContent>
           </Card>
@@ -132,7 +132,7 @@ export default function HelpPage() {
                   <div className={`w-14 h-14 mx-auto mb-3 rounded-xl bg-gradient-to-br ${topic.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
                     <topic.icon className="h-7 w-7 text-white" />
                   </div>
-                  <h3 className="font-medium text-sm group-hover:text-purple-600 transition-colors">{topic.title}</h3>
+                  <h3 className="font-medium text-sm group-hover:text-slate-600 transition-colors">{topic.title}</h3>
                   <p className="text-xs text-slate-500 mt-1">{topic.articles} articles</p>
                 </CardContent>
               </Card>
@@ -145,7 +145,7 @@ export default function HelpPage() {
           <Card className="bg-white dark:bg-[#1a1a1a]">
             <CardContent className="pt-6">
               <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <FileText className="h-5 w-5 text-purple-600" />
+                <FileText className="h-5 w-5 text-slate-600" />
                 Popular Articles
               </h3>
               <div className="space-y-3">
@@ -166,7 +166,7 @@ export default function HelpPage() {
           <Card className="bg-white dark:bg-[#1a1a1a]">
             <CardContent className="pt-6">
               <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <HelpCircle className="h-5 w-5 text-purple-600" />
+                <HelpCircle className="h-5 w-5 text-slate-600" />
                 Frequently Asked Questions
               </h3>
               <div className="space-y-2">
@@ -243,7 +243,7 @@ export default function HelpPage() {
 
                 <DialogFooter>
                   <Button variant="outline" onClick={() => setIsTopicOpen(false)}>Close</Button>
-                  <Button className="bg-purple-600 hover:bg-purple-700 gap-2">
+                  <Button className="bg-slate-600 hover:bg-slate-700 gap-2">
                     <MessageSquare className="h-4 w-4" /> Contact Support
                   </Button>
                 </DialogFooter>

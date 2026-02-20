@@ -150,7 +150,7 @@ export default function SignupPage() {
     <div className="min-h-screen flex items-center justify-center bg-[#0f0f0f] p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-500 rounded-2xl mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-slate-600 to-blue-500 rounded-2xl mb-4">
             <span className="text-2xl font-bold text-white">K</span>
           </div>
           <h1 className="text-2xl font-semibold text-white">Create an account</h1>
@@ -171,7 +171,7 @@ export default function SignupPage() {
                       setFirstName(e.target.value);
                       if (errors.firstName) setErrors(prev => ({ ...prev, firstName: undefined }));
                     }}
-                    className={`bg-[#0f0f0f] border-slate-700 text-white placeholder:text-slate-500 focus:border-purple-500 focus:ring-purple-500 ${errors.firstName ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""}`}
+                    className={`bg-[#0f0f0f] border-slate-700 text-white placeholder:text-slate-500 focus:border-slate-500 focus:ring-slate-500 ${errors.firstName ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""}`}
                   />
                   {errors.firstName && (
                     <p className="text-red-400 text-xs mt-1">{errors.firstName}</p>
@@ -187,7 +187,7 @@ export default function SignupPage() {
                       setLastName(e.target.value);
                       if (errors.lastName) setErrors(prev => ({ ...prev, lastName: undefined }));
                     }}
-                    className={`bg-[#0f0f0f] border-slate-700 text-white placeholder:text-slate-500 focus:border-purple-500 focus:ring-purple-500 ${errors.lastName ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""}`}
+                    className={`bg-[#0f0f0f] border-slate-700 text-white placeholder:text-slate-500 focus:border-slate-500 focus:ring-slate-500 ${errors.lastName ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""}`}
                   />
                   {errors.lastName && (
                     <p className="text-red-400 text-xs mt-1">{errors.lastName}</p>
@@ -206,7 +206,7 @@ export default function SignupPage() {
                     setEmail(e.target.value);
                     if (errors.email) setErrors(prev => ({ ...prev, email: undefined }));
                   }}
-                  className={`bg-[#0f0f0f] border-slate-700 text-white placeholder:text-slate-500 focus:border-purple-500 focus:ring-purple-500 ${errors.email ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""}`}
+                  className={`bg-[#0f0f0f] border-slate-700 text-white placeholder:text-slate-500 focus:border-slate-500 focus:ring-slate-500 ${errors.email ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""}`}
                 />
                 {errors.email && (
                   <p className="text-red-400 text-xs mt-1">{errors.email}</p>
@@ -225,7 +225,7 @@ export default function SignupPage() {
                       setPassword(e.target.value);
                       if (errors.password) setErrors(prev => ({ ...prev, password: undefined }));
                     }}
-                    className={`bg-[#0f0f0f] border-slate-700 text-white placeholder:text-slate-500 focus:border-purple-500 focus:ring-purple-500 pr-10 ${errors.password ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""}`}
+                    className={`bg-[#0f0f0f] border-slate-700 text-white placeholder:text-slate-500 focus:border-slate-500 focus:ring-slate-500 pr-10 ${errors.password ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""}`}
                   />
                   <Button
                     type="button"
@@ -301,13 +301,13 @@ export default function SignupPage() {
                     setAgreeTerms(checked as boolean);
                     if (errors.terms) setErrors(prev => ({ ...prev, terms: undefined }));
                   }}
-                  className={`mt-1 border-slate-600 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600 ${errors.terms ? "border-red-500" : ""}`} 
+                  className={`mt-1 border-slate-600 data-[state=checked]:bg-slate-600 data-[state=checked]:border-slate-600 ${errors.terms ? "border-red-500" : ""}`} 
                 />
                 <Label htmlFor="terms" className="text-sm text-slate-400">
                   I agree to the{" "}
-                  <Link href="/terms" className="text-purple-400 hover:text-purple-300">Terms of Service</Link>
+                  <Link href="/terms" className="text-slate-400 hover:text-slate-300">Terms of Service</Link>
                   {" "}and{" "}
-                  <Link href="/privacy" className="text-purple-400 hover:text-purple-300">Privacy Policy</Link>
+                  <Link href="/privacy" className="text-slate-400 hover:text-slate-300">Privacy Policy</Link>
                 </Label>
               </div>
               {errors.terms && (
@@ -317,7 +317,7 @@ export default function SignupPage() {
               <Button 
                 onClick={handleSignup}
                 disabled={isLoading}
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white py-6 disabled:opacity-70 disabled:cursor-not-allowed"
+                className="w-full bg-slate-600 hover:bg-slate-700 text-white py-6 disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 {isLoading ? (
                   <>
@@ -359,7 +359,7 @@ export default function SignupPage() {
 
         <p className="text-center text-slate-400 mt-6">
           Already have an account?{" "}
-          <Link href="/login" className="text-purple-400 hover:text-purple-300 font-medium">
+          <Link href="/login" className="text-slate-400 hover:text-slate-300 font-medium">
             Sign in
           </Link>
         </p>

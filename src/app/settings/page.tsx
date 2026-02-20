@@ -87,7 +87,7 @@ export default function SettingsPage() {
             <Card className="bg-white dark:bg-[#1a1a1a] border-slate-200 dark:border-slate-700 shadow-sm">
               <CardHeader className="border-b border-slate-100 dark:border-slate-700">
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <User className="h-5 w-5 text-indigo-600" />
+                  <User className="h-5 w-5 text-slate-600" />
                   Profile Information
                 </CardTitle>
                 <CardDescription>Update your personal information and profile picture</CardDescription>
@@ -96,11 +96,11 @@ export default function SettingsPage() {
                 {/* Avatar Section */}
                 <div className="flex items-center gap-6">
                   <div className="relative">
-                    <Avatar className="h-24 w-24 ring-4 ring-indigo-100 dark:ring-indigo-900">
+                    <Avatar className="h-24 w-24 ring-4 ring-slate-200 dark:ring-slate-800">
                       <AvatarImage src={profileImage} alt="Profile" />
-                      <AvatarFallback className="bg-indigo-100 text-indigo-600 text-2xl font-semibold">KW</AvatarFallback>
+                      <AvatarFallback className="bg-slate-100 text-slate-600 text-2xl font-semibold">KW</AvatarFallback>
                     </Avatar>
-                    <button className="absolute bottom-0 right-0 bg-indigo-600 text-white p-2 rounded-full hover:bg-indigo-700 transition-colors shadow-lg">
+                    <button className="absolute bottom-0 right-0 bg-slate-600 text-white p-2 rounded-full hover:bg-slate-700 transition-colors shadow-lg">
                       <Camera className="h-4 w-4" />
                     </button>
                   </div>
@@ -146,7 +146,7 @@ export default function SettingsPage() {
                 </div>
 
                 <div className="flex justify-end pt-4 border-t border-slate-100 dark:border-slate-700">
-                  <Button className="bg-indigo-600 hover:bg-indigo-700 text-white px-6">Save Changes</Button>
+                  <Button className="bg-slate-600 hover:bg-slate-700 text-white px-6">Save Changes</Button>
                 </div>
               </CardContent>
             </Card>
@@ -180,8 +180,8 @@ export default function SettingsPage() {
                 {/* Push Notifications */}
                 <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
                   <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
-                      <Smartphone className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                    <div className="h-12 w-12 bg-slate-100 dark:bg-slate-800/30 rounded-lg flex items-center justify-center">
+                      <Smartphone className="h-6 w-6 text-slate-600 dark:text-slate-400" />
                     </div>
                     <div>
                       <h4 className="font-medium text-slate-900 dark:text-white">Push Notifications</h4>
@@ -234,7 +234,7 @@ export default function SettingsPage() {
               </CardHeader>
               <CardContent className="pt-6 space-y-6">
                 {/* Change Password */}
-                <div className="flex items-center justify-between p-5 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-indigo-200 dark:hover:border-indigo-800 transition-colors">
+                <div className="flex items-center justify-between p-5 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
                   <div className="flex items-center gap-4">
                     <div className="h-12 w-12 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center">
                       <Lock className="h-6 w-6 text-red-600 dark:text-red-400" />
@@ -250,7 +250,7 @@ export default function SettingsPage() {
                 </div>
 
                 {/* Two-Factor Authentication */}
-                <div className="flex items-center justify-between p-5 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-indigo-200 dark:hover:border-indigo-800 transition-colors">
+                <div className="flex items-center justify-between p-5 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
                   <div className="flex items-center gap-4">
                     <div className={`h-12 w-12 rounded-lg flex items-center justify-center ${twoFactorEnabled ? 'bg-green-100 dark:bg-green-900/30' : 'bg-slate-100 dark:bg-slate-800'}`}>
                       <Shield className={`h-6 w-6 ${twoFactorEnabled ? 'text-green-600 dark:text-green-400' : 'text-slate-600 dark:text-slate-400'}`} />
@@ -272,7 +272,7 @@ export default function SettingsPage() {
                     )}
                     <Button 
                       variant={twoFactorEnabled ? "outline" : "default"}
-                      className={twoFactorEnabled ? "" : "bg-indigo-600 hover:bg-indigo-700"}
+                      className={twoFactorEnabled ? "" : "bg-slate-600 hover:bg-slate-700"}
                       onClick={() => setTwoFactorEnabled(!twoFactorEnabled)}
                     >
                       {twoFactorEnabled ? "Disable" : "Enable"}
@@ -314,22 +314,22 @@ export default function SettingsPage() {
           {/* Billing Tab */}
           <TabsContent value="billing" className="space-y-6">
             {/* Current Plan */}
-            <Card className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white border-0 shadow-lg">
+            <Card className="bg-gradient-to-r from-slate-600 to-slate-600 text-white border-0 shadow-lg">
               <CardContent className="pt-8 pb-8">
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <Crown className="h-5 w-5 text-yellow-300" />
-                      <span className="text-indigo-100 font-medium">Current Plan</span>
+                      <span className="text-slate-200 font-medium">Current Plan</span>
                     </div>
                     <h2 className="text-3xl font-bold">Pro Plan</h2>
-                    <p className="text-indigo-100 mt-1">$29/month • Billed monthly</p>
+                    <p className="text-slate-200 mt-1">$29/month • Billed monthly</p>
                     <div className="flex items-center gap-2 mt-4">
                       <CheckCircle2 className="h-4 w-4 text-green-300" />
                       <span className="text-sm">Next billing date: March 19, 2026</span>
                     </div>
                   </div>
-                  <Button variant="secondary" className="bg-white text-indigo-600 hover:bg-indigo-50 font-medium">
+                  <Button variant="secondary" className="bg-white text-slate-600 hover:bg-slate-50 font-medium">
                     Upgrade Plan
                   </Button>
                 </div>
@@ -349,7 +349,7 @@ export default function SettingsPage() {
                     { label: "API Calls", value: "10,000/mo" },
                   ].map((feature, idx) => (
                     <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl text-center">
-                      <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{feature.value}</p>
+                      <p className="text-2xl font-bold text-slate-600 dark:text-slate-400">{feature.value}</p>
                       <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{feature.label}</p>
                     </div>
                   ))}
@@ -419,12 +419,12 @@ export default function SettingsPage() {
                 <div className="space-y-4">
                   <Label className="text-slate-700 dark:text-slate-300 text-base">Theme</Label>
                   <div className="grid grid-cols-3 gap-4">
-                    <button className="p-4 border-2 border-indigo-600 rounded-xl bg-slate-50 dark:bg-slate-800 flex flex-col items-center gap-2">
+                    <button className="p-4 border-2 border-slate-600 rounded-xl bg-slate-50 dark:bg-slate-800 flex flex-col items-center gap-2">
                       <Sun className="h-6 w-6 text-amber-500" />
                       <span className="text-sm font-medium">Light</span>
                     </button>
                     <button className="p-4 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800 flex flex-col items-center gap-2 hover:border-slate-300 dark:hover:border-slate-600">
-                      <Moon className="h-6 w-6 text-indigo-500" />
+                      <Moon className="h-6 w-6 text-slate-500" />
                       <span className="text-sm font-medium">Dark</span>
                     </button>
                     <button className="p-4 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800 flex flex-col items-center gap-2 hover:border-slate-300 dark:hover:border-slate-600">
@@ -441,7 +441,7 @@ export default function SettingsPage() {
                 <div className="space-y-4 pt-4 border-t border-slate-100 dark:border-slate-700">
                   <Label className="text-slate-700 dark:text-slate-300 text-base">Accent Color</Label>
                   <div className="flex gap-3">
-                    {['bg-indigo-600', 'bg-blue-600', 'bg-purple-600', 'bg-pink-600', 'bg-emerald-600', 'bg-orange-600'].map((color, idx) => (
+                    {['bg-slate-600', 'bg-blue-600', 'bg-slate-600', 'bg-pink-600', 'bg-emerald-600', 'bg-orange-600'].map((color, idx) => (
                       <button 
                         key={idx} 
                         className={`w-10 h-10 rounded-full ${color} ${idx === 0 ? 'ring-2 ring-offset-2 ring-slate-400' : ''} hover:scale-110 transition-transform`}

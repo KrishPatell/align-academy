@@ -62,7 +62,7 @@ export function RecentItems() {
       <Card className="bg-white dark:bg-[#1a1a1a]">
         <CardHeader className="pb-3">
           <CardTitle className="text-lg flex items-center gap-2">
-            <Clock className="h-5 w-5 text-purple-600" />
+            <Clock className="h-5 w-5 text-slate-600" />
             Recent Items
           </CardTitle>
         </CardHeader>
@@ -76,10 +76,10 @@ export function RecentItems() {
   }
 
   return (
-    <Card className="bg-white dark:bg-[#1a1a1a] hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300">
+    <Card className="bg-white dark:bg-[#1a1a1a] hover:shadow-xl hover:shadow-slate-500/10 transition-all duration-300">
       <CardHeader className="pb-3">
         <CardTitle className="text-lg flex items-center gap-2">
-          <Clock className="h-5 w-5 text-purple-600" />
+          <Clock className="h-5 w-5 text-slate-600" />
           Recent Items
         </CardTitle>
       </CardHeader>
@@ -95,26 +95,26 @@ export function RecentItems() {
                 href={item.href}
                 className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-200 group ${
                   isActive 
-                    ? "bg-purple-50 dark:bg-purple-900/20" 
-                    : "hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 dark:hover:from-purple-900/10 dark:hover:to-indigo-900/10"
+                    ? "bg-slate-50 dark:bg-slate-800/20" 
+                    : "hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 dark:hover:from-slate-800/10 dark:hover:to-slate-700/10"
                 }`}
               >
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 ${
                   isActive 
-                    ? "bg-purple-100 dark:bg-purple-900/40" 
-                    : "bg-slate-100 dark:bg-slate-800 group-hover:bg-purple-100 dark:group-hover:bg-purple-900/30"
+                    ? "bg-slate-100 dark:bg-slate-700/40" 
+                    : "bg-slate-100 dark:bg-slate-800 group-hover:bg-slate-100 dark:group-hover:bg-slate-700/30"
                 }`}>
-                  <Icon className={`h-5 w-5 ${isActive ? "text-purple-600" : "text-slate-600 dark:text-slate-400"}`} />
+                  <Icon className={`h-5 w-5 ${isActive ? "text-slate-600" : "text-slate-600 dark:text-slate-400"}`} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className={`text-sm font-medium truncate ${isActive ? "text-purple-700 dark:text-purple-300" : "text-slate-700 dark:text-slate-300"}`}>
+                  <p className={`text-sm font-medium truncate ${isActive ? "text-slate-700 dark:text-slate-300" : "text-slate-700 dark:text-slate-300"}`}>
                     {item.label}
                   </p>
                   <p className="text-xs text-slate-400">
                     {getRelativeTime(item.timestamp)}
                   </p>
                 </div>
-                <ChevronRight className={`h-4 w-4 transition-transform group-hover:translate-x-1 ${isActive ? "text-purple-500" : "text-slate-400"}`} />
+                <ChevronRight className={`h-4 w-4 transition-transform group-hover:translate-x-1 ${isActive ? "text-slate-500" : "text-slate-400"}`} />
               </Link>
             );
           })}

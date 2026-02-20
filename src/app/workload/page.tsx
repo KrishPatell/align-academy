@@ -82,7 +82,7 @@ export default function WorkloadPage() {
             <Button variant="outline" className="gap-2">
               <Filter className="h-4 w-4" /> Filter
             </Button>
-            <Button className="bg-purple-600 hover:bg-purple-700 gap-2">
+            <Button className="bg-slate-600 hover:bg-slate-700 gap-2">
               <Download className="h-4 w-4" /> Export
             </Button>
           </div>
@@ -148,8 +148,8 @@ export default function WorkloadPage() {
                   <p className="text-sm text-slate-500">Avg Response</p>
                   <p className="text-2xl font-bold">{workloadData.overview.avgResponseTime}</p>
                 </div>
-                <div className="p-2.5 rounded-xl bg-purple-50 dark:bg-purple-900/20">
-                  <Clock className="h-5 w-5 text-purple-600" />
+                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/20">
+                  <Clock className="h-5 w-5 text-slate-600" />
                 </div>
               </div>
               <div className="flex items-center gap-1 mt-2 text-sm text-green-600">
@@ -166,8 +166,8 @@ export default function WorkloadPage() {
                   <p className="text-sm text-slate-500">Team Size</p>
                   <p className="text-2xl font-bold">5</p>
                 </div>
-                <div className="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-900/20">
-                  <Users className="h-5 w-5 text-indigo-600" />
+                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/20">
+                  <Users className="h-5 w-5 text-slate-600" />
                 </div>
               </div>
               <p className="text-sm text-slate-500 mt-2">Active agents</p>
@@ -200,7 +200,7 @@ export default function WorkloadPage() {
                     >
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-semibold">
+                          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-slate-500 to-blue-500 flex items-center justify-center text-white font-semibold">
                             {agent.avatar}
                           </div>
                           <div>
@@ -269,7 +269,7 @@ export default function WorkloadPage() {
                           </div>
                           
                           <div className="flex gap-2">
-                            <Button size="sm" className="flex-1 bg-purple-600 hover:bg-purple-700" onClick={(e) => { e.stopPropagation(); setSelectedAgent(agent); }}>
+                            <Button size="sm" className="flex-1 bg-slate-600 hover:bg-slate-700" onClick={(e) => { e.stopPropagation(); setSelectedAgent(agent); }}>
                               View Details
                             </Button>
                           </div>
@@ -323,7 +323,7 @@ export default function WorkloadPage() {
                     <div key={idx} className="flex-1 flex flex-col items-center gap-2">
                       <div className="w-full flex gap-1 h-48">
                         <div 
-                          className="flex-1 bg-purple-500 rounded-t-md" 
+                          className="flex-1 bg-slate-500 rounded-t-md" 
                           style={{ height: `${(day.tickets / 200) * 100}%` }}
                           title={`${day.tickets} tickets`}
                         />
@@ -339,7 +339,7 @@ export default function WorkloadPage() {
                 </div>
                 <div className="flex items-center justify-center gap-6 mt-4">
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-purple-500 rounded-full" />
+                    <div className="w-3 h-3 bg-slate-500 rounded-full" />
                     <span className="text-sm text-slate-500">Incoming</span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -359,7 +359,7 @@ export default function WorkloadPage() {
             <div className="relative bg-white dark:bg-[#1a1a1a] rounded-xl shadow-xl w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
               <div className="flex items-center justify-between p-4 border-b sticky top-0 bg-white dark:bg-[#1a1a1a]">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-semibold text-lg">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-slate-500 to-blue-500 flex items-center justify-center text-white font-semibold text-lg">
                     {selectedAgent.avatar}
                   </div>
                   <div>
@@ -377,7 +377,7 @@ export default function WorkloadPage() {
                 {/* Status & Capacity */}
                 <div>
                   <h4 className="font-medium mb-3 flex items-center gap-2">
-                    <Users className="h-4 w-4 text-purple-500" />
+                    <Users className="h-4 w-4 text-slate-500" />
                     Workload Status
                   </h4>
                   <div className="flex items-center justify-center mb-4">
@@ -444,7 +444,7 @@ export default function WorkloadPage() {
                 </div>
 
                 <div className="flex gap-2 pt-2">
-                  <Button className="flex-1 bg-purple-600 hover:bg-purple-700">
+                  <Button className="flex-1 bg-slate-600 hover:bg-slate-700">
                     <MessageCircle className="h-4 w-4 mr-2" />
                     Contact Agent
                   </Button>

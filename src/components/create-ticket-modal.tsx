@@ -146,8 +146,8 @@ export function CreateTicketModal({ open, onOpenChange }: CreateTicketModalProps
       <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-900/30">
-              <Ticket className="h-5 w-5 text-purple-600" />
+            <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800/30">
+              <Ticket className="h-5 w-5 text-slate-600" />
             </div>
             Create New Ticket
           </DialogTitle>
@@ -358,7 +358,7 @@ export function CreateTicketModal({ open, onOpenChange }: CreateTicketModalProps
             </Button>
             <Button
               type="submit"
-              className="bg-purple-600 hover:bg-purple-700 gap-2"
+              className="bg-slate-600 hover:bg-slate-700 gap-2"
               disabled={isSubmitting}
             >
               {isSubmitting ? (

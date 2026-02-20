@@ -14,10 +14,10 @@ import { Search, Plus, FileText, BookOpen, HelpCircle, ChevronRight, Eye, Thumbs
 
 const categories = [
   { id: 1, name: "Getting Started", articles: 12, icon: BookOpen, color: "from-blue-500 to-cyan-500" },
-  { id: 2, name: "Account & Billing", articles: 8, icon: FileText, color: "from-purple-500 to-pink-500" },
+  { id: 2, name: "Account & Billing", articles: 8, icon: FileText, color: "from-slate-500 to-pink-500" },
   { id: 3, name: "Technical Support", articles: 15, icon: HelpCircle, color: "from-green-500 to-emerald-500" },
   { id: 4, name: "Integrations", articles: 10, icon: ArrowRight, color: "from-orange-500 to-red-500" },
-  { id: 5, name: "API Documentation", articles: 20, icon: FileText, color: "from-indigo-500 to-purple-500" },
+  { id: 5, name: "API Documentation", articles: 20, icon: FileText, color: "from-slate-500 to-slate-500" },
   { id: 6, name: "Best Practices", articles: 8, icon: BookOpen, color: "from-teal-500 to-blue-500" },
 ];
 
@@ -67,18 +67,18 @@ export default function KnowledgePage() {
             <h1 className="text-2xl font-bold">Knowledge Base</h1>
             <p className="text-slate-500 text-sm">Help articles and documentation</p>
           </div>
-          <Button className="bg-purple-600 hover:bg-purple-700 gap-2">
+          <Button className="bg-slate-600 hover:bg-slate-700 gap-2">
             <Plus className="h-4 w-4" /> New Article
           </Button>
         </div>
 
         {/* Get Started Section */}
-        <Card className="bg-gradient-to-r from-purple-600 to-blue-600 text-white overflow-hidden">
+        <Card className="bg-gradient-to-r from-slate-600 to-blue-600 text-white overflow-hidden">
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-bold mb-2">🚀 Get Started</h2>
-                <p className="text-purple-100 mb-4">New to Kravio? Start here for quick setup guides</p>
+                <p className="text-slate-100 mb-4">New to Kravio? Start here for quick setup guides</p>
                 <div className="flex flex-wrap gap-2">
                   {getStartedArticles.slice(0, expandedGetStarted ? 3 : 2).map((article) => (
                     <Button 
@@ -131,7 +131,7 @@ export default function KnowledgePage() {
                   <div className={`w-14 h-14 mx-auto mb-3 rounded-xl bg-gradient-to-br ${cat.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
                     <cat.icon className="h-7 w-7 text-white" />
                   </div>
-                  <h3 className="font-medium text-sm group-hover:text-purple-600 transition-colors">{cat.name}</h3>
+                  <h3 className="font-medium text-sm group-hover:text-slate-600 transition-colors">{cat.name}</h3>
                   <p className="text-xs text-slate-500 mt-1">{cat.articles} articles</p>
                 </CardContent>
               </Card>
@@ -169,7 +169,7 @@ export default function KnowledgePage() {
                               <Clock className="h-3 w-3" /> {article.date}
                             </span>
                           </div>
-                          <h3 className="font-medium group-hover:text-purple-600 transition-colors">{article.title}</h3>
+                          <h3 className="font-medium group-hover:text-slate-600 transition-colors">{article.title}</h3>
                         </div>
                         <div className="flex items-center gap-4">
                           <div className="flex items-center gap-3 text-sm text-slate-500">
@@ -180,7 +180,7 @@ export default function KnowledgePage() {
                               <ThumbsUp className="h-4 w-4" /> {article.helpful}%
                             </span>
                           </div>
-                          <ChevronRight className="h-5 w-5 text-slate-300 group-hover:text-purple-500 transition-colors" />
+                          <ChevronRight className="h-5 w-5 text-slate-300 group-hover:text-slate-500 transition-colors" />
                         </div>
                       </div>
                     </CardContent>
@@ -242,7 +242,7 @@ export default function KnowledgePage() {
                         <ThumbsDown className="h-4 w-4" /> No
                       </Button>
                     </div>
-                    <Button className="bg-purple-600 hover:bg-purple-700">
+                    <Button className="bg-slate-600 hover:bg-slate-700">
                       Print Article
                     </Button>
                   </div>

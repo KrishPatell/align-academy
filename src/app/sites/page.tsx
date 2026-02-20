@@ -100,7 +100,7 @@ export default function SitesPage() {
             <h1 className="text-2xl font-bold">Sites & Servers</h1>
             <p className="text-slate-500 text-sm">Manage locations and infrastructure</p>
           </div>
-          <Button className="bg-purple-600 hover:bg-purple-700 gap-2">
+          <Button className="bg-slate-600 hover:bg-slate-700 gap-2">
             <Plus className="h-4 w-4" /> Add Site
           </Button>
         </div>
@@ -136,8 +136,8 @@ export default function SitesPage() {
           <Card className="bg-white dark:bg-[#1a1a1a]">
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-purple-50 dark:bg-purple-900/20">
-                  <Activity className="h-5 w-5 text-purple-600" />
+                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/20">
+                  <Activity className="h-5 w-5 text-slate-600" />
                 </div>
                 <div>
                   <p className="text-sm text-slate-500">Uptime</p>
@@ -177,7 +177,7 @@ export default function SitesPage() {
                 <CardContent>
                   <div className="space-y-4">
                     {sitesData.byLocation.map((location, idx) => (
-                      <div key={idx} className="p-4 rounded-xl border hover:border-purple-500 transition-colors">
+                      <div key={idx} className="p-4 rounded-xl border hover:border-slate-500 transition-colors">
                         <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center gap-3">
                             <span className="text-2xl">{location.flag}</span>
@@ -232,7 +232,7 @@ export default function SitesPage() {
                               className={`h-full rounded-full ${
                                 location.usage > 90 ? "bg-red-500" :
                                 location.usage > 75 ? "bg-amber-500" :
-                                "bg-purple-500"
+                                "bg-slate-500"
                               }`}
                               style={{ width: `${location.usage}%` }}
                             />
@@ -262,8 +262,8 @@ export default function SitesPage() {
                       key={server.id} 
                       className={`rounded-xl border overflow-hidden transition-all duration-300 ${
                         expandedRows.has(server.id) 
-                          ? "border-purple-500 shadow-lg shadow-purple-500/10" 
-                          : "hover:border-purple-300"
+                          ? "border-slate-500 shadow-lg shadow-slate-500/10" 
+                          : "hover:border-slate-300"
                       }`}
                     >
                       {/* Main Row */}
@@ -320,7 +320,7 @@ export default function SitesPage() {
                           <div className="hidden lg:flex items-center gap-2">
                             <div className="w-16 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                               <div 
-                                className="h-full bg-purple-500 rounded-full" 
+                                className="h-full bg-slate-500 rounded-full" 
                                 style={{ width: `${server.cpu}%` }} 
                               />
                             </div>
@@ -374,7 +374,7 @@ export default function SitesPage() {
                           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 pt-4">
                             <div className="flex items-center gap-3">
                               <div className="p-2 rounded-lg bg-white dark:bg-slate-800">
-                                <Cpu className="h-4 w-4 text-purple-600" />
+                                <Cpu className="h-4 w-4 text-slate-600" />
                               </div>
                               <div>
                                 <p className="text-xs text-slate-500">CPU Usage</p>
@@ -410,7 +410,7 @@ export default function SitesPage() {
                             </div>
                             <div className="flex items-center gap-3">
                               <div className="p-2 rounded-lg bg-white dark:bg-slate-800">
-                                <Shield className="h-4 w-4 text-indigo-600" />
+                                <Shield className="h-4 w-4 text-slate-600" />
                               </div>
                               <div>
                                 <p className="text-xs text-slate-500">IP Address</p>
@@ -436,7 +436,7 @@ export default function SitesPage() {
                                 <span className="font-medium">{server.cpu}%</span>
                               </div>
                               <div className="h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-                                <div className="h-full bg-purple-500 rounded-full transition-all" style={{ width: `${server.cpu}%` }} />
+                                <div className="h-full bg-slate-500 rounded-full transition-all" style={{ width: `${server.cpu}%` }} />
                               </div>
                             </div>
                             <div>
@@ -486,7 +486,7 @@ export default function SitesPage() {
             />
             <div className="relative bg-white dark:bg-[#1a1a1a] rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in zoom-in-95 fade-in duration-200">
               {/* Header */}
-              <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-6 text-white">
+              <div className="bg-gradient-to-r from-slate-600 to-slate-600 p-6 text-white">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div className="p-3 rounded-xl bg-white/20 backdrop-blur">
@@ -512,7 +512,7 @@ export default function SitesPage() {
                 {/* Quick Stats */}
                 <div className="grid grid-cols-4 gap-4">
                   <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800">
-                    <Cpu className="h-5 w-5 text-purple-600 mb-2" />
+                    <Cpu className="h-5 w-5 text-slate-600 mb-2" />
                     <p className="text-2xl font-bold">{selectedServer.cpu}%</p>
                     <p className="text-xs text-slate-500">CPU</p>
                   </div>
@@ -576,7 +576,7 @@ export default function SitesPage() {
                     <Button variant="outline" onClick={() => setSelectedServer(null)}>
                       Close
                     </Button>
-                    <Button className="bg-purple-600 hover:bg-purple-700 gap-2">
+                    <Button className="bg-slate-600 hover:bg-slate-700 gap-2">
                       <Edit className="h-4 w-4" />
                       Edit Server
                     </Button>

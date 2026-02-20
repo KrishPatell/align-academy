@@ -69,7 +69,7 @@ export default function WhatsNewModal({ open, onOpenChange, isNewUser }: WhatsNe
   const getFeatureIcon = (type: string) => {
     switch (type) {
       case "new":
-        return <Sparkles className="h-3.5 w-3.5 text-purple-500" />;
+        return <Sparkles className="h-3.5 w-3.5 text-slate-500" />;
       case "improvement":
         return <ChevronRight className="h-3.5 w-3.5 text-blue-500" />;
       case "fix":
@@ -82,7 +82,7 @@ export default function WhatsNewModal({ open, onOpenChange, isNewUser }: WhatsNe
   const getFeatureBadge = (type: string) => {
     switch (type) {
       case "new":
-        return <span className="text-[10px] font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 px-1.5 py-0.5 rounded">NEW</span>;
+        return <span className="text-[10px] font-medium bg-slate-100 dark:bg-slate-800/30 text-slate-600 dark:text-slate-400 px-1.5 py-0.5 rounded">NEW</span>;
       case "improvement":
         return <span className="text-[10px] font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-1.5 py-0.5 rounded">IMPROVED</span>;
       case "fix":
@@ -97,24 +97,24 @@ export default function WhatsNewModal({ open, onOpenChange, isNewUser }: WhatsNe
       <DialogContent className="max-w-lg max-h-[80vh] overflow-hidden flex flex-col">
         <DialogHeader className="flex-shrink-0">
           <DialogTitle className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-purple-500" />
+            <Sparkles className="h-5 w-5 text-slate-500" />
             {isNewUser ? "Welcome to Align Academy!" : "What's New"}
           </DialogTitle>
         </DialogHeader>
         
         <div className="flex-1 overflow-y-auto space-y-6 pr-2">
           {isNewUser && (
-            <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-xl p-4 border border-purple-200 dark:border-purple-800">
-              <h3 className="font-semibold text-purple-900 dark:text-purple-100 mb-2">
+            <div className="bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800/20 dark:to-slate-700/20 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
+              <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-2">
                 👋 Welcome aboard!
               </h3>
-              <p className="text-sm text-purple-700 dark:text-purple-300">
+              <p className="text-sm text-slate-700 dark:text-slate-300">
                 Get started with our interactive tour or explore the keyboard shortcuts to navigate faster.
               </p>
               <div className="flex gap-2 mt-3">
                 <Button 
                   size="sm" 
-                  className="bg-purple-600 hover:bg-purple-700"
+                  className="bg-slate-600 hover:bg-slate-700"
                   onClick={() => {
                     onOpenChange(false);
                     // Trigger tour - will be handled by parent

@@ -109,7 +109,7 @@ export default function SLAPage() {
           <Card className="bg-white dark:bg-[#1a1a1a]">
             <CardContent className="pt-6">
               <p className="text-sm text-slate-500">Resolution</p>
-              <p className="text-2xl font-bold text-purple-600">{slaMetrics.resolution}%</p>
+              <p className="text-2xl font-bold text-slate-600">{slaMetrics.resolution}%</p>
             </CardContent>
           </Card>
           <Card className="bg-white dark:bg-[#1a1a1a]">
@@ -149,7 +149,7 @@ export default function SLAPage() {
                   {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day, i) => (
                     <div key={i} className="flex-1 flex flex-col items-center gap-2">
                       <div className="w-full h-32 flex items-end gap-1">
-                        <div className="flex-1 bg-purple-500 rounded-t-md" style={{ height: `${70 + Math.random() * 30}%` }} />
+                        <div className="flex-1 bg-slate-500 rounded-t-md" style={{ height: `${70 + Math.random() * 30}%` }} />
                       </div>
                       <span className="text-xs text-slate-500">{day}</span>
                     </div>
@@ -178,7 +178,7 @@ export default function SLAPage() {
                     variant={priorityFilter === p ? "default" : "outline"} 
                     size="sm"
                     onClick={() => setPriorityFilter(p)}
-                    className={priorityFilter === p ? "bg-purple-600" : ""}
+                    className={priorityFilter === p ? "bg-slate-600" : ""}
                   >
                     {p.charAt(0).toUpperCase() + p.slice(1)}
                   </Button>
@@ -357,7 +357,7 @@ export default function SLAPage() {
 
                 <DialogFooter>
                   <Button variant="outline" onClick={() => setIsDetailOpen(false)}>Close</Button>
-                  <Button className="bg-purple-600 hover:bg-purple-700 gap-2">
+                  <Button className="bg-slate-600 hover:bg-slate-700 gap-2">
                     <MessageSquare className="h-4 w-4" /> Reply
                   </Button>
                 </DialogFooter>

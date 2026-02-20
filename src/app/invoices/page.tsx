@@ -468,11 +468,11 @@ export default function InvoicesPage() {
                     >
                       <TableCell>
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-                            <FileText className="h-5 w-5 text-purple-600" />
+                          <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+                            <FileText className="h-5 w-5 text-slate-600" />
                           </div>
                           <div>
-                            <span className="font-semibold group-hover:text-purple-600 transition-colors">{invoice.invoiceNumber}</span>
+                            <span className="font-semibold group-hover:text-slate-600 transition-colors">{invoice.invoiceNumber}</span>
                             <ChevronRight className="h-4 w-4 text-slate-300 ml-2 inline-block opacity-0 group-hover:opacity-100 transition-opacity" />
                           </div>
                         </div>
@@ -725,7 +725,7 @@ export default function InvoicesPage() {
                   </div>
                   <div className="flex justify-between text-xl font-bold border-t pt-2 border-slate-200 dark:border-slate-700">
                     <span>Total</span>
-                    <span className="text-purple-600">{formatCurrency(viewingInvoice.total)}</span>
+                    <span className="text-slate-600">{formatCurrency(viewingInvoice.total)}</span>
                   </div>
                 </div>
               </div>

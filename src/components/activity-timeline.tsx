@@ -185,14 +185,14 @@ const getCategoryInfo = (category?: string) => {
   if (!category) return { icon: Activity, color: "text-slate-500" };
   
   const categories: Record<string, { icon: typeof Activity; color: string }> = {
-    tickets: { icon: Ticket, color: "text-purple-500" },
+    tickets: { icon: Ticket, color: "text-slate-500" },
     clients: { icon: Users, color: "text-blue-500" },
     agents: { icon: User, color: "text-green-500" },
     invoices: { icon: FileText, color: "text-amber-500" },
     security: { icon: Shield, color: "text-red-500" },
     system: { icon: Server, color: "text-slate-500" },
     integrations: { icon: Zap, color: "text-cyan-500" },
-    knowledge: { icon: FileText, color: "text-indigo-500" },
+    knowledge: { icon: FileText, color: "text-slate-500" },
   };
   
   return categories[category] || { icon: Activity, color: "text-slate-500" };

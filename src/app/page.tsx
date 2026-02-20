@@ -240,7 +240,7 @@ function SortableRow({
     <tr 
       ref={setNodeRef}
       style={style}
-      className={`border-b hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 dark:hover:from-purple-900/20 dark:hover:to-indigo-900/20 cursor-pointer transition-all duration-200 ${isDragging ? 'bg-purple-50 shadow-lg' : ''}`}
+      className={`border-b hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 dark:hover:from-purple-900/20 dark:hover:to-indigo-900/20 cursor-pointer transition-all duration-200 ${isDragging ? 'bg-slate-50 shadow-lg' : ''}`}
       onClick={onRowClick}
     >
       <td className="py-3 px-4" onClick={(e) => e.stopPropagation()}>
@@ -260,7 +260,7 @@ function SortableRow({
           />
         </div>
       </td>
-      <td className="py-3 px-4 font-medium text-purple-600">{ticket.id}</td>
+      <td className="py-3 px-4 font-medium text-slate-600">{ticket.id}</td>
       <td className="py-3 px-4">{ticket.subject}</td>
       <td className="py-3 px-4">
         <span className={`px-2 py-1 rounded-full text-xs font-medium ${priorityColors[ticket.priority]}`}>
@@ -269,7 +269,7 @@ function SortableRow({
       </td>
       <td className="py-3 px-4">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white text-xs">
+          <div className="w-6 h-6 rounded-full bg-gradient-to-br from-slate-500 to-blue-500 flex items-center justify-center text-white text-xs">
             {ticket.agentInitials}
           </div>
           <span>{ticket.agent}</span>
@@ -430,11 +430,11 @@ export default function HomePage() {
         {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {currentData.kpis.map((kpi, i) => (
-            <Card key={i} className="bg-white dark:bg-[#1a1a1a] hover:shadow-xl hover:shadow-purple-500/10 hover:-translate-y-1 transition-all duration-300 cursor-pointer group border border-transparent hover:border-purple-200 dark:hover:border-purple-800">
+            <Card key={i} className="bg-white dark:bg-[#1a1a1a] hover:shadow-xl hover:shadow-slate-500/10 hover:-translate-y-1 transition-all duration-300 cursor-pointer group border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
               <CardContent className="pt-6">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <p className="text-sm text-slate-500 group-hover:text-purple-600 transition-colors">{kpi.label}</p>
+                    <p className="text-sm text-slate-500 group-hover:text-slate-600 transition-colors">{kpi.label}</p>
                     <p className="text-3xl font-bold mt-1 group-hover:scale-105 transition-transform">{kpi.value}</p>
                     <div className="flex items-center gap-1 mt-2">
                       {kpi.trend === "up" ? (
@@ -450,11 +450,11 @@ export default function HomePage() {
                   </div>
                   {/* Enhanced Sparkline with gradient area */}
                   <div className="flex items-end gap-1 h-14 w-20 relative">
-                    <div className="absolute inset-0 bg-gradient-to-t from-purple-100 to-transparent dark:from-purple-900/30 rounded opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-100 to-transparent dark:from-slate-800/30 rounded opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     {kpi.sparkline.map((v, j) => (
                       <div
                         key={j}
-                        className="flex-1 bg-gradient-to-t from-purple-600 to-purple-400 rounded-t transition-all hover:from-indigo-600 hover:to-indigo-400 group-hover:bg-purple-500"
+                        className="flex-1 bg-gradient-to-t from-slate-600 to-slate-400 rounded-t transition-all hover:from-slate-600 hover:to-slate-400 group-hover:bg-slate-500"
                         style={{ height: `${(v / Math.max(...kpi.sparkline)) * 100}%` }}
                       />
                     ))}
@@ -463,7 +463,7 @@ export default function HomePage() {
                 {/* Mini progress bar */}
                 <div className="mt-3 h-1 w-full bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
                   <div 
-                    className="h-full bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full transition-all duration-500 group-hover:from-green-500 group-hover:to-emerald-500"
+                    className="h-full bg-gradient-to-r from-slate-500 to-slate-500 rounded-full transition-all duration-500 group-hover:from-green-500 group-hover:to-emerald-500"
                     style={{ width: `${Math.min(100, Math.abs(kpi.change) * 10 + 50)}%` }}
                   />
                 </div>
@@ -544,7 +544,7 @@ export default function HomePage() {
           </Card>
 
           {/* Recent Activity */}
-          <Card className="bg-white dark:bg-[#1a1a1a] hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300">
+          <Card className="bg-white dark:bg-[#1a1a1a] hover:shadow-xl hover:shadow-slate-500/10 transition-all duration-300">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg flex items-center gap-2">
@@ -562,7 +562,7 @@ export default function HomePage() {
                       variant={activeTab === tab.key ? "default" : "ghost"}
                       size="sm"
                       onClick={() => setActiveTab(tab.key)}
-                      className={`text-xs px-2 h-7 ${activeTab === tab.key ? "bg-purple-600 hover:bg-purple-700" : "text-slate-500"}`}
+                      className={`text-xs px-2 h-7 ${activeTab === tab.key ? "bg-slate-600 hover:bg-slate-700" : "text-slate-500"}`}
                     >
                       {tab.label}
                     </Button>
@@ -581,18 +581,18 @@ export default function HomePage() {
                       update.type === "ticket" ? "bg-blue-100 dark:bg-blue-900/30" :
                       update.type === "client" ? "bg-green-100 dark:bg-green-900/30" :
                       update.type === "sla" ? "bg-red-100 dark:bg-red-900/30" :
-                      update.type === "assign" ? "bg-purple-100 dark:bg-purple-900/30" :
+                      update.type === "assign" ? "bg-slate-100 dark:bg-slate-800/30" :
                       "bg-slate-100 dark:bg-slate-800"
                     }`}>
                       {update.type === "ticket" && <FileText className="h-5 w-5 text-blue-600" />}
                       {update.type === "client" && <Users className="h-5 w-5 text-green-600" />}
-                      {update.type === "assign" && <User className="h-5 w-5 text-purple-600" />}
+                      {update.type === "assign" && <User className="h-5 w-5 text-slate-600" />}
                       {update.type === "sla" && <AlertTriangle className="h-5 w-5 text-red-600" />}
                       {update.type === "article" && <FileText className="h-5 w-5 text-slate-600" />}
                       {update.type === "feedback" && <MessageSquare className="h-5 w-5 text-slate-600" />}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors">{update.message}</p>
+                      <p className="text-sm font-medium group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors">{update.message}</p>
                       <div className="flex items-center gap-2 mt-1">
                         <Clock className="h-3 w-3 text-slate-400" />
                         <p className="text-xs text-slate-400">{update.time}</p>
@@ -604,7 +604,7 @@ export default function HomePage() {
                   </div>
                 ))}
               </div>
-              <Button variant="outline" className="w-full mt-4 hover:bg-purple-50 hover:border-purple-200 hover:text-purple-600 transition-all">
+              <Button variant="outline" className="w-full mt-4 hover:bg-slate-50 hover:border-slate-200 hover:text-slate-600 transition-all">
                 View All Activity
               </Button>
             </CardContent>
@@ -738,7 +738,7 @@ export default function HomePage() {
                           className="rounded"
                         />
                       </td>
-                      <td className="py-3 px-4 font-medium text-purple-600">{ticket.id}</td>
+                      <td className="py-3 px-4 font-medium text-slate-600">{ticket.id}</td>
                       <td className="py-3 px-4">{ticket.subject}</td>
                       <td className="py-3 px-4">
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${priorityColors[ticket.priority]}`}>
@@ -747,7 +747,7 @@ export default function HomePage() {
                       </td>
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2">
-                          <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white text-xs">
+                          <div className="w-6 h-6 rounded-full bg-gradient-to-br from-slate-500 to-blue-500 flex items-center justify-center text-white text-xs">
                             {ticket.agentInitials}
                           </div>
                           <span>{ticket.agent}</span>
@@ -798,7 +798,7 @@ export default function HomePage() {
             />
             <div className="relative bg-white dark:bg-[#1a1a1a] rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-in zoom-in-95 fade-in duration-200">
               {/* Header */}
-              <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-6 text-white">
+              <div className="bg-gradient-to-r from-slate-600 to-slate-600 p-6 text-white">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div className="p-3 rounded-xl bg-white/20 backdrop-blur">
@@ -838,7 +838,7 @@ export default function HomePage() {
                   <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800">
                     <p className="text-sm text-slate-500 mb-1">Assigned To</p>
                     <div className="flex items-center gap-2 mt-1">
-                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white text-xs">
+                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-slate-500 to-blue-500 flex items-center justify-center text-white text-xs">
                         {selectedTicket.agentInitials}
                       </div>
                       <span className="font-medium">{selectedTicket.agent}</span>
@@ -861,7 +861,7 @@ export default function HomePage() {
                   >
                     Close
                   </Button>
-                  <Button className="flex-1 bg-purple-600 hover:bg-purple-700">
+                  <Button className="flex-1 bg-slate-600 hover:bg-slate-700">
                     View Full Ticket
                   </Button>
                 </div>
@@ -873,7 +873,7 @@ export default function HomePage() {
 
       {/* Floating Action Button */}
       <Button
-        className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-purple-600 hover:bg-purple-700 shadow-xl hover:shadow-2xl transition-all hover:scale-110 z-50"
+        className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-slate-600 hover:bg-slate-700 shadow-xl hover:shadow-2xl transition-all hover:scale-110 z-50"
         size="icon"
       >
         <Plus className="h-6 w-6" />

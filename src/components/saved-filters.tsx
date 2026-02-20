@@ -124,7 +124,7 @@ export function SavedFilters({
             <Bookmark className="h-4 w-4" />
             <span>Saved Filters</span>
             {hasActiveFilters && (
-              <span className="ml-1 px-1.5 py-0.5 text-xs bg-purple-100 text-purple-700 rounded-full">
+              <span className="ml-1 px-1.5 py-0.5 text-xs bg-slate-100 text-slate-700 rounded-full">
                 {Object.keys(currentFilters).filter(k => currentFilters[k] !== "all" && currentFilters[k] !== "").length}
               </span>
             )}
@@ -164,7 +164,7 @@ export function SavedFilters({
                   onClick={() => applyFilter(defaultFilter)}
                   className="gap-2 cursor-pointer"
                 >
-                  <BookmarkCheck className="h-4 w-4 text-purple-500" />
+                  <BookmarkCheck className="h-4 w-4 text-slate-500" />
                   <span className="font-medium">{defaultFilter.name}</span>
                   <span className="ml-auto text-xs text-slate-400">(Default)</span>
                 </DropdownMenuItem>

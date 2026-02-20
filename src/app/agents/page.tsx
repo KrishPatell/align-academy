@@ -183,7 +183,7 @@ export default function AgentsPage() {
             <Button variant="outline" size="sm" onClick={() => toast({ title: "Notifications enabled", description: "You'll receive agent activity alerts", variant: "info" })}>
               <Bell className="h-4 w-4" />
             </Button>
-            <Button className="bg-purple-600 hover:bg-purple-700 gap-2">
+            <Button className="bg-slate-600 hover:bg-slate-700 gap-2">
               <UserPlus className="h-4 w-4" /> Add Agent
             </Button>
           </div>
@@ -259,7 +259,7 @@ export default function AgentsPage() {
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-3">
                         <div className="relative">
-                          <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-semibold text-lg">
+                          <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-slate-500 to-blue-500 flex items-center justify-center text-white font-semibold text-lg">
                             {agent.name.split(' ').map(n => n[0]).join('')}
                           </div>
                           <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white dark:border-slate-900 ${
@@ -268,7 +268,7 @@ export default function AgentsPage() {
                           }`} />
                         </div>
                         <div>
-                          <h3 className="font-semibold group-hover:text-purple-600 transition-colors">{agent.name}</h3>
+                          <h3 className="font-semibold group-hover:text-slate-600 transition-colors">{agent.name}</h3>
                           <p className="text-sm text-slate-500">{agent.role}</p>
                         </div>
                       </div>
@@ -306,7 +306,7 @@ export default function AgentsPage() {
                       <p className="text-xs text-slate-500 mb-2">Skills</p>
                       <div className="flex flex-wrap gap-1">
                         {agent.skills.slice(0, 3).map((skill, idx) => (
-                          <Badge key={idx} variant="outline" className="text-xs bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-800">
+                          <Badge key={idx} variant="outline" className="text-xs bg-slate-50 dark:bg-slate-800/20 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700">
                             {skill}
                           </Badge>
                         ))}
@@ -502,7 +502,7 @@ export default function AgentsPage() {
                           <p className="font-medium">{activity.agent}</p>
                           <span className="text-xs text-slate-500">{activity.time}</span>
                         </div>
-                        <p className="text-sm font-semibold text-purple-600 dark:text-purple-400">{activity.action}</p>
+                        <p className="text-sm font-semibold text-slate-600 dark:text-slate-400">{activity.action}</p>
                         <p className="text-sm text-slate-500">{activity.detail}</p>
                       </div>
                     </div>
@@ -521,7 +521,7 @@ export default function AgentsPage() {
                 <DialogHeader>
                   <div className="flex items-center gap-4">
                     <div className="relative">
-                      <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-semibold text-xl">
+                      <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-slate-500 to-blue-500 flex items-center justify-center text-white font-semibold text-xl">
                         {selectedAgent.name.split(' ').map(n => n[0]).join('')}
                       </div>
                       <div className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white dark:border-slate-900 ${
@@ -542,7 +542,7 @@ export default function AgentsPage() {
                     <p className="text-sm font-medium mb-2">Skills & Expertise</p>
                     <div className="flex flex-wrap gap-2">
                       {selectedAgent.skills.map((skill, idx) => (
-                        <Badge key={idx} variant="outline" className="bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-800">
+                        <Badge key={idx} variant="outline" className="bg-slate-50 dark:bg-slate-800/20 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700">
                           {skill}
                         </Badge>
                       ))}
@@ -592,7 +592,7 @@ export default function AgentsPage() {
 
                 <DialogFooter>
                   <Button variant="outline" onClick={() => setIsProfileOpen(false)}>Close</Button>
-                  <Button className="bg-purple-600 hover:bg-purple-700 gap-2">
+                  <Button className="bg-slate-600 hover:bg-slate-700 gap-2">
                     <MessageSquare className="h-4 w-4" /> Message
                   </Button>
                 </DialogFooter>
@@ -629,7 +629,7 @@ export default function AgentsPage() {
             )}
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsEditOpen(false)}>Cancel</Button>
-              <Button className="bg-purple-600 hover:bg-purple-700" onClick={() => setIsEditOpen(false)}>Save Changes</Button>
+              <Button className="bg-slate-600 hover:bg-slate-700" onClick={() => setIsEditOpen(false)}>Save Changes</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>

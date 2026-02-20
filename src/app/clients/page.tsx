@@ -215,7 +215,7 @@ export default function ClientsPage() {
             <Button variant="outline" size="sm" onClick={() => toast({ title: "Notifications enabled", description: "You'll receive alerts for new clients", variant: "info" })}>
               <Bell className="h-4 w-4" />
             </Button>
-            <Button className="bg-purple-600 hover:bg-purple-700 gap-2">
+            <Button className="bg-slate-600 hover:bg-slate-700 gap-2">
               <Plus className="h-4 w-4" /> Add Client
             </Button>
           </div>
@@ -306,27 +306,27 @@ export default function ClientsPage() {
                       />
                       {client.avatar ? (
                         <div 
-                          className="w-12 h-12 rounded-xl bg-cover bg-center border-2 border-transparent group-hover:border-purple-400 transition-all cursor-pointer"
+                          className="w-12 h-12 rounded-xl bg-cover bg-center border-2 border-transparent group-hover:border-slate-400 transition-all cursor-pointer"
                           style={{ backgroundImage: `url(${client.avatar})` }}
                           onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
                         />
                       ) : (
                         <div 
-                          className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-semibold text-lg group-hover:scale-110 transition-transform duration-300"
+                          className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-500 to-blue-500 flex items-center justify-center text-white font-semibold text-lg group-hover:scale-110 transition-transform duration-300"
                           onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
                         >
                           {client.name.charAt(0)}
                         </div>
                       )}
                       <div 
-                        className="absolute -bottom-1 -right-1 w-5 h-5 bg-purple-600 rounded-full flex items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="absolute -bottom-1 -right-1 w-5 h-5 bg-slate-600 rounded-full flex items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
                         onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
                       >
                         <Upload className="h-3 w-3 text-white" />
                       </div>
                     </div>
                     <div>
-                      <h3 className="font-semibold group-hover:text-purple-600 transition-colors duration-200">{client.name}</h3>
+                      <h3 className="font-semibold group-hover:text-slate-600 transition-colors duration-200">{client.name}</h3>
                       <p className="text-sm text-slate-500">{client.contact}</p>
                     </div>
                   </div>
@@ -342,7 +342,7 @@ export default function ClientsPage() {
                       <Badge 
                         key={idx} 
                         variant="outline" 
-                        className="text-xs bg-purple-50 border-purple-200 text-purple-700"
+                        className="text-xs bg-slate-50 border-slate-200 text-slate-700"
                       >
                         <Tag className="h-3 w-3 mr-1" />
                         {tag}
@@ -411,7 +411,7 @@ export default function ClientsPage() {
                         />
                       ) : (
                         <div 
-                          className="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-semibold text-2xl cursor-pointer"
+                          className="w-16 h-16 rounded-xl bg-gradient-to-br from-slate-500 to-blue-500 flex items-center justify-center text-white font-semibold text-2xl cursor-pointer"
                           onClick={() => document.getElementById('avatar-upload-detail')?.click()}
                         >
                           {selectedClient.name.charAt(0)}
@@ -419,7 +419,7 @@ export default function ClientsPage() {
                       )}
                       <label 
                         htmlFor="avatar-upload-detail"
-                        className="absolute -bottom-1 -right-1 w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center cursor-pointer hover:bg-purple-700 transition-colors"
+                        className="absolute -bottom-1 -right-1 w-6 h-6 bg-slate-600 rounded-full flex items-center justify-center cursor-pointer hover:bg-slate-700 transition-colors"
                       >
                         <Upload className="h-3 w-3 text-white" />
                       </label>
@@ -452,7 +452,7 @@ export default function ClientsPage() {
                         <Badge 
                           key={idx} 
                           variant="outline" 
-                          className="bg-purple-50 border-purple-200 text-purple-700 pr-1"
+                          className="bg-slate-50 border-slate-200 text-slate-700 pr-1"
                         >
                           {tag}
                           {editingTags && (
@@ -552,7 +552,7 @@ export default function ClientsPage() {
                         <div className="flex gap-2">
                           <Button 
                             size="sm" 
-                            className="bg-purple-600 hover:bg-purple-700"
+                            className="bg-slate-600 hover:bg-slate-700"
                             onClick={() => saveNotes(selectedClient.id)}
                           >
                             Save Notes
@@ -589,7 +589,7 @@ export default function ClientsPage() {
                   >
                     <Edit className="h-4 w-4" /> Edit Client
                   </Button>
-                  <Button className="bg-purple-600 hover:bg-purple-700 gap-2 flex-1 sm:flex-none">
+                  <Button className="bg-slate-600 hover:bg-slate-700 gap-2 flex-1 sm:flex-none">
                     <FileText className="h-4 w-4" /> View Invoices
                   </Button>
                 </DialogFooter>
@@ -640,7 +640,7 @@ export default function ClientsPage() {
             )}
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsEditOpen(false)}>Cancel</Button>
-              <Button className="bg-purple-600 hover:bg-purple-700" onClick={() => setIsEditOpen(false)}>Save Changes</Button>
+              <Button className="bg-slate-600 hover:bg-slate-700" onClick={() => setIsEditOpen(false)}>Save Changes</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>

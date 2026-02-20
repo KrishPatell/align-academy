@@ -166,20 +166,20 @@ export default function CommandPalette({ open, onOpenChange }: CommandPalettePro
                         onClick={() => handleSelect(item.href)}
                         className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors ${
                           isSelected 
-                            ? "bg-purple-50 dark:bg-purple-900/20" 
+                            ? "bg-slate-50 dark:bg-slate-800/20" 
                             : "hover:bg-slate-50 dark:hover:bg-slate-800/50"
                         }`}
                       >
-                        <div className={`p-2 rounded-lg ${isSelected ? "bg-purple-100 dark:bg-purple-800" : "bg-slate-100 dark:bg-slate-800"}`}>
-                          <item.icon className={`h-4 w-4 ${isSelected ? "text-purple-600" : "text-slate-500"}`} />
+                        <div className={`p-2 rounded-lg ${isSelected ? "bg-slate-100 dark:bg-slate-700" : "bg-slate-100 dark:bg-slate-800"}`}>
+                          <item.icon className={`h-4 w-4 ${isSelected ? "text-slate-600" : "text-slate-500"}`} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className={`font-medium truncate ${isSelected ? "text-purple-700 dark:text-purple-300" : ""}`}>
+                          <p className={`font-medium truncate ${isSelected ? "text-slate-700 dark:text-slate-300" : ""}`}>
                             {item.title}
                           </p>
                           <p className="text-sm text-slate-500 truncate">{item.description}</p>
                         </div>
-                        <ArrowRight className={`h-4 w-4 text-slate-300 ${isSelected ? "text-purple-400" : ""}`} />
+                        <ArrowRight className={`h-4 w-4 text-slate-300 ${isSelected ? "text-slate-400" : ""}`} />
                       </button>
                     );
                   })}

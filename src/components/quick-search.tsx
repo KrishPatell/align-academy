@@ -93,7 +93,7 @@ export function QuickSearch({ placeholder = "Search anything..." }: QuickSearchP
             onChange={(e) => setQuery(e.target.value)}
             onFocus={() => setIsOpen(true)}
             onBlur={() => setTimeout(() => setIsOpen(false), 200)}
-            className="w-64 pl-10 pr-10 h-9 bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            className="w-64 pl-10 pr-10 h-9 bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-slate-500 focus:border-transparent"
           />
           {query && (
             <button
@@ -142,7 +142,7 @@ export function QuickSearch({ placeholder = "Search anything..." }: QuickSearchP
                     onClick={() => handleSelectResult(result)}
                     className="flex items-center gap-3 w-full px-3 py-2.5 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors text-left"
                   >
-                    <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-900/30 text-purple-600">
+                    <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800/30 text-slate-600">
                       {result.icon}
                     </div>
                     <div className="flex-1 min-w-0">

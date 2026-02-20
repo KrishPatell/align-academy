@@ -84,7 +84,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-[#0f0f0f] p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-500 rounded-2xl mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-slate-600 to-blue-500 rounded-2xl mb-4">
             <span className="text-2xl font-bold text-white">K</span>
           </div>
           <h1 className="text-2xl font-semibold text-white">Welcome back</h1>
@@ -106,7 +106,7 @@ export default function LoginPage() {
                       setEmail(e.target.value);
                       if (errors.email) setErrors(prev => ({ ...prev, email: undefined }));
                     }}
-                    className={`bg-[#0f0f0f] border-slate-700 text-white placeholder:text-slate-500 focus:border-purple-500 focus:ring-purple-500 ${errors.email ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""}`}
+                    className={`bg-[#0f0f0f] border-slate-700 text-white placeholder:text-slate-500 focus:border-slate-500 focus:ring-slate-500 ${errors.email ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""}`}
                   />
                   {errors.email && (
                     <p className="text-red-400 text-xs mt-1">{errors.email}</p>
@@ -116,7 +116,7 @@ export default function LoginPage() {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label htmlFor="password" className="text-slate-300">Password</Label>
-                    <Link href="/forgot-password" className="text-sm text-purple-400 hover:text-purple-300">
+                    <Link href="/forgot-password" className="text-sm text-slate-400 hover:text-slate-300">
                       Forgot password?
                     </Link>
                   </div>
@@ -130,7 +130,7 @@ export default function LoginPage() {
                         setPassword(e.target.value);
                         if (errors.password) setErrors(prev => ({ ...prev, password: undefined }));
                       }}
-                      className={`bg-[#0f0f0f] border-slate-700 text-white placeholder:text-slate-500 focus:border-purple-500 focus:ring-purple-500 pr-10 ${errors.password ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""}`}
+                      className={`bg-[#0f0f0f] border-slate-700 text-white placeholder:text-slate-500 focus:border-slate-500 focus:ring-slate-500 pr-10 ${errors.password ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""}`}
                     />
                     <Button
                       type="button"
@@ -152,7 +152,7 @@ export default function LoginPage() {
                     id="remember" 
                     checked={rememberMe}
                     onCheckedChange={(checked) => setRememberMe(checked as boolean)}
-                    className="border-slate-600 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600" 
+                    className="border-slate-600 data-[state=checked]:bg-slate-600 data-[state=checked]:border-slate-600" 
                   />
                   <Label htmlFor="remember" className="text-sm text-slate-400">Keep me signed in</Label>
                 </div>
@@ -160,7 +160,7 @@ export default function LoginPage() {
                 <Button 
                   onClick={handleLogin}
                   disabled={isLoading}
-                  className="w-full bg-purple-600 hover:bg-purple-700 text-white py-6 disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="w-full bg-slate-600 hover:bg-slate-700 text-white py-6 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   {isLoading ? (
                     <>
@@ -203,7 +203,7 @@ export default function LoginPage() {
 
         <p className="text-center text-slate-400 mt-6">
           Don&apos;t have an account?{" "}
-          <Link href="/signup" className="text-purple-400 hover:text-purple-300 font-medium">
+          <Link href="/signup" className="text-slate-400 hover:text-slate-300 font-medium">
             Sign up
           </Link>
         </p>

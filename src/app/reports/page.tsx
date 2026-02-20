@@ -54,10 +54,10 @@ const reportStats = {
 
 const typeColors: Record<string, string> = {
   SLA: "bg-blue-50 dark:bg-blue-900/20 text-blue-600",
-  Performance: "bg-purple-50 dark:bg-purple-900/20 text-purple-600",
+  Performance: "bg-slate-50 dark:bg-slate-800/20 text-slate-600",
   CSAT: "bg-green-50 dark:bg-green-900/20 text-green-600",
   Revenue: "bg-amber-50 dark:bg-amber-900/20 text-amber-600",
-  Analytics: "bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600",
+  Analytics: "bg-slate-50 dark:bg-slate-800/20 text-slate-600",
 };
 
 const typeIcons: Record<string, React.ElementType> = {
@@ -135,7 +135,7 @@ export default function ReportsPage() {
             <Button variant="outline" className="gap-2" onClick={handleScheduleReport}>
               <Clock8 className="h-4 w-4" /> Schedule
             </Button>
-            <Button className="bg-purple-600 hover:bg-purple-700 gap-2">
+            <Button className="bg-slate-600 hover:bg-slate-700 gap-2">
               <FileText className="h-4 w-4" /> Create Report
             </Button>
           </div>
@@ -159,8 +159,8 @@ export default function ReportsPage() {
           <Card className="bg-white dark:bg-[#1a1a1a]">
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-purple-50 dark:bg-purple-900/20">
-                  <Calendar className="h-5 w-5 text-purple-600" />
+                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/20">
+                  <Calendar className="h-5 w-5 text-slate-600" />
                 </div>
                 <div>
                   <p className="text-sm text-slate-500">This Month</p>
@@ -220,22 +220,22 @@ export default function ReportsPage() {
                   {reportTemplates.map((template) => (
                     <div 
                       key={template.id} 
-                      className="p-5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-purple-500 hover:shadow-xl hover:shadow-purple-500/15 hover:-translate-y-1 transition-all duration-300 cursor-pointer group bg-white dark:bg-[#1a1a1a] relative overflow-hidden"
+                      className="p-5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-500 hover:shadow-xl hover:shadow-slate-500/15 hover:-translate-y-1 transition-all duration-300 cursor-pointer group bg-white dark:bg-[#1a1a1a] relative overflow-hidden"
                       onClick={() => handleQuickGenerate(template)}
                     >
                       {/* Animated gradient overlay on hover */}
-                      <div className="absolute inset-0 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/10 dark:to-indigo-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="absolute inset-0 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800/10 dark:to-slate-700/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       
                       <div className="relative z-10">
                         <div className="flex items-start justify-between mb-3">
                           <div className={`p-2.5 rounded-xl ${typeColors[template.type]} transition-all duration-300 group-hover:scale-110 group-hover:rotate-3`}>
                             {React.createElement(typeIcons[template.type], { className: "h-5 w-5" })}
                           </div>
-                          <Badge variant="secondary" className="text-xs group-hover:bg-purple-100 group-hover:text-purple-700 dark:group-hover:bg-purple-900/30 transition-colors">
+                          <Badge variant="secondary" className="text-xs group-hover:bg-slate-100 group-hover:text-slate-700 dark:group-hover:bg-slate-700/30 transition-colors">
                             {template.type}
                           </Badge>
                         </div>
-                        <h3 className="font-semibold mb-1 group-hover:text-purple-600 transition-all duration-300 group-hover:translate-x-1">{template.name}</h3>
+                        <h3 className="font-semibold mb-1 group-hover:text-slate-600 transition-all duration-300 group-hover:translate-x-1">{template.name}</h3>
                         <p className="text-sm text-slate-500 mb-4 line-clamp-2 group-hover:text-slate-600 transition-colors">{template.description}</p>
                         
                         {/* Metrics preview on hover */}
@@ -253,7 +253,7 @@ export default function ReportsPage() {
                             <Button 
                               variant="ghost" 
                               size="sm" 
-                              className="h-8 px-2 text-purple-600 hover:bg-purple-50 hover:text-purple-700 dark:hover:bg-purple-900/20 transition-all duration-200 group-hover:scale-105"
+                              className="h-8 px-2 text-slate-600 hover:bg-slate-50 hover:text-slate-700 dark:hover:bg-slate-700/20 transition-all duration-200 group-hover:scale-105"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleQuickGenerate(template);
@@ -280,10 +280,10 @@ export default function ReportsPage() {
               <CardContent>
                 <div className="space-y-3">
                   {scheduledReports.map((report) => (
-                    <div key={report.id} className="flex items-center justify-between p-4 rounded-xl border hover:border-purple-500 transition-colors">
+                    <div key={report.id} className="flex items-center justify-between p-4 rounded-xl border hover:border-slate-500 transition-colors">
                       <div className="flex items-center gap-4">
-                        <div className="p-2.5 rounded-xl bg-purple-50 dark:bg-purple-900/20">
-                          <Calendar className="h-5 w-5 text-purple-600" />
+                        <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/20">
+                          <Calendar className="h-5 w-5 text-slate-600" />
                         </div>
                         <div>
                           <p className="font-semibold">{report.name}</p>
@@ -390,7 +390,7 @@ export default function ReportsPage() {
                   <div className="space-y-6 py-4">
                     <div>
                       <h4 className="font-semibold mb-3 flex items-center gap-2">
-                        <BarChart3 className="h-4 w-4 text-purple-600" />
+                        <BarChart3 className="h-4 w-4 text-slate-600" />
                         Included Metrics
                       </h4>
                       <div className="grid grid-cols-3 gap-3">
@@ -404,7 +404,7 @@ export default function ReportsPage() {
 
                     <div>
                       <h4 className="font-semibold mb-3 flex items-center gap-2">
-                        <Calendar className="h-4 w-4 text-purple-600" />
+                        <Calendar className="h-4 w-4 text-slate-600" />
                         Date Range
                       </h4>
                       <div className="flex gap-3">
@@ -419,10 +419,10 @@ export default function ReportsPage() {
                       </div>
                     </div>
 
-                    <div className="p-4 rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800">
+                    <div className="p-4 rounded-lg bg-slate-50 dark:bg-slate-800/20 border border-slate-200 dark:border-slate-700">
                       <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-800">
-                          <FileText className="h-5 w-5 text-purple-600" />
+                        <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700">
+                          <FileText className="h-5 w-5 text-slate-600" />
                         </div>
                         <div>
                           <p className="font-medium">Estimated Output</p>
@@ -436,7 +436,7 @@ export default function ReportsPage() {
                         Cancel
                       </Button>
                       <Button 
-                        className="bg-purple-600 hover:bg-purple-700 gap-2"
+                        className="bg-slate-600 hover:bg-slate-700 gap-2"
                         onClick={handleGenerateReport}
                         disabled={generatingReport}
                       >
@@ -465,7 +465,7 @@ export default function ReportsPage() {
                       <Button variant="outline" onClick={() => setShowPreviewModal(false)}>
                         Close
                       </Button>
-                      <Button className="bg-purple-600 hover:bg-purple-700 gap-2">
+                      <Button className="bg-slate-600 hover:bg-slate-700 gap-2">
                         <Download className="h-4 w-4" />
                         Download PDF
                       </Button>

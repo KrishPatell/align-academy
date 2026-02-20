@@ -196,7 +196,7 @@ function Breadcrumb({
             ) : (
               <Link
                 href={item.href}
-                className="text-slate-500 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors duration-200"
+                className="text-slate-500 dark:text-slate-400 hover:text-slate-600 dark:hover:text-slate-400 transition-colors duration-200"
               >
                 {item.label}
               </Link>
@@ -307,7 +307,7 @@ function ScrollToTop({
       variant="outline"
       size="icon"
       onClick={scrollToTop}
-      className={`fixed bottom-6 right-6 h-12 w-12 rounded-full shadow-lg border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:border-purple-300 dark:hover:border-purple-700 transition-all duration-300 z-50 touch-manipulation ${
+      className={`fixed bottom-6 right-6 h-12 w-12 rounded-full shadow-lg border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/20 hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 z-50 touch-manipulation ${
         isVisible 
           ? "opacity-100 translate-y-0" 
           : "opacity-0 translate-y-4 pointer-events-none"
@@ -409,7 +409,7 @@ function SidebarItemWithTooltip({
           onClick={onClick}
           className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
             isActive 
-              ? "bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300" 
+              ? "bg-slate-50 dark:bg-slate-800/20 text-slate-700 dark:text-slate-300" 
               : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:translate-x-1"
           }`}
         >
@@ -433,7 +433,7 @@ function SidebarItemWithTooltip({
           href={item.href}
           className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
             isActive 
-              ? "bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300" 
+              ? "bg-slate-50 dark:bg-slate-800/20 text-slate-700 dark:text-slate-300" 
               : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:translate-x-1"
           }`}
         >
@@ -576,7 +576,7 @@ export default function DashboardLayout({ children }: SidebarProps) {
         {/* Logo - Premium styled */}
         <div className="p-4 border-b border-slate-200 dark:border-slate-800">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-blue-500 rounded-lg flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 bg-gradient-to-br from-slate-600 to-blue-500 rounded-lg flex items-center justify-center shrink-0">
               <Crown className="h-5 w-5 text-white" />
             </div>
             {!effectiveCollapsed && (
@@ -633,7 +633,7 @@ export default function DashboardLayout({ children }: SidebarProps) {
                   href={item.href}
                   className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                     isActive(item.href)
-                      ? "bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300"
+                      ? "bg-slate-50 dark:bg-slate-800/20 text-slate-700 dark:text-slate-300"
                       : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:translate-x-1"
                   }`}
                 >
@@ -654,7 +654,7 @@ export default function DashboardLayout({ children }: SidebarProps) {
                   href={item.href} 
                   className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                     isActive(item.href)
-                      ? "bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300"
+                      ? "bg-slate-50 dark:bg-slate-800/20 text-slate-700 dark:text-slate-300"
                       : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:translate-x-1"
                   }`}
                 >
@@ -671,7 +671,7 @@ export default function DashboardLayout({ children }: SidebarProps) {
           <div className={`flex items-center gap-3 p-3 bg-slate-100 dark:bg-slate-800 rounded-xl ${effectiveCollapsed ? 'justify-center' : ''}`}>
             {effectiveCollapsed ? (
               <div className="relative">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-slate-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
                   KW
                 </div>
                 <div className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 bg-green-500 rounded-full border-2 border-slate-100 dark:border-slate-800" />
@@ -679,7 +679,7 @@ export default function DashboardLayout({ children }: SidebarProps) {
             ) : (
               <>
                 <div className="relative">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-medium">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-slate-500 rounded-full flex items-center justify-center text-white font-medium">
                     KW
                   </div>
                   <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-green-500 rounded-full border-2 border-white dark:border-slate-800" />
@@ -711,7 +711,7 @@ export default function DashboardLayout({ children }: SidebarProps) {
           variant="ghost"
           size="sm"
           onClick={toggleSidebar}
-          className={`absolute -right-3 top-20 h-6 w-6 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:border-purple-300 dark:hover:border-purple-700 transition-all duration-200 z-40 ${
+          className={`absolute -right-3 top-20 h-6 w-6 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700/20 hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-200 z-40 ${
             effectiveCollapsed ? '' : ''
           }`}
           aria-label={effectiveCollapsed ? "Expand sidebar" : "Collapse sidebar"}
@@ -747,7 +747,7 @@ export default function DashboardLayout({ children }: SidebarProps) {
             {/* Quick Create Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button className="gap-2 bg-purple-600 hover:bg-purple-700 text-white">
+                <Button className="gap-2 bg-slate-600 hover:bg-slate-700 text-white">
                   <Plus className="h-4 w-4" />
                   Quick Create
                   <ChevronDown className="h-3 w-3 opacity-70" />
@@ -783,7 +783,7 @@ export default function DashboardLayout({ children }: SidebarProps) {
             {/* Quick Tour Button */}
             <Button 
               variant="outline" 
-              className="gap-2 h-9 rounded-lg border-slate-200 dark:border-slate-700 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:border-purple-300 dark:hover:border-purple-700 hover:text-purple-600 dark:hover:text-purple-400 transition-all duration-200"
+              className="gap-2 h-9 rounded-lg border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/20 hover:border-slate-300 dark:hover:border-slate-700 hover:text-slate-600 dark:hover:text-slate-400 transition-all duration-200"
               onClick={() => setTourOpen(true)}
             >
               <Compass className="h-4 w-4" />
@@ -844,7 +844,7 @@ export default function DashboardLayout({ children }: SidebarProps) {
                 <Button variant="ghost" className="relative h-9 w-9 rounded-full p-0 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200">
                   <Avatar className="h-9 w-9">
                     <AvatarImage src="" alt="Krish Walker" />
-                    <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-500 text-white text-sm font-medium">
+                    <AvatarFallback className="bg-gradient-to-br from-blue-500 to-slate-500 text-white text-sm font-medium">
                       KW
                     </AvatarFallback>
                   </Avatar>
@@ -854,7 +854,7 @@ export default function DashboardLayout({ children }: SidebarProps) {
                 <div className="flex items-center gap-3 p-3">
                   <Avatar className="h-10 w-10">
                     <AvatarImage src="" alt="Krish Walker" />
-                    <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-500 text-white">
+                    <AvatarFallback className="bg-gradient-to-br from-blue-500 to-slate-500 text-white">
                       KW
                     </AvatarFallback>
                   </Avatar>

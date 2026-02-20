@@ -232,7 +232,7 @@ export default function DashboardPage() {
           </div>
           <div className="mt-2 pt-2 border-t border-slate-200 dark:border-slate-700 flex justify-between">
             <span className="text-sm text-slate-500">Total</span>
-            <span className="font-bold text-purple-600">{formatCurrency(total)}</span>
+            <span className="font-bold text-slate-600">{formatCurrency(total)}</span>
           </div>
         </div>
       );
@@ -256,7 +256,7 @@ export default function DashboardPage() {
                 id="compare-mode"
                 checked={compareMode}
                 onCheckedChange={setCompareMode}
-                className="data-[state=checked]:bg-purple-600"
+                className="data-[state=checked]:bg-slate-600"
               />
               <Label htmlFor="compare-mode" className="text-sm cursor-pointer">Compare to previous period</Label>
             </div>
@@ -294,12 +294,12 @@ export default function DashboardPage() {
 
         {/* Enhanced KPI Summary Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-          <Card className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-950/30 dark:to-violet-950/30 border-purple-200 dark:border-purple-800">
+          <Card className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900/30 dark:to-slate-800/30 border-slate-200 dark:border-slate-700">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between mb-2">
-                <p className="text-sm font-medium text-purple-600 dark:text-purple-400">Total Revenue</p>
-                <div className="p-1.5 bg-purple-100 dark:bg-purple-900/50 rounded-lg">
-                  <DollarSign className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Total Revenue</p>
+                <div className="p-1.5 bg-slate-100 dark:bg-slate-800/50 rounded-lg">
+                  <DollarSign className="h-4 w-4 text-slate-600 dark:text-slate-400" />
                 </div>
               </div>
               <p className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{formatCurrency(totalRevenue)}</p>
@@ -405,7 +405,7 @@ export default function DashboardPage() {
                       variant={activePreset === preset.value ? "default" : "ghost"}
                       size="sm"
                       onClick={() => handlePresetChange(preset.value)}
-                      className={activePreset === preset.value ? "bg-purple-600 hover:bg-purple-700" : "text-slate-600 dark:text-slate-300"}
+                      className={activePreset === preset.value ? "bg-slate-600 hover:bg-slate-700" : "text-slate-600 dark:text-slate-300"}
                     >
                       {preset.value === "7d" ? "7D" : preset.value === "14d" ? "14D" : preset.value === "30d" ? "30D" : preset.value === "90d" ? "90D" : "MTD"}
                     </Button>
@@ -446,7 +446,7 @@ export default function DashboardPage() {
                     variant={viewMode === "stacked" ? "default" : "ghost"}
                     size="sm"
                     onClick={() => setViewMode("stacked")}
-                    className={viewMode === "stacked" ? "bg-purple-600 hover:bg-purple-700" : "text-slate-600 dark:text-slate-300"}
+                    className={viewMode === "stacked" ? "bg-slate-600 hover:bg-slate-700" : "text-slate-600 dark:text-slate-300"}
                   >
                     Stacked
                   </Button>
@@ -454,7 +454,7 @@ export default function DashboardPage() {
                     variant={viewMode === "grouped" ? "default" : "ghost"}
                     size="sm"
                     onClick={() => setViewMode("grouped")}
-                    className={viewMode === "grouped" ? "bg-purple-600 hover:bg-purple-700" : "text-slate-600 dark:text-slate-300"}
+                    className={viewMode === "grouped" ? "bg-slate-600 hover:bg-slate-700" : "text-slate-600 dark:text-slate-300"}
                   >
                     Grouped
                   </Button>

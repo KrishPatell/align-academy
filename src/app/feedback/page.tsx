@@ -203,8 +203,8 @@ export default function FeedbackPage() {
                   <p className="text-sm text-slate-500">Total Feedback</p>
                   <p className="text-2xl font-bold">{totalFeedback}</p>
                 </div>
-                <div className="h-12 w-12 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-                  <MessageSquare className="h-6 w-6 text-purple-500" />
+                <div className="h-12 w-12 rounded-xl bg-slate-100 dark:bg-slate-800/30 flex items-center justify-center">
+                  <MessageSquare className="h-6 w-6 text-slate-500" />
                 </div>
               </div>
             </CardContent>
@@ -278,7 +278,7 @@ export default function FeedbackPage() {
                   onClick={() => setStatusFilter(btn.value)}
                   className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
                     statusFilter === btn.value
-                      ? btn.color + " ring-2 ring-offset-2 ring-purple-500"
+                      ? btn.color + " ring-2 ring-offset-2 ring-slate-500"
                       : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
                   }`}
                 >
@@ -333,7 +333,7 @@ export default function FeedbackPage() {
             <Card 
               key={item.id} 
               className={`bg-white dark:bg-[#1a1a1a] border-0 shadow-sm transition-all ${
-                expandedRows.includes(item.id) ? "ring-2 ring-purple-500" : ""
+                expandedRows.includes(item.id) ? "ring-2 ring-slate-500" : ""
               }`}
             >
               <CardContent className="p-0">
@@ -341,7 +341,7 @@ export default function FeedbackPage() {
                 <div className="p-4">
                   <div className="flex items-start gap-4">
                     {/* Avatar */}
-                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
+                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-slate-500 to-slate-600 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
                       {item.customer.split(" ").map(n => n[0]).join("")}
                     </div>
                     
@@ -378,7 +378,7 @@ export default function FeedbackPage() {
                         <div className="flex items-center gap-2 mt-2 text-xs text-slate-400">
                           <Clock className="h-3 w-3" />
                           <span>{item.date}</span>
-                          <span className="text-purple-500 flex items-center gap-1 hover:underline">
+                          <span className="text-slate-500 flex items-center gap-1 hover:underline">
                             {expandedRows.includes(item.id) ? (
                               <> <ChevronUp className="h-3 w-3" /> Show less</>
                             ) : (
@@ -394,7 +394,7 @@ export default function FeedbackPage() {
                       <Button 
                         variant={replyingTo === item.id ? "default" : "outline"} 
                         size="sm" 
-                        className={`gap-1 ${replyingTo === item.id ? "bg-purple-600 hover:bg-purple-700" : ""}`}
+                        className={`gap-1 ${replyingTo === item.id ? "bg-slate-600 hover:bg-slate-700" : ""}`}
                         onClick={() => handleReply(item.id)}
                       >
                         <Reply className="h-4 w-4" />
@@ -437,7 +437,7 @@ export default function FeedbackPage() {
                       </Button>
                       <Button 
                         size="sm" 
-                        className="bg-purple-600 hover:bg-purple-700 gap-1"
+                        className="bg-slate-600 hover:bg-slate-700 gap-1"
                         onClick={() => submitReply(item.id)}
                         disabled={!replyText.trim()}
                       >

@@ -278,13 +278,13 @@ export default function IntegrationsPage() {
                     <div className="flex items-center gap-3">
                       <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
                         integration.connected 
-                          ? "bg-gradient-to-br from-purple-500 to-blue-500 shadow-lg shadow-purple-500/25" 
-                          : "bg-slate-100 dark:bg-slate-800 group-hover:bg-purple-100 dark:group-hover:bg-purple-900/30"
+                          ? "bg-gradient-to-br from-slate-500 to-blue-500 shadow-lg shadow-slate-500/25" 
+                          : "bg-slate-100 dark:bg-slate-800 group-hover:bg-slate-100 dark:group-hover:bg-slate-700/30"
                       }`}>
-                        <integration.icon className={`h-6 w-6 transition-colors ${integration.connected ? "text-white" : "text-slate-500 group-hover:text-purple-600"}`} />
+                        <integration.icon className={`h-6 w-6 transition-colors ${integration.connected ? "text-white" : "text-slate-500 group-hover:text-slate-600"}`} />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-lg group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors">{integration.name}</h3>
+                        <h3 className="font-semibold text-lg group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors">{integration.name}</h3>
                         <p className="text-sm text-slate-500">{integration.description}</p>
                       </div>
                     </div>
@@ -292,7 +292,7 @@ export default function IntegrationsPage() {
                       <Button 
                         variant="ghost" 
                         size="icon" 
-                        className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-purple-100 dark:hover:bg-purple-900/30"
+                        className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-slate-100 dark:hover:bg-slate-700/30"
                         onClick={() => openConfigModal(integration)}
                       >
                         <Settings className="h-4 w-4" />
@@ -303,7 +303,7 @@ export default function IntegrationsPage() {
 
                 {/* Quote */}
                 <div className="px-5 pb-3">
-                  <blockquote className="text-sm text-slate-600 dark:text-slate-400 italic border-l-2 border-purple-500 pl-3">
+                  <blockquote className="text-sm text-slate-600 dark:text-slate-400 italic border-l-2 border-slate-500 pl-3">
                     "{integration.quote}"
                   </blockquote>
                 </div>
@@ -315,7 +315,7 @@ export default function IntegrationsPage() {
                     <div className="flex items-center gap-1">
                       <div className="flex -space-x-2">
                         {Array(Math.min(integration.participants, 3)).fill(0).map((_, i) => (
-                          <div key={i} className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-400 to-blue-400 border-2 border-white dark:border-slate-100" />
+                          <div key={i} className="w-6 h-6 rounded-full bg-gradient-to-br from-slate-400 to-blue-400 border-2 border-white dark:border-slate-100" />
                         ))}
                         {integration.participants > 3 && (
                           <div className="w-6 h-6 rounded-full bg-slate-300 border-2 border-white dark:border-slate-100 flex items-center justify-center text-xs font-medium">
@@ -379,7 +379,7 @@ export default function IntegrationsPage() {
                 {selectedIntegration && (
                   <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                     selectedIntegration.connected 
-                      ? "bg-gradient-to-br from-purple-500 to-blue-500" 
+                      ? "bg-gradient-to-br from-slate-500 to-blue-500" 
                       : "bg-slate-100 dark:bg-slate-800"
                   }`}>
                     <selectedIntegration.icon className={`h-4 w-4 ${selectedIntegration.connected ? "text-white" : "text-slate-500"}`} />
@@ -459,7 +459,7 @@ export default function IntegrationsPage() {
               </Button>
               <Button 
                 onClick={saveConfig}
-                className="bg-purple-600 hover:bg-purple-700"
+                className="bg-slate-600 hover:bg-slate-700"
               >
                 Save Changes
               </Button>

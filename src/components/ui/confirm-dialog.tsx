@@ -51,13 +51,13 @@ export function ConfirmDialog({
                 "flex h-12 w-12 shrink-0 items-center justify-center rounded-full",
                 variant === "destructive" 
                   ? "bg-red-100 dark:bg-red-900/30" 
-                  : "bg-purple-100 dark:bg-purple-900/30"
+                  : "bg-slate-100 dark:bg-slate-800/30"
               )}>
                 <AlertTriangle className={cn(
                   "h-6 w-6",
                   variant === "destructive" 
                     ? "text-red-600 dark:text-red-400" 
-                    : "text-purple-600 dark:text-purple-400"
+                    : "text-slate-600 dark:text-slate-400"
                 )} />
               </div>
               <div className="flex-1">
@@ -88,7 +88,7 @@ export function ConfirmDialog({
                 onClick={handleConfirm}
                 disabled={loading}
                 className={cn(
-                  variant !== "destructive" && "bg-purple-600 hover:bg-purple-700"
+                  variant !== "destructive" && "bg-slate-600 hover:bg-slate-700"
                 )}
               >
                 {loading ? "Processing..." : confirmText}

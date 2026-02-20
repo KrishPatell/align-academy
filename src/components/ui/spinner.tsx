@@ -19,7 +19,7 @@ const sizeClasses = {
 
 const variantClasses = {
   default: "text-slate-500 dark:text-slate-400",
-  primary: "text-purple-600 dark:text-purple-400",
+  primary: "text-slate-600 dark:text-slate-400",
   secondary: "text-blue-600 dark:text-blue-400",
   muted: "text-slate-400 dark:text-slate-600",
 };

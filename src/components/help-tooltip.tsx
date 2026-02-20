@@ -193,7 +193,7 @@ export function ContextTooltip({ title, content, link, className }: ContextToolt
               {link && (
                 <a 
                   href={link} 
-                  className="text-xs text-purple-600 hover:text-purple-700 mt-2 inline-block font-medium"
+                  className="text-xs text-slate-600 hover:text-slate-700 mt-2 inline-block font-medium"
                   onClick={(e) => e.stopPropagation()}
                 >
                   Learn more →

@@ -226,7 +226,7 @@ export function TourGuide({
       {/* Highlight effect */}
       {targetRect && (
         <div 
-          className="absolute border-2 border-purple-500 rounded-lg shadow-[0_0_0_9999px_rgba(0,0,0,0.5)] z-30 transition-all duration-300"
+          className="absolute border-2 border-slate-500 rounded-lg shadow-[0_0_0_9999px_rgba(0,0,0,0.5)] z-30 transition-all duration-300"
           style={{
             top: targetRect.top - 4,
             left: targetRect.left - 4,
@@ -243,18 +243,18 @@ export function TourGuide({
       >
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 bg-purple-50 dark:bg-purple-900/20 border-b border-purple-200 dark:border-purple-800">
+          <div className="flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-slate-800/20 border-b border-slate-200 dark:border-slate-700">
             <div className="flex items-center gap-2">
-              <Compass className="h-4 w-4 text-purple-600 dark:text-purple-400" />
-              <span className="text-xs font-medium text-purple-600 dark:text-purple-400 uppercase tracking-wider">
+              <Compass className="h-4 w-4 text-slate-600 dark:text-slate-400" />
+              <span className="text-xs font-medium text-slate-600 dark:text-slate-400 uppercase tracking-wider">
                 Step {currentStep + 1} of {steps.length}
               </span>
             </div>
             <button
               onClick={onSkip}
-              className="p-1 hover:bg-purple-100 dark:hover:bg-purple-800 rounded transition-colors"
+              className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition-colors"
             >
-              <X className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+              <X className="h-4 w-4 text-slate-600 dark:text-slate-400" />
             </button>
           </div>
 
@@ -292,7 +292,7 @@ export function TourGuide({
                   "gap-2",
                   isLastStep 
                     ? "bg-green-600 hover:bg-green-700" 
-                    : "bg-purple-600 hover:bg-purple-700"
+                    : "bg-slate-600 hover:bg-slate-700"
                 )}
                 onClick={() => {
                   if (isLastStep) {
@@ -326,9 +326,9 @@ export function TourGuide({
                 className={cn(
                   "h-1.5 rounded-full transition-all duration-200",
                   idx === currentStep 
-                    ? "w-6 bg-purple-600" 
+                    ? "w-6 bg-slate-600" 
                     : idx < currentStep 
-                      ? "w-1.5 bg-purple-300 dark:bg-purple-700" 
+                      ? "w-1.5 bg-slate-300 dark:bg-slate-700" 
                       : "w-1.5 bg-slate-300 dark:bg-slate-600"
                 )}
               />
