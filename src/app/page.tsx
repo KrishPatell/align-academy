@@ -84,6 +84,17 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  ComposedChart,
+  Line,
+} from "recharts";
 
 // System Status Data
 const systemStatus = {
@@ -354,7 +365,6 @@ export default function HomePage() {
   if (!mounted) return null;
 
   const currentData = periodData[activeTab];
-  const maxVolume = Math.max(...currentData.volume.map(d => d.volume));
 
   const handleSort = (field: string) => {
     if (sortField === field) {
@@ -503,28 +513,47 @@ export default function HomePage() {
               </div>
             </CardHeader>
             <CardContent>
-              {/* Smooth Bar Chart */}
-              <div className="flex items-end justify-between h-52 gap-3">
-                {currentData.volume.map((d, i) => {
-                  const barHeight = Math.max((d.volume / maxVolume) * 100, 5);
-                  return (
-                    <div key={i} className="flex-1 flex flex-col items-center gap-2 group">
-                      <div className="w-full h-full flex items-end">
-                        <div 
-                          className="w-full bg-gradient-to-t from-purple-600 to-purple-400 rounded-t-lg transition-all duration-300 group-hover:from-purple-700 group-hover:to-purple-500 cursor-pointer relative"
-                          style={{ height: `${barHeight}%`, minHeight: '8px' }}
-                        >
-                          {/* Tooltip */}
-                          <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-                            {d.volume} tickets
-                          </div>
-                        </div>
-                      </div>
-                      <span className="text-xs text-slate-500">{d.day}</span>
-                    </div>
-                  );
-                })}
-              </div>
+              <ResponsiveContainer width="100%" height={300}>
+                <ComposedChart data={currentData.volume} barSize={24}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" className="dark:stroke-slate-700" />
+                  <XAxis 
+                    dataKey="day" 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fill: "#64748b", fontSize: 11 }} 
+                    dy={10}
+                  />
+                  <YAxis 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fill: "#64748b", fontSize: 11 }} 
+                    dx={-10}
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'rgba(255,255,255,0.95)', 
+                      border: '1px solid #e2e8f0',
+                      borderRadius: '8px'
+                    }}
+                    formatter={(value: number) => [`${value} tickets`, 'Volume']}
+                  />
+                  <Bar 
+                    dataKey="volume" 
+                    fill="#7c3aed" 
+                    radius={[4, 4, 0, 0]} 
+                    animationDuration={500}
+                    name="Tickets"
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="volume" 
+                    stroke="#7c3aed" 
+                    strokeWidth={2}
+                    dot={{ fill: '#7c3aed', r: 4 }}
+                    activeDot={{ r: 6 }}
+                  />
+                </ComposedChart>
+              </ResponsiveContainer>
             </CardContent>
           </Card>
 
