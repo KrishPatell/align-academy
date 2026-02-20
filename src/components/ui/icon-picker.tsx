@@ -64,7 +64,7 @@ function IconPicker({
     setOpen(false)
   }
 
-  const IconComponent = (LucideIcons as Record<string, React.ComponentType<{ className?: string }>>)[selectedIcon]
+  const IconComponent = (LucideIcons as any)[selectedIcon]
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -102,7 +102,7 @@ function IconPicker({
                 </div>
                 <div className="grid grid-cols-8 gap-1">
                   {icons.map((iconName) => {
-                    const Icon = (LucideIcons as Record<string, React.ComponentType<{ className?: string }>>)[iconName]
+                    const Icon = (LucideIcons as any)[iconName]
                     return (
                       <button
                         key={iconName}

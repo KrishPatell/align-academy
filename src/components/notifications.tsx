@@ -108,7 +108,7 @@ const defaultNotifications: Notification[] = [
   },
   {
     id: "6",
-    type: "message",
+    type: "info",
     title: "New Feedback Received",
     message: "A client left new feedback on recent support ticket",
     time: "Yesterday",
@@ -204,6 +204,7 @@ const iconMap = {
   agent: Users,
   analytics: TrendingUp,
   message: MessageSquare,
+  info: Bell,
 };
 
 // Type color mapping

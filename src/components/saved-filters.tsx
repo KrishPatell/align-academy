@@ -86,8 +86,8 @@ export function SavedFilters({
     setSavedFilters(updatedFilters);
     localStorage.setItem(storageKey, JSON.stringify(updatedFilters));
     
-FilterName("");
-       setNew setIsDefaultFilter(false);
+    setNewFilterName("");
+    setIsDefaultFilter(false);
     setIsSaveDialogOpen(false);
   };
 

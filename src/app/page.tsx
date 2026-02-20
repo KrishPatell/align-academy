@@ -55,7 +55,6 @@ import {
   ArrowUp01,
   Calendar,
   AlertOctagon,
-  Plus,
   ChevronsUp,
   ChevronsDown,
 } from "lucide-react";
@@ -210,8 +209,8 @@ type SortOption = "custom" | "id-asc" | "id-desc" | "priority-asc" | "priority-d
 // Sortable Row Component
 function SortableRow({ 
   ticket, 
-  isSelected,Row 
-  onToggle, 
+  isSelected, 
+  onToggleRow, 
   onRowClick,
   setSelectedTicket 
 }: { 
@@ -348,19 +347,6 @@ export default function HomePage() {
     }
   };
 
-  // Simulate real-time metric updates
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setQuickStats(prev => ({
-        ...prev,
-        openTickets: prev.openTickets + Math.floor(Math.random() * 3) - 1,
-        resolvedToday: prev.resolvedToday + Math.floor(Math.random() * 2),
-        pendingSLA: Math.max(0, prev.pendingSLA + Math.floor(Math.random() * 3) - 2),
-      }));
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
   useEffect(() => { setMounted(true); }, []);
   if (!mounted) return null;
 
@@ -370,7 +356,7 @@ export default function HomePage() {
     if (sortField === field) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
-      setSortField(field);
+      setSortField(field as SortField);
       setSortDirection("asc");
     }
   };
@@ -535,7 +521,7 @@ export default function HomePage() {
                       border: '1px solid #e2e8f0',
                       borderRadius: '8px'
                     }}
-                    formatter={(value: number) => [`${value} tickets`, 'Volume']}
+                    formatter={(value) => [`${value} tickets`, 'Volume']}
                   />
                   <Bar 
                     dataKey="volume" 
@@ -796,7 +782,7 @@ export default function HomePage() {
                         </DropdownMenu>
                       </td>
                     </tr>
-                  ))}
+                  )))}
                 </tbody>
               </table>
             </div>

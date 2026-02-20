@@ -49,7 +49,7 @@ export function validateField<T>(
   // Min length check
   if (rules.minLength) {
     const min = typeof rules.minLength === "number" ? rules.minLength : rules.minLength.value;
-    const message = typeof rules.minLength === "string" ? rules.minLength : rules.minLength.message;
+    const message = typeof rules.minLength === "string" ? rules.minLength : (rules.minLength as any).message;
     if (stringValue.length < min) {
       return message || `Must be at least ${min} characters`;
     }
@@ -58,9 +58,9 @@ export function validateField<T>(
   // Max length check
   if (rules.maxLength) {
     const max = typeof rules.maxLength === "number" ? rules.maxLength : rules.maxLength.value;
-    const message = typeof rules.maxLength === "string" ? rules.maxLength : rules.maxLength.message;
+    const maxMessage = typeof rules.maxLength === "string" ? rules.maxLength : (rules.maxLength as any).message;
     if (stringValue.length > max) {
-      return message || `Must be no more than ${max} characters`;
+      return maxMessage || `Must be no more than ${max} characters`;
     }
   }
 
@@ -118,9 +118,9 @@ export function validateForm<T extends Record<string, unknown>>(
     const fieldRules = rules[field];
     
     if (fieldRules) {
-      const error = validateField(value, fieldRules as ValidationRule);
+      const error = validateField(value, fieldRules as any);
       if (error) {
-        (errors as Record<keyof T, string>)[field] = error;
+        (errors as any)[field] = error;
       }
     }
   });

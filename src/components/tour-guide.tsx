@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { 
-  Tour, 
+  Compass, 
   X, 
   ChevronRight, 
   ChevronLeft, 
@@ -245,7 +245,7 @@ export function TourGuide({
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 bg-purple-50 dark:bg-purple-900/20 border-b border-purple-200 dark:border-purple-800">
             <div className="flex items-center gap-2">
-              <Tour className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+              <Compass className="h-4 w-4 text-purple-600 dark:text-purple-400" />
               <span className="text-xs font-medium text-purple-600 dark:text-purple-400 uppercase tracking-wider">
                 Step {currentStep + 1} of {steps.length}
               </span>

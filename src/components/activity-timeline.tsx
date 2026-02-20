@@ -30,7 +30,8 @@ import {
   Mail,
   MessageSquare,
   Bell,
-  ChevronRight
+  ChevronRight,
+  Plus
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -88,7 +89,7 @@ const getActivityIcon = (type: ActivityType) => {
   const icons: Record<ActivityType, typeof Activity> = {
     login: LogIn,
     logout: LogOut,
-    create: AddIcon,
+    create: Plus,
     update: Edit,
     delete: Trash2,
     view: Eye,
@@ -134,27 +135,6 @@ const getSeverityBadgeColor = (severity: ActivitySeverity) => {
   };
   return colors[severity];
 };
-
-// Add icon component (lucide-react doesn't have Add, using Plus)
-function AddIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M5 12h14" />
-      <path d="M12 5v14" />
-    </svg>
-  );
-}
 
 // Format relative time
 const formatRelativeTime = (date: Date): string => {

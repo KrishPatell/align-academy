@@ -18,9 +18,6 @@ import {
   ArrowDown,
   ArrowLeft,
   ArrowRight,
-  Enter,
-  Escape,
-  QuestionMark,
   Sparkles,
   ChevronRight,
   ExternalLink

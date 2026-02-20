@@ -63,7 +63,8 @@ import {
   Moon,
   Sun,
   Keyboard,
-  Tour,
+  Compass,
+  X,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -785,7 +786,7 @@ export default function DashboardLayout({ children }: SidebarProps) {
               className="gap-2 h-9 rounded-lg border-slate-200 dark:border-slate-700 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:border-purple-300 dark:hover:border-purple-700 hover:text-purple-600 dark:hover:text-purple-400 transition-all duration-200"
               onClick={() => setTourOpen(true)}
             >
-              <Tour className="h-4 w-4" />
+              <Compass className="h-4 w-4" />
               <span className="hidden sm:inline">Quick Tour</span>
             </Button>
 
